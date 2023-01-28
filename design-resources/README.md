@@ -1,4 +1,4 @@
-## Mobile Desing
+## Mobile Design
 The designs are used as reference only. Total freedom is available to use best practices for implementing better UX.
 
 ### Design References
