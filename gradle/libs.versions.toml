@@ -15,6 +15,7 @@ kotlin = "2.1.10"
 kotlinxSerialization = "1.8.0"
 ksp = "2.1.10-1.0.31"
 lifecycleRuntimeKtx = "2.8.7"
+androidxPaging = "3.3.6"
 
 
 # Room Database
@@ -73,6 +74,11 @@ anvil-annotations-optional = { group = "dev.zacsweers.anvil", name = "annotation
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "googleFonts" }
 
 
+# Paging 3
+# https://developer.android.com/topic/libraries/architecture/paging/v3-overview
+androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "androidxPaging" }
+androidx-paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "androidxPaging" }
+androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "roomDb" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
