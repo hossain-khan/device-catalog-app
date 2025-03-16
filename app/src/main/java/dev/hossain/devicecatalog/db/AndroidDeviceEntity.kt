@@ -4,9 +4,9 @@ package dev.hossain.devicecatalog.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.db.converter.StringListConverter
 import dev.hossain.devicecatalog.db.converter.IntListConverter
-import dev.hossain.devicecatalog.model.AndroidDevice
 
 @Entity(tableName = "android_devices")
 @TypeConverters(StringListConverter::class, IntListConverter::class)
