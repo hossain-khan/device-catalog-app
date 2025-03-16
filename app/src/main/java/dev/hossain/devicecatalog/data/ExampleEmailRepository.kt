@@ -1,7 +1,7 @@
 package dev.hossain.devicecatalog.data
 
-import dev.hossain.devicecatalog.di.AppScope
 import com.squareup.anvil.annotations.ContributesBinding
+import dev.hossain.devicecatalog.di.AppScope
 import javax.inject.Inject
 
 // -------------------------------------------------------------------------------------
@@ -58,7 +58,9 @@ class ExampleEmailRepositoryImpl
                 Email(
                     id = "3",
                     subject = "Upcoming Holiday Event",
-                    body = "Join us for the upcoming holiday event next Friday. There will be games, food, and fun activities for everyone. Please RSVP.",
+                    body =
+                        "Join us for the upcoming holiday event next Friday. There will be games, food, " +
+                            "and fun activities for everyone. Please RSVP.",
                     sender = "Jane Smith",
                     timestamp = "5:00 PM",
                     recipients = listOf("everyone@example.com"),
