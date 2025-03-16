@@ -3,9 +3,11 @@ package dev.hossain.devicecatalog.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AndroidDeviceRepository
@@ -40,6 +42,8 @@ class AndroidDeviceRepository
                 deviceDao.getPagedDevicesBySearch(searchQuery)
             }.flow
         }
+
+        fun getAllDevices(): Flow<List<AndroidDevice>> = deviceDao.getAllDevices().map { it.map { it.toModel() } }
 
         suspend fun insertDevice(device: AndroidDeviceEntity): Long = deviceDao.insertDevice(device)
 
