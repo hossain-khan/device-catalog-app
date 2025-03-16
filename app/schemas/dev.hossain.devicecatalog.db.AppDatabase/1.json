@@ -1,0 +1,112 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "3be6528434b26cf4ed22b655d7d22614",
+    "entities": [
+      {
+        "tableName": "android_devices",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brand` TEXT NOT NULL, `device` TEXT NOT NULL, `manufacturer` TEXT NOT NULL, `modelName` TEXT NOT NULL, `ram` TEXT NOT NULL, `formFactor` TEXT NOT NULL, `processorName` TEXT NOT NULL, `gpu` TEXT NOT NULL, `screenSizes` TEXT NOT NULL, `screenDensities` TEXT NOT NULL, `abis` TEXT NOT NULL, `sdkVersions` TEXT NOT NULL, `openGlEsVersions` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brand",
+            "columnName": "brand",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "device",
+            "columnName": "device",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufacturer",
+            "columnName": "manufacturer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modelName",
+            "columnName": "modelName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ram",
+            "columnName": "ram",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formFactor",
+            "columnName": "formFactor",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "processorName",
+            "columnName": "processorName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gpu",
+            "columnName": "gpu",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenSizes",
+            "columnName": "screenSizes",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screenDensities",
+            "columnName": "screenDensities",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "abis",
+            "columnName": "abis",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sdkVersions",
+            "columnName": "sdkVersions",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "openGlEsVersions",
+            "columnName": "openGlEsVersions",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3be6528434b26cf4ed22b655d7d22614')"
+    ]
+  }
+}
