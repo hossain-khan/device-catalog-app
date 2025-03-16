@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,8 +19,17 @@ interface AndroidDeviceDao {
     @Update
     suspend fun updateDevice(device: AndroidDeviceEntity)
 
+    // Regular Flow query for non-paged results
     @Query("SELECT * FROM android_devices")
     fun getAllDevices(): Flow<List<AndroidDeviceEntity>>
+
+    // Paged query that returns a PagingSource
+    @Query("SELECT * FROM android_devices ORDER BY manufacturer ASC")
+    fun getPagedDevices(): PagingSource<Int, AndroidDeviceEntity>
+
+    // Paged query with search functionality
+    @Query("SELECT * FROM android_devices WHERE manufacturer LIKE :search OR modelName LIKE :search ORDER BY manufacturer ASC")
+    fun getPagedDevicesBySearch(search: String): PagingSource<Int, AndroidDeviceEntity>
 
     @Query("SELECT * FROM android_devices WHERE id = :deviceId")
     suspend fun getDeviceById(deviceId: Long): AndroidDeviceEntity?
