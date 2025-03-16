@@ -21,10 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
-import dev.hossain.devicecatalog.data.Email
-import dev.hossain.devicecatalog.data.ExampleAppVersionService
-import dev.hossain.devicecatalog.data.ExampleEmailRepository
-import dev.hossain.devicecatalog.di.AppScope
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -36,6 +32,10 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dev.hossain.devicecatalog.circuit.DetailScreen
 import dev.hossain.devicecatalog.circuit.EmailItem
+import dev.hossain.devicecatalog.data.Email
+import dev.hossain.devicecatalog.data.ExampleAppVersionService
+import dev.hossain.devicecatalog.data.ExampleEmailRepository
+import dev.hossain.devicecatalog.di.AppScope
 import kotlinx.parcelize.Parcelize
 
 // See https://slackhq.github.io/circuit/screen/

@@ -1,12 +1,11 @@
 package dev.hossain.devicecatalog.db
 
-
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import dev.hossain.android.catalogparser.models.AndroidDevice
-import dev.hossain.devicecatalog.db.converter.StringListConverter
 import dev.hossain.devicecatalog.db.converter.IntListConverter
+import dev.hossain.devicecatalog.db.converter.StringListConverter
 
 @Entity(tableName = "android_devices")
 @TypeConverters(StringListConverter::class, IntListConverter::class)
@@ -25,10 +24,10 @@ data class AndroidDeviceEntity(
     val screenDensities: List<Int>,
     val abis: List<String>,
     val sdkVersions: List<Int>,
-    val openGlEsVersions: List<String>
+    val openGlEsVersions: List<String>,
 ) {
-    fun toModel(): AndroidDevice {
-        return AndroidDevice(
+    fun toModel(): AndroidDevice =
+        AndroidDevice(
             brand = brand,
             device = device,
             manufacturer = manufacturer,
@@ -41,13 +40,12 @@ data class AndroidDeviceEntity(
             screenDensities = screenDensities,
             abis = abis,
             sdkVersions = sdkVersions,
-            openGlEsVersions = openGlEsVersions
+            openGlEsVersions = openGlEsVersions,
         )
-    }
 
     companion object {
-        fun fromModel(model: AndroidDevice): AndroidDeviceEntity {
-            return AndroidDeviceEntity(
+        fun fromModel(model: AndroidDevice): AndroidDeviceEntity =
+            AndroidDeviceEntity(
                 brand = model.brand,
                 device = model.device,
                 manufacturer = model.manufacturer,
@@ -60,8 +58,7 @@ data class AndroidDeviceEntity(
                 screenDensities = model.screenDensities,
                 abis = model.abis,
                 sdkVersions = model.sdkVersions,
-                openGlEsVersions = model.openGlEsVersions
+                openGlEsVersions = model.openGlEsVersions,
             )
-        }
     }
 }
