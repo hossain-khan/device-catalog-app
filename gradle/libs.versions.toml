@@ -1,6 +1,7 @@
 [versions]
 activityCompose = "1.10.1"
 agp = "8.9.0"
+androidDeviceCatalogParser = "1.5"
 anvil = "0.4.1"
 circuit = "0.27.0"
 composeBom = "2025.03.00"
@@ -15,6 +16,7 @@ ksp = "2.1.10-1.0.31"
 lifecycleRuntimeKtx = "2.8.7"
 
 [libraries]
+android-device-catalog-parser = { module = "com.github.hossain-khan:android-device-catalog-parser", version.ref = "androidDeviceCatalogParser" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }

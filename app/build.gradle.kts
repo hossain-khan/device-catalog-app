@@ -85,6 +85,10 @@ dependencies {
     implementation(libs.anvil.annotations)
     implementation(libs.anvil.annotations.optional)
 
+    // CSV parser for Android device catalog
+    // https://github.com/hossain-khan/android-device-catalog-parser
+    implementation(libs.android.device.catalog.parser)
+
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
