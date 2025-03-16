@@ -2,9 +2,11 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.androidx.room)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.anvil)
@@ -55,6 +57,12 @@ android {
         compose = true
         buildConfig = true
     }
+
+
+    room {
+        // https://developer.android.com/jetpack/androidx/releases/room#gradle-plugin
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -77,6 +85,10 @@ dependencies {
     implementation(libs.circuitx.overlays)
     ksp(libs.circuit.codegen)
 
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
     implementation(libs.dagger)
     // Dagger KSP support is in Alpha, not available yet. Using KAPT for now.
     // https://dagger.dev/dev-guide/ksp.html
@@ -88,6 +100,8 @@ dependencies {
     // CSV parser for Android device catalog
     // https://github.com/hossain-khan/android-device-catalog-parser
     implementation(libs.android.device.catalog.parser)
+
+    implementation(libs.kotlinx.serialization.json)
 
     // Testing
     androidTestImplementation(libs.androidx.espresso.core)
