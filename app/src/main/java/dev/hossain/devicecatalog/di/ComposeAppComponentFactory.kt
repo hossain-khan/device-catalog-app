@@ -1,11 +1,11 @@
-package app.example.di
+package dev.hossain.devicecatalog.di
 
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import androidx.annotation.Keep
 import androidx.core.app.AppComponentFactory
-import app.example.CircuitApp
+import dev.hossain.devicecatalog.CircuitApp
 import javax.inject.Provider
 
 /**

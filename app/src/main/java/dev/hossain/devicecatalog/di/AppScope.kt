@@ -1,4 +1,4 @@
-package app.example.di
+package dev.hossain.devicecatalog.di
 
 /**
  * App scope for dependency injection.

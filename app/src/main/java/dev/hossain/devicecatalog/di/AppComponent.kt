@@ -1,4 +1,4 @@
-package app.example.di
+package dev.hossain.devicecatalog.di
 
 import android.app.Activity
 import android.content.Context

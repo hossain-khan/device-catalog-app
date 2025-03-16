@@ -1,7 +1,7 @@
-package app.example.data
+package dev.hossain.devicecatalog.data
 
 import android.content.Context
-import app.example.di.ApplicationContext
+import dev.hossain.devicecatalog.di.ApplicationContext
 import javax.inject.Inject
 
 // Example service class that does not need DI module or binding

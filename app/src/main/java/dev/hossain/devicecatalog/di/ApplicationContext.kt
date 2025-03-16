@@ -1,4 +1,4 @@
-package app.example.di
+package dev.hossain.devicecatalog.di
 
 import javax.inject.Qualifier
 

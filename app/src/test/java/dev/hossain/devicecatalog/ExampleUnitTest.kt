@@ -1,4 +1,4 @@
-package app.example
+package dev.hossain.devicecatalog
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

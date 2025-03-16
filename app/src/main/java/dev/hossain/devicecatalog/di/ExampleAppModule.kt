@@ -1,6 +1,6 @@
-package app.example.di
+package dev.hossain.devicecatalog.di
 
-import app.example.data.ExampleEmailValidator
+import dev.hossain.devicecatalog.data.ExampleEmailValidator
 import com.squareup.anvil.annotations.ContributesTo
 import dagger.Module
 import dagger.Provides

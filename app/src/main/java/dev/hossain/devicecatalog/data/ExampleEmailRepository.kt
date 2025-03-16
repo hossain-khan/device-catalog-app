@@ -1,6 +1,6 @@
-package app.example.data
+package dev.hossain.devicecatalog.data
 
-import app.example.di.AppScope
+import dev.hossain.devicecatalog.di.AppScope
 import com.squareup.anvil.annotations.ContributesBinding
 import javax.inject.Inject
 

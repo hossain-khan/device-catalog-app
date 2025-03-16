@@ -1,4 +1,4 @@
-package app.example.data
+package dev.hossain.devicecatalog.data
 
 // Example of a class that is used in traditional Dagger module
 // Does not use Anvil contributed binding
