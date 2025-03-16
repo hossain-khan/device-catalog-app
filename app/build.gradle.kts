@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlinter)
     alias(libs.plugins.ksp)
     alias(libs.plugins.anvil)
 }
@@ -106,7 +107,14 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Linting
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    lintChecks(libs.compose.lint.checks)
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Testing
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.ui.test.junit4)
