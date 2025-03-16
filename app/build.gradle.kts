@@ -11,11 +11,11 @@ plugins {
 }
 
 android {
-    namespace = "app.example"
+    namespace = "dev.hossain.devicecatalog"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "app.example"
+        applicationId = "dev.hossain.devicecatalog"
         minSdk = 30
         targetSdk = 35
         versionCode = 1
