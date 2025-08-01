@@ -17,9 +17,10 @@ import kotlin.reflect.KClass
  * See https://zacsweers.github.io/metro/
  */
 @DependencyGraph(
-    scope = AppScope::class, bindingContainers = [
-        DatabaseBindings::class
-    ]
+    scope = AppScope::class,
+    bindingContainers = [
+        DatabaseBindings::class,
+    ],
 )
 @SingleIn(AppScope::class)
 interface AppGraph {
@@ -29,9 +30,7 @@ interface AppGraph {
     val workerFactory: AppWorkerFactory
 
     @Provides
-    fun providesWorkManager(
-        context: Context,
-    ): WorkManager = WorkManager.getInstance(context)
+    fun providesWorkManager(context: Context): WorkManager = WorkManager.getInstance(context)
 
     // https://zacsweers.github.io/metro/dependency-graphs/#provides
     @DependencyGraph.Factory

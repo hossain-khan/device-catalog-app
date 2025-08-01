@@ -30,8 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.hossain.devicecatalog.BuildConfig
 import com.slack.circuitx.overlays.BottomSheetOverlay
+import dev.hossain.devicecatalog.BuildConfig
 
 /**
  * App information overlay that shows as a bottom sheet.
