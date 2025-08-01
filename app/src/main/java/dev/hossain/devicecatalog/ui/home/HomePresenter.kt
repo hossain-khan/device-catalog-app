@@ -7,17 +7,17 @@ import androidx.compose.runtime.produceState
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.circuit.DetailScreen
 import dev.hossain.devicecatalog.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.data.ExampleAppVersionService
-import dev.hossain.devicecatalog.di.AppScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 
+@Inject
 class HomePresenter
-    @AssistedInject
     constructor(
         @Assisted private val navigator: Navigator,
         private val homeRepository: AndroidDeviceRepository,
@@ -42,7 +42,7 @@ class HomePresenter
 
         @CircuitInject(HomeScreen::class, AppScope::class)
         @AssistedFactory
-        fun interface Factory {
+        interface Factory {
             fun create(navigator: Navigator): HomePresenter
         }
     }

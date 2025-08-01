@@ -1,28 +1,33 @@
 [versions]
 activityCompose = "1.10.1"
-agp = "8.9.0"
 androidDeviceCatalogParser = "1.5"
-androidxPaging = "3.3.6"
-anvil = "0.4.1"
-circuit = "0.27.0"
-composeBom = "2025.03.00"
 composeLintChecks = "1.4.2"
-coreKtx = "1.15.0"
-dagger = "2.55"
-espressoCore = "3.6.1"
-googleFonts = "1.7.8"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-kotlin = "2.1.10"
-kotlinter = "5.0.1"
-kotlinxSerialization = "1.8.0"
-ksp = "2.1.10-1.0.31"
-lifecycleRuntimeKtx = "2.8.7"
 
+androidxPaging = "3.3.6"
+# https://developer.android.com/build/releases/gradle-plugin
+agp = "8.12.0"
+circuit = "0.29.1"
+composeBom = "2025.07.00"
+coreKtx = "1.16.0"
+espressoCore = "3.7.0"
+googleFonts = "1.8.3"
+junit = "4.13.2"
+kotlinxSerialization = "1.9.0"
+junitVersion = "1.3.0"
+kotlin = "2.2.0"
+# The KSP (Kotlin Symbol Processing) plugin version must align with the Kotlin compiler version (2.2.0 in this case)
+ksp = "2.2.0-2.0.2"
+# Kotlin linter with built-in formatter
+# https://github.com/jeremymailen/kotlinter-gradle
+# https://github.com/pinterest/ktlint
+kotlinter = "5.2.0"
+lifecycleRuntimeKtx = "2.9.2"
+metro = "0.5.3"
+androidxWork = "2.10.3"
 
 # Room Database
 # https://developer.android.com/training/data-storage/room
-roomDb = "2.6.1"
+roomDb = "2.7.2"
 
 [libraries]
 android-device-catalog-parser = { module = "com.github.hossain-khan:android-device-catalog-parser", version.ref = "androidDeviceCatalogParser" }
@@ -52,11 +57,6 @@ circuitx-effects = { group = "com.slack.circuit", name = "circuitx-effects", ver
 circuitx-gestureNav = { group = "com.slack.circuit", name = "circuitx-gesture-navigation", version.ref = "circuit" }
 circuitx-overlays = { group = "com.slack.circuit", name = "circuitx-overlays", version.ref = "circuit" }
 
-# https://dagger.dev/
-# https://dagger.dev/dev-guide/ksp
-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
-dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
-
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 # Room Database
@@ -66,15 +66,11 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomDb" }
 androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomDb" }
 
-# https://mvnrepository.com/artifact/com.squareup.anvil/annotations-optional
-# https://github.com/ZacSweers/anvil/blob/main/FORK.md
-anvil-annotations = { group = "dev.zacsweers.anvil", name = "annotations", version.ref = "anvil"}
-anvil-annotations-optional = { group = "dev.zacsweers.anvil", name = "annotations-optional", version.ref = "anvil"}
+javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
 
 # # https://developer.android.com/develop/ui/compose/text/fonts
 # https://mvnrepository.com/artifact/androidx.compose.ui/ui-text-google-fonts
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "googleFonts" }
-
 
 # Paging 3
 # https://developer.android.com/topic/libraries/architecture/paging/v3-overview
@@ -84,6 +80,9 @@ androidx-room-paging = { group = "androidx.room", name = "room-paging", version.
 
 # https://slackhq.github.io/compose-lints/#installation
 compose-lint-checks = { module = "com.slack.lint.compose:compose-lint-checks", version.ref = "composeLintChecks" }
+
+# WorkManager - https://developer.android.com/topic/libraries/architecture/workmanager
+androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "androidxWork" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -104,13 +103,13 @@ androidx-room = { id = "androidx.room", version.ref = "roomDb" }
 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
+# Metro KSP plugin
+# https://zacsweers.github.io/metro/
+metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+
 # Kotlin linter with built-in formatter
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
-
-# Forked Anvil
-# https://github.com/ZacSweers/anvil/blob/main/FORK.md
-anvil = { id = "dev.zacsweers.anvil", version.ref = "anvil" }
 
 

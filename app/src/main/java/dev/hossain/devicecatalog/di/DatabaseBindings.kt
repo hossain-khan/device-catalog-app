@@ -2,25 +2,25 @@ package dev.hossain.devicecatalog.di
 
 import android.content.Context
 import androidx.room.Room
-import com.squareup.anvil.annotations.ContributesTo
-import com.squareup.anvil.annotations.optional.SingleIn
-import dagger.Module
-import dagger.Provides
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AppDatabase
-import kotlin.jvm.java
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Provides
+import dev.zacsweers.metro.SingleIn
 
-@Module
+@BindingContainer
 @ContributesTo(AppScope::class)
-object DatabaseModule {
+object DatabaseBindings {
     @Provides
     @SingleIn(AppScope::class)
     fun provideDatabase(
-        @ApplicationContext context: Context,
+        context: Context,
     ): AppDatabase =
         Room
             .databaseBuilder(context, AppDatabase::class.java, "device_catalog.db")
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(dropAllTables = true)
             .build()
 
     @Provides

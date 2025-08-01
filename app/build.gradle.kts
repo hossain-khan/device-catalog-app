@@ -6,21 +6,19 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.kotlinter)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.anvil)
+    alias(libs.plugins.metro)
+    alias(libs.plugins.kotlinter)
 }
 
 android {
     namespace = "dev.hossain.devicecatalog"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "dev.hossain.devicecatalog"
-        minSdk = 30
-        targetSdk = 35
+        minSdk = 28
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -50,19 +48,29 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
     }
 
-
     room {
         // https://developer.android.com/jetpack/androidx/releases/room#gradle-plugin
         schemaDirectory("$projectDir/schemas")
+    }
+
+    lint {
+        // Disable Instantiatable lint rule because we use a custom AppComponentFactory
+        // (ComposeAppComponentFactory) for dependency injection. Activities are injected
+        // via constructor parameters and instantiated by our DI framework (Metro) rather
+        // than the Android system's default no-arg constructor mechanism.
+        disable += "Instantiatable"
+    }
+}
+
+kotlin {
+    // See https://kotlinlang.org/docs/gradle-compiler-options.html
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 
@@ -92,14 +100,10 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.room.paging)
+    implementation(libs.javax.inject)
 
-    implementation(libs.dagger)
-    // Dagger KSP support is in Alpha, not available yet. Using KAPT for now.
-    // https://dagger.dev/dev-guide/ksp.html
-    kapt(libs.dagger.compiler)
+    implementation(libs.androidx.work)
 
-    implementation(libs.anvil.annotations)
-    implementation(libs.anvil.annotations.optional)
 
     // CSV parser for Android device catalog
     // https://github.com/hossain-khan/android-device-catalog-parser
@@ -125,8 +129,18 @@ dependencies {
 }
 
 ksp {
-    // Anvil-KSP
-    arg("anvil-ksp-extraContributingAnnotations", "com.slack.circuit.codegen.annotations.CircuitInject")
-    // kotlin-inject-anvil (requires 0.0.3+)
-    arg("kotlin-inject-anvil-contributing-annotations", "com.slack.circuit.codegen.annotations.CircuitInject")
+    // Circuit-KSP for Metro
+    arg("circuit.codegen.mode", "metro")
+    
+    // Metro 0.4.0 feature: Enable scoped inject class hints for better performance
+    // This allows child graphs to depend on parent-scoped dependencies that are unused
+    // See https://zacsweers.github.io/metro/dependency-graphs/
+    arg("metro.enableScopedInjectClassHints", "true")
+}
+
+
+metro {
+    // Enable Metro debug mode for better logging and debugging support
+    // See https://zacsweers.github.io/metro/debugging/
+  debug.set(true)
 }
