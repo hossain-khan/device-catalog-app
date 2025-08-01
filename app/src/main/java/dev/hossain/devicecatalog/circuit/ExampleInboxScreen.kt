@@ -13,29 +13,35 @@ import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import dev.hossain.devicecatalog.circuit.overlay.AppInfoOverlay
+import dev.hossain.devicecatalog.data.Email
+import dev.hossain.devicecatalog.data.ExampleAppVersionService
+import dev.hossain.devicecatalog.data.ExampleEmailRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dev.hossain.devicecatalog.circuit.DetailScreen
-import dev.hossain.devicecatalog.circuit.EmailItem
-import dev.hossain.devicecatalog.data.Email
-import dev.hossain.devicecatalog.data.ExampleAppVersionService
-import dev.hossain.devicecatalog.data.ExampleEmailRepository
-import dev.hossain.devicecatalog.di.AppScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 // See https://slackhq.github.io/circuit/screen/
@@ -50,12 +56,14 @@ data object InboxScreen : Screen {
         data class EmailClicked(
             val emailId: String,
         ) : Event()
+
+        data object InfoClicked : Event()
     }
 }
 
 // See https://slackhq.github.io/circuit/presenter/
+@Inject
 class InboxPresenter
-    @AssistedInject
     constructor(
         @Assisted private val navigator: Navigator,
         private val emailRepository: ExampleEmailRepository,
@@ -74,13 +82,17 @@ class InboxPresenter
                 when (event) {
                     // Navigate to the detail screen when an email is clicked
                     is InboxScreen.Event.EmailClicked -> navigator.goTo(DetailScreen(event.emailId))
+                    // Show app info overlay when info button is clicked
+                    InboxScreen.Event.InfoClicked -> {
+                        // Overlay will be handled in the UI layer
+                    }
                 }
             }
         }
 
         @CircuitInject(InboxScreen::class, AppScope::class)
         @AssistedFactory
-        fun interface Factory {
+        interface Factory {
             fun create(navigator: Navigator): InboxPresenter
         }
     }
@@ -92,7 +104,31 @@ fun Inbox(
     state: InboxScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier, topBar = { TopAppBar(title = { Text("Inbox") }) }) { innerPadding ->
+    val overlayHost = LocalOverlayHost.current
+    val coroutineScope = rememberCoroutineScope()
+
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = { Text("Inbox") },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                overlayHost.show(AppInfoOverlay())
+                            }
+                        },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "App Info",
+                        )
+                    }
+                },
+            )
+        },
+    ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
             items(state.emails) { email ->
                 EmailItem(

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
-import dev.hossain.devicecatalog.di.AppScope
+import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = HomeScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)

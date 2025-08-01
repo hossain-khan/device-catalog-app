@@ -6,12 +6,14 @@ import androidx.paging.PagingData
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceEntity
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesTo
+import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
+@Inject
 class AndroidDeviceRepository
-    @Inject
     constructor(
         private val deviceDao: AndroidDeviceDao,
     ) {

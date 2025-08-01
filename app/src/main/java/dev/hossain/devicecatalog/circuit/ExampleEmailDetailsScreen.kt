@@ -37,19 +37,19 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.hossain.devicecatalog.data.Email
+import dev.hossain.devicecatalog.data.ExampleEmailRepository
+import dev.hossain.devicecatalog.data.ExampleEmailValidator
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dev.hossain.devicecatalog.data.Email
-import dev.hossain.devicecatalog.data.ExampleEmailRepository
-import dev.hossain.devicecatalog.data.ExampleEmailValidator
-import dev.hossain.devicecatalog.di.AppScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.Inject
 import kotlinx.parcelize.Parcelize
 
 // See https://slackhq.github.io/circuit/screen/
@@ -68,8 +68,8 @@ data class DetailScreen(
 }
 
 // See https://slackhq.github.io/circuit/presenter/
+@Inject
 class DetailPresenter
-    @AssistedInject
     constructor(
         @Assisted private val navigator: Navigator,
         @Assisted private val screen: DetailScreen,
@@ -93,7 +93,7 @@ class DetailPresenter
 
         @CircuitInject(DetailScreen::class, AppScope::class)
         @AssistedFactory
-        fun interface Factory {
+        interface Factory {
             fun create(
                 navigator: Navigator,
                 screen: DetailScreen,
