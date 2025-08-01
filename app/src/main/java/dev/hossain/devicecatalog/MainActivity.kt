@@ -7,9 +7,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.runtime.remember
-import dev.hossain.devicecatalog.circuit.InboxScreen
-import dev.hossain.devicecatalog.di.ActivityKey
-import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
@@ -18,6 +15,9 @@ import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
+import dev.hossain.devicecatalog.circuit.InboxScreen
+import dev.hossain.devicecatalog.di.ActivityKey
+import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject

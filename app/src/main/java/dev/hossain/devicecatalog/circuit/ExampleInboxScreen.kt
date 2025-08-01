@@ -26,10 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import dev.hossain.devicecatalog.circuit.overlay.AppInfoOverlay
-import dev.hossain.devicecatalog.data.Email
-import dev.hossain.devicecatalog.data.ExampleAppVersionService
-import dev.hossain.devicecatalog.data.ExampleEmailRepository
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.overlay.LocalOverlayHost
 import com.slack.circuit.runtime.CircuitUiEvent
@@ -37,6 +33,10 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.devicecatalog.circuit.overlay.AppInfoOverlay
+import dev.hossain.devicecatalog.data.Email
+import dev.hossain.devicecatalog.data.ExampleAppVersionService
+import dev.hossain.devicecatalog.data.ExampleEmailRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
