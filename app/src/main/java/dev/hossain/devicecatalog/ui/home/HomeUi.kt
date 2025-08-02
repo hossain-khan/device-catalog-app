@@ -23,7 +23,12 @@ fun DeviceCatalogHome(
     state: HomeScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(modifier = modifier, topBar = { TopAppBar(title = { Text("Home") }) }) { innerPadding ->
+    Scaffold(
+        modifier = modifier, 
+        topBar = { 
+            TopAppBar(title = { Text("Device Catalog") }) 
+        }
+    ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
             items(state.items) { item ->
                 DeviceItemComposable(
