@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.devicecatalog.ui.about.AboutScreen
+import dev.hossain.devicecatalog.ui.devices.DevicesScreen
 import dev.hossain.devicecatalog.ui.home.HomeScreen
 
 /**
@@ -29,7 +31,7 @@ sealed class NavigationDestination(
         route = "devices",
         title = "Devices",
         icon = Icons.Default.List,
-        screen = HomeScreen, // TODO: Create DevicesScreen
+        screen = DevicesScreen,
     )
 
     data object Search : NavigationDestination(
@@ -43,7 +45,7 @@ sealed class NavigationDestination(
         route = "about",
         title = "About",
         icon = Icons.Default.Info,
-        screen = HomeScreen, // TODO: Create AboutScreen
+        screen = AboutScreen,
     )
 
     companion object {
