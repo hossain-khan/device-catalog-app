@@ -1,6 +1,5 @@
 package dev.hossain.devicecatalog.ui.home
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
@@ -15,6 +14,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
+import timber.log.Timber
 
 @Inject
 class HomePresenter
@@ -31,7 +31,7 @@ class HomePresenter
                 }
             }
 
-            Log.d("HomePresenter", "Application version: ${appVersionService.getApplicationVersion()}")
+            Timber.d("Application version: ${appVersionService.getApplicationVersion()}")
 
             return HomeScreen.State(items) { event ->
                 when (event) {

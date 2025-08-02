@@ -11,6 +11,7 @@ import androidx.work.workDataOf
 import dev.hossain.devicecatalog.di.AppGraph
 import dev.hossain.devicecatalog.work.SampleWorker
 import dev.zacsweers.metro.createGraphFactory
+import timber.log.Timber
 
 /**
  * Application class for the app with key initializations.
@@ -27,6 +28,7 @@ class DeviceCatalogApp :
 
     override fun onCreate() {
         super.onCreate()
+        Timber.plant(Timber.DebugTree())
         scheduleBackgroundWork()
     }
 

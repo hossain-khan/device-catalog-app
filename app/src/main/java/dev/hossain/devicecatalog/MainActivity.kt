@@ -17,6 +17,7 @@ import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.devicecatalog.circuit.InboxScreen
 import dev.hossain.devicecatalog.di.ActivityKey
+import dev.hossain.devicecatalog.ui.home.HomeScreen
 import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
@@ -38,7 +39,7 @@ class MainActivity
             setContent {
                 DeviceCatalogAppTheme {
                     // See https://slackhq.github.io/circuit/navigation/
-                    val backStack = rememberSaveableBackStack(root = InboxScreen)
+                    val backStack = rememberSaveableBackStack(root = HomeScreen)
                     val navigator = rememberCircuitNavigator(backStack)
 
                     // See https://slackhq.github.io/circuit/circuit-content/

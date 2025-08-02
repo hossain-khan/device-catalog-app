@@ -111,6 +111,9 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.json)
 
+    // Timber for logging
+    implementation(libs.timber)
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Linting
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
