@@ -12,12 +12,34 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
       - name: set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '22'
           distribution: 'temurin'
           cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: 36
+          # Auto-accept all SDK licenses
+          cmdline-tools-version: latest
+
+      - name: Accept Android SDK licenses
+        run: |
+          echo "Accepting Android SDK licenses..."
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --update || true
+
+      - name: Install required Android SDK components
+        run: |
+          echo "Installing Android SDK components..."
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;34.0.0" || echo "Some SDK components may not be available"
 
       # Automatic gradle caching using `actions/cache@v4`
       # https://github.com/gradle/actions/tree/main/setup-gradle

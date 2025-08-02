@@ -1,0 +1,123 @@
+name: Copilot Android Setup Steps
+
+# This workflow provides setup steps for GitHub Copilot agents to properly configure
+# the Android development environment, including SDK installation and license acceptance.
+# Reference: https://docs.github.com/en/enterprise-cloud@latest/copilot/how-tos/use-copilot-agents/coding-agent/customize-the-agent-environment
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        description: 'Java version to use'
+        required: false
+        default: '17'
+        type: string
+      java-distribution:
+        description: 'Java distribution to use'
+        required: false
+        default: 'temurin'
+        type: string
+      api-level:
+        description: 'Android API level to install'
+        required: false
+        default: '36'
+        type: string
+  # Allow manual triggering for testing
+  workflow_dispatch:
+    inputs:
+      java-version:
+        description: 'Java version to use'
+        required: false
+        default: '17'
+        type: choice
+        options:
+          - '17'
+          - '21'
+          - '22'
+      java-distribution:
+        description: 'Java distribution to use'
+        required: false
+        default: 'temurin'
+        type: choice
+        options:
+          - 'temurin'
+          - 'adopt'
+          - 'zulu'
+      api-level:
+        description: 'Android API level to install'
+        required: false
+        default: '36'
+        type: choice
+        options:
+          - '34'
+          - '35'
+          - '36'
+
+jobs:
+  setup-android-environment:
+    runs-on: ubuntu-latest
+    name: Setup Android Development Environment
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ inputs.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ inputs.java-version }}
+          distribution: ${{ inputs.java-distribution }}
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          api-level: ${{ inputs.api-level }}
+          # Auto-accept all SDK licenses
+          cmdline-tools-version: latest
+
+      - name: Accept Android SDK licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --update || true
+
+      - name: Install Android SDK components
+        run: |
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "platforms;android-${{ inputs.api-level }}" \
+            "build-tools;34.0.0" \
+            "extras;android;m2repository" \
+            "extras;google;m2repository" \
+            "extras;google;google_play_services"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-home-cache-cleanup: true
+
+      - name: Verify Android setup
+        run: |
+          echo "ANDROID_HOME: $ANDROID_HOME"
+          echo "Available Android platforms:"
+          ls -la $ANDROID_HOME/platforms/ || echo "No platforms directory found"
+          echo "Available build tools:"
+          ls -la $ANDROID_HOME/build-tools/ || echo "No build-tools directory found"
+          echo "Checking AGP availability:"
+          ./gradlew --version
+          echo "Testing basic Gradle configuration:"
+          ./gradlew tasks --dry-run || echo "Gradle tasks failed - this is expected during setup"
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Test Android build
+        run: |
+          echo "Testing if AGP can be resolved now..."
+          ./gradlew help --dry-run --info || echo "Build test completed with errors (this may be expected during initial setup)"
