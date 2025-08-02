@@ -13,12 +13,12 @@ import androidx.room.Index
             parentColumns = ["_id"],
             childColumns = ["device_id"],
             onDelete = ForeignKey.CASCADE,
-            onUpdate = ForeignKey.CASCADE
-        )
+            onUpdate = ForeignKey.CASCADE,
+        ),
     ],
-    indices = [Index(value = ["device_id"])]
+    indices = [Index(value = ["device_id"])],
 )
 data class DeviceAbi(
     val device_id: Long,
-    val abi: String
+    val abi: String,
 )
