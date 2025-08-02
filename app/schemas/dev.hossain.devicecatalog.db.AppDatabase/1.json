@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3be6528434b26cf4ed22b655d7d22614",
+    "identityHash": "ba7fecd1f3d76a7fea8215ef0462dc70",
     "entities": [
       {
         "tableName": "android_devices",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brand` TEXT NOT NULL, `device` TEXT NOT NULL, `manufacturer` TEXT NOT NULL, `modelName` TEXT NOT NULL, `ram` TEXT NOT NULL, `formFactor` TEXT NOT NULL, `processorName` TEXT NOT NULL, `gpu` TEXT NOT NULL, `screenSizes` TEXT NOT NULL, `screenDensities` TEXT NOT NULL, `abis` TEXT NOT NULL, `sdkVersions` TEXT NOT NULL, `openGlEsVersions` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brand` TEXT NOT NULL, `device` TEXT NOT NULL, `manufacturer` TEXT NOT NULL, `modelName` TEXT NOT NULL, `ram` TEXT NOT NULL, `formFactor` TEXT NOT NULL, `processorName` TEXT NOT NULL, `gpu` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -61,36 +61,6 @@
             "columnName": "gpu",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "screenSizes",
-            "columnName": "screenSizes",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "screenDensities",
-            "columnName": "screenDensities",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "abis",
-            "columnName": "abis",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sdkVersions",
-            "columnName": "sdkVersions",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "openGlEsVersions",
-            "columnName": "openGlEsVersions",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -98,15 +68,202 @@
           "columnNames": [
             "id"
           ]
+        }
+      },
+      {
+        "tableName": "device_abi",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `abi` TEXT NOT NULL, PRIMARY KEY(`device_id`, `abi`), FOREIGN KEY(`device_id`) REFERENCES `android_devices`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "abi",
+            "columnName": "abi",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "abi"
+          ]
         },
-        "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "android_devices",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_opengl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `opengl_version` TEXT NOT NULL, PRIMARY KEY(`device_id`, `opengl_version`), FOREIGN KEY(`device_id`) REFERENCES `android_devices`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "opengl_version",
+            "columnName": "opengl_version",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "opengl_version"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "android_devices",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_screen_density",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `screen_density` INTEGER NOT NULL, PRIMARY KEY(`device_id`, `screen_density`), FOREIGN KEY(`device_id`) REFERENCES `android_devices`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screen_density",
+            "columnName": "screen_density",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "screen_density"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "android_devices",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_screen_size",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `screen_size` TEXT NOT NULL, PRIMARY KEY(`device_id`, `screen_size`), FOREIGN KEY(`device_id`) REFERENCES `android_devices`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screen_size",
+            "columnName": "screen_size",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "screen_size"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "android_devices",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_sdk",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `sdk_version` INTEGER NOT NULL, PRIMARY KEY(`device_id`, `sdk_version`), FOREIGN KEY(`device_id`) REFERENCES `android_devices`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sdk_version",
+            "columnName": "sdk_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "sdk_version"
+          ]
+        },
+        "foreignKeys": [
+          {
+            "table": "android_devices",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
-    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3be6528434b26cf4ed22b655d7d22614')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba7fecd1f3d76a7fea8215ef0462dc70')"
     ]
   }
 }
