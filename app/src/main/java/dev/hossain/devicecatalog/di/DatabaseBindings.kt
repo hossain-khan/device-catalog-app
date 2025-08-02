@@ -19,6 +19,7 @@ object DatabaseBindings {
         Room
             .databaseBuilder(context, AppDatabase::class.java, "device_catalog.db")
             .fallbackToDestructiveMigration(dropAllTables = true)
+            .createFromAsset("devices.db")
             .build()
 
     @Provides

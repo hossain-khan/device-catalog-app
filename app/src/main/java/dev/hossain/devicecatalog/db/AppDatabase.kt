@@ -10,7 +10,14 @@ import androidx.room.RoomDatabase
  * - https://developer.android.com/training/data-storage/room
  */
 @Database(
-    entities = [AndroidDeviceEntity::class],
+    entities = [
+        AndroidDeviceEntity::class,
+        DeviceAbi::class,
+        DeviceOpenGl::class,
+        DeviceScreenDensity::class,
+        DeviceScreenSize::class,
+        DeviceSdkVersion::class
+    ],
     version = 1,
     exportSchema = true,
     // https://developer.android.com/training/data-storage/room/migrating-db-versions
