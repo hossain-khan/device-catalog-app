@@ -43,6 +43,14 @@ import dev.hossain.devicecatalog.ui.devices.components.rememberDeviceListLayoutC
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
 
+/**
+ * Creates a unique key for a device by combining multiple fields to avoid duplicate keys.
+ * Uses manufacturer, device name, and model name to ensure uniqueness.
+ */
+private fun createDeviceKey(device: dev.hossain.android.catalogparser.models.AndroidDevice): String {
+    return "${device.manufacturer}-${device.device}-${device.modelName}"
+}
+
 @CircuitInject(screen = DevicesScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -186,7 +194,7 @@ private fun PaginatedDeviceList(
             ) {
                 items(
                     count = lazyPagingItems.itemCount,
-                    key = lazyPagingItems.itemKey { device -> device.modelName }
+                    key = lazyPagingItems.itemKey { device -> createDeviceKey(device) }
                 ) { index ->
                     val device = lazyPagingItems[index]
                     if (device != null) {
@@ -241,7 +249,7 @@ private fun PaginatedDeviceList(
             ) {
                 items(
                     count = lazyPagingItems.itemCount,
-                    key = lazyPagingItems.itemKey { device -> device.modelName }
+                    key = lazyPagingItems.itemKey { device -> createDeviceKey(device) }
                 ) { index ->
                     val device = lazyPagingItems[index]
                     if (device != null) {
@@ -303,7 +311,7 @@ private fun RegularDeviceList(
             ) {
                 items(
                     items = state.devices,
-                    key = { device -> device.modelName }
+                    key = { device -> createDeviceKey(device) }
                 ) { device ->
                     DeviceCard(
                         device = device,
@@ -325,7 +333,7 @@ private fun RegularDeviceList(
             ) {
                 items(
                     items = state.devices,
-                    key = { device -> device.modelName }
+                    key = { device -> createDeviceKey(device) }
                 ) { device ->
                     DeviceCard(
                         device = device,
