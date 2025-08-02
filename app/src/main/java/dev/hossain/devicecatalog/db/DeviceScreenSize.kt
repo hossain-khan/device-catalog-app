@@ -2,6 +2,7 @@ package dev.hossain.devicecatalog.db
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "device_screen_size",
@@ -9,12 +10,13 @@ import androidx.room.ForeignKey
     foreignKeys = [
         ForeignKey(
             entity = AndroidDeviceEntity::class,
-            parentColumns = ["id"],
+            parentColumns = ["_id"],
             childColumns = ["device_id"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["device_id"])]
 )
 data class DeviceScreenSize(
     val device_id: Long,

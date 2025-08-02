@@ -21,13 +21,13 @@ interface AndroidDeviceDao {
     @Update
     suspend fun updateDevice(device: AndroidDeviceEntity)
 
-    @Query("SELECT * FROM android_devices WHERE id = :deviceId")
+    @Query("SELECT * FROM device WHERE _id = :deviceId")
     suspend fun getDeviceById(deviceId: Long): AndroidDeviceEntity?
 
-    @Query("DELETE FROM android_devices WHERE id = :deviceId")
+    @Query("DELETE FROM device WHERE _id = :deviceId")
     suspend fun deleteDevice(deviceId: Long)
 
-    @Query("DELETE FROM android_devices")
+    @Query("DELETE FROM device")
     suspend fun deleteAllDevices()
 
     // ----------------------------------------------------------------
@@ -35,15 +35,15 @@ interface AndroidDeviceDao {
     // ----------------------------------------------------------------
 
     @Transaction
-    @Query("SELECT * FROM android_devices")
+    @Query("SELECT * FROM device")
     fun getAllDevicesWithRelations(): Flow<List<AndroidDeviceWithRelations>>
 
     @Transaction
-    @Query("SELECT * FROM android_devices WHERE id = :deviceId")
+    @Query("SELECT * FROM device WHERE _id = :deviceId")
     suspend fun getDeviceWithRelationsById(deviceId: Long): AndroidDeviceWithRelations?
 
     @Transaction
-    @Query("SELECT * FROM android_devices WHERE manufacturer LIKE :search OR modelName LIKE :search")
+    @Query("SELECT * FROM device WHERE manufacturer LIKE :search OR model_name LIKE :search")
     fun searchDevicesWithRelations(search: String): Flow<List<AndroidDeviceWithRelations>>
 
     // ----------------------------------------------------------------
@@ -51,11 +51,11 @@ interface AndroidDeviceDao {
     // ----------------------------------------------------------------
 
     @Transaction
-    @Query("SELECT * FROM android_devices ORDER BY manufacturer ASC")
+    @Query("SELECT * FROM device ORDER BY manufacturer ASC")
     fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations>
 
     @Transaction
-    @Query("SELECT * FROM android_devices WHERE manufacturer LIKE :search OR modelName LIKE :search ORDER BY manufacturer ASC")
+    @Query("SELECT * FROM device WHERE manufacturer LIKE :search OR model_name LIKE :search ORDER BY manufacturer ASC")
     fun getPagedDevicesWithRelationsBySearch(search: String): PagingSource<Int, AndroidDeviceWithRelations>
 
     // ----------------------------------------------------------------
