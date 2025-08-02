@@ -48,7 +48,7 @@ import timber.log.Timber
  * Uses manufacturer, device name, and model name to ensure uniqueness.
  */
 private fun createDeviceKey(device: dev.hossain.android.catalogparser.models.AndroidDevice): String {
-    return "${device.manufacturer}-${device.device}-${device.modelName}"
+    return "${device.manufacturer}-${device.device}-${device.modelName}-${device.hashCode()}"
 }
 
 @CircuitInject(screen = DevicesScreen::class, scope = AppScope::class)
