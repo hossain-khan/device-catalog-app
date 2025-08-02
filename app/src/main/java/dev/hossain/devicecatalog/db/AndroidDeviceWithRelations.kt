@@ -13,31 +13,31 @@ data class AndroidDeviceWithRelations(
     @Embedded val device: AndroidDeviceEntity,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "_id",
         entityColumn = "device_id"
     )
     val abis: List<DeviceAbi>,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "_id",
         entityColumn = "device_id"
     )
     val openGlVersions: List<DeviceOpenGl>,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "_id",
         entityColumn = "device_id"
     )
     val screenDensities: List<DeviceScreenDensity>,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "_id",
         entityColumn = "device_id"
     )
     val screenSizes: List<DeviceScreenSize>,
 
     @Relation(
-        parentColumn = "id",
+        parentColumn = "_id",
         entityColumn = "device_id"
     )
     val sdkVersions: List<DeviceSdkVersion>
