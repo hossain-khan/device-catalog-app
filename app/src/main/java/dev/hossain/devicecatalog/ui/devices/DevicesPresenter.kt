@@ -14,7 +14,6 @@ import dev.zacsweers.metro.Inject
 class DevicesPresenter(
     private val deviceRepository: AndroidDeviceRepository,
 ) : Presenter<DevicesScreen.State> {
-
     @Composable
     override fun present(): DevicesScreen.State {
         val devices by deviceRepository.getAllDevices().collectAsState(initial = emptyList())

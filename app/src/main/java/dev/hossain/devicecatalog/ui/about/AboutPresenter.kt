@@ -9,10 +9,9 @@ import dev.zacsweers.metro.Inject
 @CircuitInject(screen = AboutScreen::class, scope = AppScope::class)
 @Inject
 class AboutPresenter : Presenter<AboutScreen.State> {
-
     @Composable
-    override fun present(): AboutScreen.State {
-        return AboutScreen.State(
+    override fun present(): AboutScreen.State =
+        AboutScreen.State(
             appVersion = "1.0.0",
             eventSink = { event ->
                 when (event) {
@@ -22,5 +21,4 @@ class AboutPresenter : Presenter<AboutScreen.State> {
                 }
             },
         )
-    }
 }

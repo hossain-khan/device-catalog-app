@@ -24,10 +24,10 @@ fun DeviceCatalogHome(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = modifier, 
-        topBar = { 
-            TopAppBar(title = { Text("Device Catalog") }) 
-        }
+        modifier = modifier,
+        topBar = {
+            TopAppBar(title = { Text("Device Catalog") })
+        },
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding)) {
             items(state.items) { item ->

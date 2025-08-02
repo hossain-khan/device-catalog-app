@@ -15,7 +15,10 @@ data object DevicesScreen : Screen {
     ) : CircuitUiState
 
     sealed class Event : CircuitUiEvent {
-        data class DeviceClicked(val deviceId: String) : Event()
+        data class DeviceClicked(
+            val deviceId: String,
+        ) : Event()
+
         data object RefreshDevices : Event()
     }
 }

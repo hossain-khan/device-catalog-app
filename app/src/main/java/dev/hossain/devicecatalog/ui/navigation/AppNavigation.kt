@@ -3,6 +3,8 @@ package dev.hossain.devicecatalog.ui.navigation
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -24,9 +26,10 @@ import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.devicecatalog.ui.home.HomeScreen
+import timber.log.Timber
 
 /**
- * Responsive navigation component that shows bottom navigation on phones 
+ * Responsive navigation component that shows bottom navigation on phones
  * and navigation rail on tablets/larger screens.
  */
 @Composable
@@ -36,7 +39,10 @@ fun AppNavigation(
 ) {
     val backStack = rememberSaveableBackStack(root = HomeScreen)
     val navigator = rememberCircuitNavigator(backStack)
-    var selectedDestination by rememberSaveable { mutableStateOf(NavigationDestination.Home) }
+    // var selectedDestination : NavigationDestination by rememberSaveable { mutableStateOf(NavigationDestination.AboutHome) }
+    var selectedDestination: NavigationDestination by rememberSaveable {
+        mutableStateOf(NavigationDestination.destinations.first())
+    }
     val useNavigationRail = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
 
     if (useNavigationRail) {
@@ -52,9 +58,10 @@ fun AppNavigation(
                 navigator = navigator,
                 backStack = backStack,
                 modifier = Modifier.weight(1f),
-                decoratorFactory = remember(navigator) {
-                    GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                },
+                decoratorFactory =
+                    remember(navigator) {
+                        GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                    },
             )
         }
     } else {
@@ -74,9 +81,10 @@ fun AppNavigation(
                 navigator = navigator,
                 backStack = backStack,
                 modifier = Modifier.padding(innerPadding),
-                decoratorFactory = remember(navigator) {
-                    GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                },
+                decoratorFactory =
+                    remember(navigator) {
+                        GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                    },
             )
         }
     }
@@ -95,7 +103,7 @@ private fun AppNavigationRail(
                 onClick = { onNavigationDestinationClicked(destination) },
                 icon = {
                     Icon(
-                        imageVector = destination.icon,
+                        imageVector = Icons.Default.Home, // destination.icon,
                         contentDescription = destination.title,
                     )
                 },
@@ -112,7 +120,8 @@ private fun AppBottomNavigation(
     modifier: Modifier = Modifier,
 ) {
     NavigationBar(modifier = modifier) {
-        NavigationDestination.destinations.forEach { destination ->
+        NavigationDestination.destinations.forEach { destination: NavigationDestination ->
+            // Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
             NavigationBarItem(
                 selected = selectedDestination == destination,
                 onClick = { onNavigationDestinationClicked(destination) },
@@ -123,6 +132,7 @@ private fun AppBottomNavigation(
                     )
                 },
                 label = { Text(destination.title) },
+                // label = { Text("Home") },
             )
         }
     }
