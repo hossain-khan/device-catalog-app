@@ -19,7 +19,6 @@ class AndroidDeviceRepository
     constructor(
         private val deviceDao: AndroidDeviceDao,
     ) {
-
         /**
          * Get paged list of devices with relationships.
          * Returns the entity with relations for UI display.
@@ -27,11 +26,12 @@ class AndroidDeviceRepository
         fun getPagedDevices(): Flow<PagingData<AndroidDeviceWithRelations>> {
             Timber.d("Creating paged devices flow")
             return Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = true,
-                    maxSize = 100,
-                ),
+                config =
+                    PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = true,
+                        maxSize = 100,
+                    ),
             ) {
                 deviceDao.getPagedDevicesWithRelations()
             }.flow
@@ -44,11 +44,12 @@ class AndroidDeviceRepository
             val searchQuery = "%$query%"
             Timber.d("Creating paged devices flow with search: $query")
             return Pager(
-                config = PagingConfig(
-                    pageSize = 20,
-                    enablePlaceholders = true,
-                    maxSize = 100,
-                ),
+                config =
+                    PagingConfig(
+                        pageSize = 20,
+                        enablePlaceholders = true,
+                        maxSize = 100,
+                    ),
             ) {
                 deviceDao.getPagedDevicesWithRelationsBySearch(searchQuery)
             }.flow
@@ -70,9 +71,11 @@ class AndroidDeviceRepository
          */
         suspend fun getDeviceById(deviceId: Long): AndroidDevice? {
             Timber.d("Getting device with ID: $deviceId")
-            return deviceDao.getDeviceWithRelationsById(deviceId)?.also {
-                Timber.d("Found device: ${it.device.manufacturer} ${it.device.modelName}")
-            }?.toModel()
+            return deviceDao
+                .getDeviceWithRelationsById(deviceId)
+                ?.also {
+                    Timber.d("Found device: ${it.device.manufacturer} ${it.device.modelName}")
+                }?.toModel()
         }
 
         /**

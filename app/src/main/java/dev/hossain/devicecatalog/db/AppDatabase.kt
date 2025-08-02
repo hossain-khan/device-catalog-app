@@ -16,7 +16,7 @@ import androidx.room.RoomDatabase
         DeviceOpenGl::class,
         DeviceScreenDensity::class,
         DeviceScreenSize::class,
-        DeviceSdkVersion::class
+        DeviceSdkVersion::class,
     ],
     version = 1,
     exportSchema = true,
