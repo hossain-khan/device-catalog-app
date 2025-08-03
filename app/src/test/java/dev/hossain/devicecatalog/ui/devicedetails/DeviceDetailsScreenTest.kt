@@ -14,16 +14,10 @@ class DeviceDetailsScreenTest {
     fun `DeviceDetailsScreen should be created with correct properties`() {
         val deviceDetailsScreen =
             DeviceDetailsScreen(
-                brand = "google",
-                device = "coral",
-                manufacturer = "Google",
-                modelName = "Pixel 4",
+                deviceId = 101L,
             )
 
-        assertEquals("google", deviceDetailsScreen.brand)
-        assertEquals("coral", deviceDetailsScreen.device)
-        assertEquals("Google", deviceDetailsScreen.manufacturer)
-        assertEquals("Pixel 4", deviceDetailsScreen.modelName)
+        assertEquals(101L, deviceDetailsScreen.deviceId)
     }
 
     @Test
