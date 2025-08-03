@@ -16,11 +16,11 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.zacsweers.metro.AppScope
 
-@CircuitInject(screen = HomeScreen::class, scope = AppScope::class)
+@CircuitInject(screen = DeviceStatsScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeviceCatalogHome(
-    state: HomeScreen.State,
+    state: DeviceStatsScreen.State,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -35,7 +35,7 @@ fun DeviceCatalogHome(
                     item = item,
                     onClick = {
                         // TODO fix click event later
-                        state.eventSink(HomeScreen.Event.ItemClicked(item.modelName))
+                        state.eventSink(DeviceStatsScreen.Event.ItemClicked(item.modelName))
                     },
                 )
             }

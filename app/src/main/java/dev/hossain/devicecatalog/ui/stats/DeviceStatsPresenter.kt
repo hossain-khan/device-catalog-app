@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.home
+package dev.hossain.devicecatalog.ui.stats
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,14 +17,14 @@ import dev.zacsweers.metro.Inject
 import timber.log.Timber
 
 @Inject
-class HomePresenter
+class DeviceStatsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val homeRepository: AndroidDeviceRepository,
         private val appVersionService: ExampleAppVersionService,
-    ) : Presenter<HomeScreen.State> {
+    ) : Presenter<DeviceStatsScreen.State> {
         @Composable
-        override fun present(): HomeScreen.State {
+        override fun present(): DeviceStatsScreen.State {
             val items by produceState<List<AndroidDevice>>(initialValue = emptyList()) {
                 homeRepository.getAllDevices().collect {
                     value = it
@@ -33,16 +33,16 @@ class HomePresenter
 
             Timber.d("Application version: ${appVersionService.getApplicationVersion()}")
 
-            return HomeScreen.State(items) { event ->
+            return DeviceStatsScreen.State(items) { event ->
                 when (event) {
-                    is HomeScreen.Event.ItemClicked -> navigator.goTo(DetailScreen(event.itemId))
+                    is DeviceStatsScreen.Event.ItemClicked -> navigator.goTo(DetailScreen(event.itemId))
                 }
             }
         }
 
-        @CircuitInject(HomeScreen::class, AppScope::class)
+        @CircuitInject(DeviceStatsScreen::class, AppScope::class)
         @AssistedFactory
         interface Factory {
-            fun create(navigator: Navigator): HomePresenter
+            fun create(navigator: Navigator): DeviceStatsPresenter
         }
     }

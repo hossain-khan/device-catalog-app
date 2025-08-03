@@ -7,7 +7,7 @@ import dev.hossain.android.catalogparser.models.AndroidDevice
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data object HomeScreen : Screen {
+data object DeviceStatsScreen : Screen {
     data class State(
         val items: List<AndroidDevice>,
         val eventSink: (Event) -> Unit,
