@@ -1,12 +1,18 @@
 [versions]
 activityCompose = "1.10.1"
-androidDeviceCatalogParser = "1.5"
+
+# The custom parser library for parsing the Android Device Catalog in CSV.
+# https://github.com/hossain-khan/android-device-catalog-parser
+androidDeviceCatalogParser = "1.6"
+
 composeLintChecks = "1.4.2"
 
 androidxPaging = "3.3.6"
+
 # https://developer.android.com/build/releases/gradle-plugin
-agp = "8.12.0" # DO NOT DOWNGRADE THIS VERSION
-circuit = "0.29.1"
+# https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility
+agp = "8.11.1" # DO NOT DOWNGRADE THIS VERSION
+circuit = "0.30.0"
 composeBom = "2025.07.00"
 coreKtx = "1.16.0"
 espressoCore = "3.7.0"
@@ -22,7 +28,7 @@ ksp = "2.2.0-2.0.2"
 # https://github.com/pinterest/ktlint
 kotlinter = "5.2.0"
 lifecycleRuntimeKtx = "2.9.2"
-metro = "0.5.3"
+metro = "0.5.5"
 androidxWork = "2.10.3"
 
 # Room Database
