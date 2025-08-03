@@ -7,6 +7,7 @@ import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceEntity
 import dev.hossain.devicecatalog.db.AndroidDeviceWithRelations
+import dev.hossain.devicecatalog.model.DeviceInfo
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Inject
@@ -58,7 +59,7 @@ class AndroidDeviceRepository
         /**
          * Get all devices with relationships as domain models.
          */
-        fun getAllDevices(): Flow<List<AndroidDevice>> {
+        fun getAllDevices(): Flow<List<DeviceInfo>> {
             Timber.d("Getting all devices with relationships")
             return deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
                 Timber.d("Retrieved ${devicesWithRelations.size} devices from database")
@@ -69,7 +70,7 @@ class AndroidDeviceRepository
         /**
          * Get a specific device by ID with all its relationships.
          */
-        suspend fun getDeviceById(deviceId: Long): AndroidDevice? {
+        suspend fun getDeviceById(deviceId: Long): DeviceInfo? {
             Timber.d("Getting device with ID: $deviceId")
             return deviceDao
                 .getDeviceWithRelationsById(deviceId)
@@ -81,7 +82,7 @@ class AndroidDeviceRepository
         /**
          * Search devices by manufacturer or model name.
          */
-        fun searchDevices(query: String): Flow<List<AndroidDevice>> {
+        fun searchDevices(query: String): Flow<List<DeviceInfo>> {
             val searchQuery = "%$query%"
             Timber.d("Searching devices with query: $query")
             return deviceDao.searchDevicesWithRelations(searchQuery).map { devicesWithRelations ->
@@ -98,7 +99,7 @@ class AndroidDeviceRepository
             device: String,
             manufacturer: String,
             modelName: String,
-        ): AndroidDevice? {
+        ): DeviceInfo? {
             Timber.d("Getting device by properties: brand=$brand, device=$device, manufacturer=$manufacturer, modelName=$modelName")
             return try {
                 deviceDao
@@ -150,7 +151,7 @@ class AndroidDeviceRepository
          * Insert multiple devices with all their related data.
          * @param devices List of domain model devices to insert
          */
-        suspend fun insertDevices(devices: List<AndroidDevice>) {
+        suspend fun insertDevices(devices: List<DeviceInfo>) {
             if (devices.isEmpty()) {
                 Timber.w("Attempted to insert empty device list")
                 return
@@ -158,7 +159,7 @@ class AndroidDeviceRepository
 
             Timber.i("Inserting ${devices.size} devices with relationships")
             try {
-                val devicesWithRelations = devices.map { AndroidDeviceWithRelations.fromModel(it) }
+                val devicesWithRelations = devices.map { AndroidDeviceWithRelations.fromModel(it.androidDevice) }
                 deviceDao.insertDevicesWithRelations(devicesWithRelations)
                 Timber.i("Successfully inserted ${devices.size} devices")
             } catch (e: Exception) {
@@ -238,13 +239,13 @@ class AndroidDeviceRepository
                 val totalDevices = devices.size
 
                 // Count unique form factors
-                val formFactors = devices.groupingBy { it.formFactor }.eachCount()
+                val formFactors = devices.groupingBy { it.androidDevice.formFactor }.eachCount()
                 val totalFormFactors = formFactors.size
 
                 // Get top 10 manufacturers by device count
                 val topManufacturers =
                     devices
-                        .groupingBy { it.manufacturer }
+                        .groupingBy { it.androidDevice.manufacturer }
                         .eachCount()
                         .toList()
                         .sortedByDescending { it.second }

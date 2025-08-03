@@ -2,8 +2,6 @@ package dev.hossain.devicecatalog.ui.devices
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +12,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -37,6 +34,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.model.DeviceInfo
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCard
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCardSkeleton
 import dev.hossain.devicecatalog.ui.devices.components.EmptyDeviceState
@@ -48,8 +46,8 @@ import timber.log.Timber
  * Creates a unique key for a device by combining multiple fields to avoid duplicate keys.
  * Uses manufacturer, device name, and model name to ensure uniqueness.
  */
-private fun createDeviceKey(device: dev.hossain.android.catalogparser.models.AndroidDevice): String =
-    "${device.manufacturer}-${device.device}-${device.modelName}-${device.hashCode()}"
+private fun createDeviceKey(deviceInfo: DeviceInfo): String =
+    "${deviceInfo.id}-${deviceInfo.hashCode()}"
 
 @CircuitInject(screen = DevicesScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -201,12 +199,12 @@ private fun PaginatedDeviceList(
                     count = lazyPagingItems.itemCount,
                     key = lazyPagingItems.itemKey { device -> createDeviceKey(device) },
                 ) { index ->
-                    val device = lazyPagingItems[index]
-                    if (device != null) {
+                    val deviceInfo = lazyPagingItems[index]
+                    if (deviceInfo != null) {
                         DeviceCard(
-                            device = device,
+                            device = deviceInfo.androidDevice,
                             onClick = {
-                                state.eventSink(DevicesScreen.Event.DeviceClicked(device))
+                                state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo.androidDevice))
                             },
                         )
                     } else {
@@ -258,12 +256,12 @@ private fun PaginatedDeviceList(
                     count = lazyPagingItems.itemCount,
                     key = lazyPagingItems.itemKey { device -> createDeviceKey(device) },
                 ) { index ->
-                    val device = lazyPagingItems[index]
-                    if (device != null) {
+                    val deviceInfo = lazyPagingItems[index]
+                    if (deviceInfo != null) {
                         DeviceCard(
-                            device = device,
+                            device = deviceInfo.androidDevice,
                             onClick = {
-                                state.eventSink(DevicesScreen.Event.DeviceClicked(device))
+                                state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo.androidDevice))
                             },
                         )
                     } else {
@@ -323,9 +321,9 @@ private fun RegularDeviceList(
                     key = { device -> createDeviceKey(device) },
                 ) { device ->
                     DeviceCard(
-                        device = device,
+                        device = device.androidDevice,
                         onClick = {
-                            state.eventSink(DevicesScreen.Event.DeviceClicked(device))
+                            state.eventSink(DevicesScreen.Event.DeviceClicked(device.androidDevice))
                         },
                     )
                 }
@@ -345,9 +343,9 @@ private fun RegularDeviceList(
                     key = { device -> createDeviceKey(device) },
                 ) { device ->
                     DeviceCard(
-                        device = device,
+                        device = device.androidDevice,
                         onClick = {
-                            state.eventSink(DevicesScreen.Event.DeviceClicked(device))
+                            state.eventSink(DevicesScreen.Event.DeviceClicked(device.androidDevice))
                         },
                     )
                 }

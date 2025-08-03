@@ -48,8 +48,8 @@ class DeviceDetailsPresenter(
                         modelName = screen.modelName,
                     )
                 if (loadedDevice != null) {
-                    device = loadedDevice
-                    Timber.i("Successfully loaded device: ${loadedDevice.manufacturer} ${loadedDevice.modelName}")
+                    device = loadedDevice.androidDevice
+                    Timber.i("Successfully loaded device: ${loadedDevice.androidDevice.manufacturer} ${loadedDevice.androidDevice.modelName}")
                 } else {
                     errorMessage = "Device not found"
                     Timber.w("Device not found: ${screen.manufacturer} ${screen.modelName}")

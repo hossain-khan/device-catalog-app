@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.db
 import androidx.room.Embedded
 import androidx.room.Relation
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.devicecatalog.model.DeviceInfo
 
 /**
  * Data class representing an Android device with all its related entities.
@@ -40,7 +41,13 @@ data class AndroidDeviceWithRelations(
     /**
      * Converts this entity with relations to the domain model.
      */
-    fun toModel(): AndroidDevice =
+    fun toModel(): DeviceInfo =
+        DeviceInfo(
+            id = device.id,
+            androidDevice = toAndroidDevice(),
+        )
+
+    fun toAndroidDevice(): AndroidDevice =
         AndroidDevice(
             brand = device.brand,
             device = device.device,
