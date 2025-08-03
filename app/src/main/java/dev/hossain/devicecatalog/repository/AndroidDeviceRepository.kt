@@ -34,15 +34,25 @@ class AndroidDeviceRepository
         }
 
         /**
-         * Get a specific device by ID with all its relationships.
+         * Get a specific device by its properties (since AndroidDevice doesn't have an ID).
          */
-        suspend fun getDeviceById(deviceId: Long): AndroidDevice? {
-            Timber.d("Getting device with ID: $deviceId")
-            return deviceDao
-                .getDeviceWithRelationsById(deviceId)
-                ?.also {
-                    Timber.d("Found device: ${it.device.manufacturer} ${it.device.modelName}")
-                }?.toModel()
+        suspend fun getDeviceByProperties(
+            brand: String,
+            device: String,
+            manufacturer: String,
+            modelName: String,
+        ): AndroidDevice? {
+            Timber.d("Getting device by properties: brand=$brand, device=$device, manufacturer=$manufacturer, modelName=$modelName")
+            return try {
+                deviceDao
+                    .getDeviceByProperties(brand, device, manufacturer, modelName)
+                    ?.also {
+                        Timber.d("Found device: ${it.device.manufacturer} ${it.device.modelName}")
+                    }?.toModel()
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get device by properties")
+                null
+            }
         }
 
         /**

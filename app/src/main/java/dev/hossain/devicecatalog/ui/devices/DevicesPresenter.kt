@@ -9,18 +9,22 @@ import androidx.compose.runtime.setValue
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.ui.devicedetails.DeviceDetailsScreen
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-@CircuitInject(screen = DevicesScreen::class, scope = AppScope::class)
 @Inject
 class DevicesPresenter(
+    @Assisted private val navigator: Navigator,
     private val deviceRepository: AndroidDeviceRepository,
 ) : Presenter<DevicesScreen.State> {
     @Composable
@@ -50,8 +54,15 @@ class DevicesPresenter(
             eventSink = { event ->
                 when (event) {
                     is DevicesScreen.Event.DeviceClicked -> {
-                        Timber.d("Device clicked: ${event.deviceId}")
-                        // TODO: Navigate to device details
+                        Timber.d("Device clicked: ${event.device.manufacturer} ${event.device.modelName}")
+                        navigator.goTo(
+                            DeviceDetailsScreen(
+                                brand = event.device.brand,
+                                device = event.device.device,
+                                manufacturer = event.device.manufacturer,
+                                modelName = event.device.modelName,
+                            ),
+                        )
                     }
                     DevicesScreen.Event.RefreshDevices -> {
                         Timber.d("Refreshing devices")
@@ -71,5 +82,11 @@ class DevicesPresenter(
                 }
             },
         )
+    }
+
+    @CircuitInject(DevicesScreen::class, AppScope::class)
+    @AssistedFactory
+    interface Factory {
+        fun create(navigator: Navigator): DevicesPresenter
     }
 }

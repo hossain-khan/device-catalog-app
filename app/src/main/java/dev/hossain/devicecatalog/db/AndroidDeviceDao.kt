@@ -43,6 +43,17 @@ interface AndroidDeviceDao {
     suspend fun getDeviceWithRelationsById(deviceId: Long): AndroidDeviceWithRelations?
 
     @Transaction
+    @Query(
+        "SELECT * FROM device WHERE brand = :brand AND device = :device AND manufacturer = :manufacturer AND model_name = :modelName LIMIT 1",
+    )
+    suspend fun getDeviceByProperties(
+        brand: String,
+        device: String,
+        manufacturer: String,
+        modelName: String,
+    ): AndroidDeviceWithRelations?
+
+    @Transaction
     @Query("SELECT * FROM device WHERE manufacturer LIKE :search OR model_name LIKE :search")
     fun searchDevicesWithRelations(search: String): Flow<List<AndroidDeviceWithRelations>>
 
