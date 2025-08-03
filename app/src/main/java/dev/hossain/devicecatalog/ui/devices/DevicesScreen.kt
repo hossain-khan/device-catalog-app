@@ -20,6 +20,12 @@ data object DevicesScreen : Screen {
         val isEmpty: Boolean = false,
         val errorMessage: String? = null,
         val usePaging: Boolean = true,
+        // Search state
+        val searchQuery: String = "",
+        val isSearchActive: Boolean = false,
+        // Filter state  
+        val activeFilters: FilterState = FilterState(),
+        val isFilterSheetVisible: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -33,5 +39,34 @@ data object DevicesScreen : Screen {
         data object RetryLoading : Event()
 
         data object TogglePagingMode : Event()
+
+        // Search events
+        data class SearchQueryChanged(val query: String) : Event()
+        data class SearchActiveChanged(val isActive: Boolean) : Event()
+
+        // Filter events
+        data class FilterChanged(val filters: FilterState) : Event()
+        data object ClearAllFilters : Event()
+        data object ShowFilterSheet : Event()
+        data object HideFilterSheet : Event()
+    }
+
+    data class FilterState(
+        val manufacturers: Set<String> = emptySet(),
+        val brands: Set<String> = emptySet(),
+        val formFactors: Set<String> = emptySet(),
+        val minRamMb: Int? = null,
+        val maxRamMb: Int? = null,
+        val minSdkVersion: Int? = null,
+        val maxSdkVersion: Int? = null,
+    ) {
+        val hasActiveFilters: Boolean
+            get() = manufacturers.isNotEmpty() || 
+                    brands.isNotEmpty() || 
+                    formFactors.isNotEmpty() ||
+                    minRamMb != null || 
+                    maxRamMb != null ||
+                    minSdkVersion != null || 
+                    maxSdkVersion != null
     }
 }

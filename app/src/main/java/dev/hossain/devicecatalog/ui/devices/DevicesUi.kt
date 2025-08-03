@@ -2,6 +2,7 @@ package dev.hossain.devicecatalog.ui.devices
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,10 +13,12 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -35,10 +38,15 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.ui.devices.components.ActiveFilterChips
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCard
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCardSkeleton
+import dev.hossain.devicecatalog.ui.devices.components.DeviceSearchBar
 import dev.hossain.devicecatalog.ui.devices.components.EmptyDeviceState
+import dev.hossain.devicecatalog.ui.devices.components.FilterBottomSheet
+import dev.hossain.devicecatalog.ui.devices.components.FilterType
 import dev.hossain.devicecatalog.ui.devices.components.rememberDeviceListLayoutConfig
+import dev.hossain.devicecatalog.ui.devices.components.removeFilter
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
 
@@ -56,7 +64,7 @@ fun DevicesUi(
     modifier: Modifier = Modifier,
 ) {
     Timber.d(
-        "DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, isEmpty=${state.isEmpty}, usePaging=${state.usePaging}",
+        "DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, isEmpty=${state.isEmpty}, usePaging=${state.usePaging}, searchQuery='${state.searchQuery}'",
     )
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -77,9 +85,22 @@ fun DevicesUi(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = if (state.usePaging) "Device Catalog" else "All Devices (${state.devices.size})",
-                    )
+                    val titleText = when {
+                        state.searchQuery.isNotEmpty() -> "Search Results"
+                        state.usePaging -> "Device Catalog"
+                        else -> "All Devices (${state.devices.size})"
+                    }
+                    Text(text = titleText)
+                },
+                actions = {
+                    IconButton(
+                        onClick = { state.eventSink(DevicesScreen.Event.ShowFilterSheet) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Show filters",
+                        )
+                    }
                 },
             )
         },
@@ -95,55 +116,96 @@ fun DevicesUi(
             }
         },
     ) { innerPadding ->
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
         ) {
-            when {
-                // Show loading state for initial load
-                state.isLoading && !state.isRefreshing -> {
-                    LoadingContent(layoutConfig)
+            // Search bar
+            DeviceSearchBar(
+                query = state.searchQuery,
+                isActive = state.isSearchActive,
+                onQueryChange = { query ->
+                    state.eventSink(DevicesScreen.Event.SearchQueryChanged(query))
+                },
+                onActiveChange = { isActive ->
+                    state.eventSink(DevicesScreen.Event.SearchActiveChanged(isActive))
+                },
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
+
+            // Active filter chips
+            ActiveFilterChips(
+                filters = state.activeFilters,
+                onFilterRemoved = { filterType ->
+                    val updatedFilters = state.activeFilters.removeFilter(filterType)
+                    state.eventSink(DevicesScreen.Event.FilterChanged(updatedFilters))
+                },
+                onClearAll = { state.eventSink(DevicesScreen.Event.ClearAllFilters) },
+            )
+
+            // Content area
+            Box(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                when {
+                    // Show loading state for initial load
+                    state.isLoading && !state.isRefreshing -> {
+                        LoadingContent(layoutConfig)
+                    }
+
+                    // Show empty state when no devices and not loading
+                    state.isEmpty && !state.isLoading && !state.isRefreshing -> {
+                        EmptyDeviceState(
+                            onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
+                        )
+                    }
+
+                    // Show paged content when using paging
+                    state.usePaging -> {
+                        PaginatedDeviceList(
+                            state = state,
+                            layoutConfig = layoutConfig,
+                        )
+                    }
+
+                    // Show regular list when not using paging
+                    else -> {
+                        RegularDeviceList(
+                            state = state,
+                            layoutConfig = layoutConfig,
+                        )
+                    }
                 }
 
-                // Show empty state when no devices and not loading
-                state.isEmpty && !state.isLoading && !state.isRefreshing -> {
-                    EmptyDeviceState(
-                        onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
-                    )
-                }
-
-                // Show paged content when using paging
-                state.usePaging -> {
-                    PaginatedDeviceList(
-                        state = state,
-                        layoutConfig = layoutConfig,
-                    )
-                }
-
-                // Show regular list when not using paging
-                else -> {
-                    RegularDeviceList(
-                        state = state,
-                        layoutConfig = layoutConfig,
-                    )
-                }
-            }
-
-            // Show refresh indicator when refreshing
-            if (state.isRefreshing) {
-                Box(
-                    modifier =
-                        Modifier
+                // Show refresh indicator when refreshing
+                if (state.isRefreshing) {
+                    Box(
+                        modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                    contentAlignment = Alignment.TopCenter,
-                ) {
-                    CircularProgressIndicator()
+                        contentAlignment = Alignment.TopCenter,
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }
+
+        // Filter bottom sheet
+        FilterBottomSheet(
+            isVisible = state.isFilterSheetVisible,
+            onDismiss = { state.eventSink(DevicesScreen.Event.HideFilterSheet) },
+            currentFilters = state.activeFilters,
+            onFiltersChanged = { filters ->
+                state.eventSink(DevicesScreen.Event.FilterChanged(filters))
+            },
+            onClearAll = { state.eventSink(DevicesScreen.Event.ClearAllFilters) },
+            // TODO: Pass available filter options from repository
+            availableManufacturers = emptyList(),
+            availableBrands = emptyList(),
+            availableFormFactors = emptyList(),
+        )
     }
 }
 
