@@ -36,49 +36,50 @@ fun EmptyDeviceState(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .semantics {
-                contentDescription = "$title. $message"
-            },
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .fillMaxSize()
+                .semantics {
+                    contentDescription = "$title. $message"
+                },
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.padding(32.dp)
+            modifier = Modifier.padding(32.dp),
         ) {
             // Empty state icon
             Icon(
                 imageVector = Icons.Outlined.Settings,
                 contentDescription = null,
                 modifier = Modifier.size(64.dp),
-                tint = MaterialTheme.colorScheme.outline
+                tint = MaterialTheme.colorScheme.outline,
             )
-            
+
             // Title
             Text(
                 text = title,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
-            
+
             // Message
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight,
             )
-            
+
             // Optional action button
             if (actionLabel != null && onActionClick != null) {
                 Button(
                     onClick = onActionClick,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = 8.dp),
                 ) {
                     Text(text = actionLabel)
                 }
@@ -92,7 +93,7 @@ fun EmptyDeviceState(
 private fun EmptyDeviceStatePreview() {
     DeviceCatalogAppTheme {
         EmptyDeviceState(
-            onActionClick = { }
+            onActionClick = { },
         )
     }
 }
@@ -105,7 +106,7 @@ private fun EmptyDeviceStateWithoutActionPreview() {
             title = "Loading failed",
             message = "Something went wrong while loading devices. Please check your connection and try again.",
             actionLabel = null,
-            onActionClick = null
+            onActionClick = null,
         )
     }
 }
@@ -115,7 +116,7 @@ private fun EmptyDeviceStateWithoutActionPreview() {
 private fun EmptyDeviceStateDarkPreview() {
     DeviceCatalogAppTheme {
         EmptyDeviceState(
-            onActionClick = { }
+            onActionClick = { },
         )
     }
 }

@@ -15,7 +15,7 @@ data class DeviceListLayoutConfig(
     val columns: Int,
     val contentPadding: androidx.compose.foundation.layout.PaddingValues,
     val itemSpacing: androidx.compose.ui.unit.Dp,
-    val useStaggeredGrid: Boolean = false
+    val useStaggeredGrid: Boolean = false,
 )
 
 /**
@@ -27,40 +27,43 @@ data class DeviceListLayoutConfig(
 fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
     val configuration = LocalConfiguration.current
     val screenWidthDp = configuration.screenWidthDp.dp
-    
+
     return remember(screenWidthDp) {
         when {
             screenWidthDp < 600.dp -> {
                 // Phone layout: Single column
                 DeviceListLayoutConfig(
                     columns = 1,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    ),
-                    itemSpacing = 8.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp,
+                        ),
+                    itemSpacing = 8.dp,
                 )
             }
             screenWidthDp < 900.dp -> {
                 // Small tablet layout: Two columns
                 DeviceListLayoutConfig(
                     columns = 2,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    ),
-                    itemSpacing = 12.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp,
+                        ),
+                    itemSpacing = 12.dp,
                 )
             }
             else -> {
                 // Large tablet layout: Three columns
                 DeviceListLayoutConfig(
                     columns = 3,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 24.dp,
-                        vertical = 12.dp
-                    ),
-                    itemSpacing = 16.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 24.dp,
+                            vertical = 12.dp,
+                        ),
+                    itemSpacing = 16.dp,
                 )
             }
         }
@@ -72,53 +75,56 @@ fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
  * Provides more consistent responsive behavior across different devices.
  */
 @Composable
-fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceListLayoutConfig {
-    return remember(windowSizeClass.widthSizeClass) {
+fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceListLayoutConfig =
+    remember(windowSizeClass.widthSizeClass) {
         when (windowSizeClass.widthSizeClass) {
             WindowWidthSizeClass.Compact -> {
                 // Phone layout: Single column
                 DeviceListLayoutConfig(
                     columns = 1,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    ),
-                    itemSpacing = 8.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp,
+                        ),
+                    itemSpacing = 8.dp,
                 )
             }
             WindowWidthSizeClass.Medium -> {
                 // Small tablet layout: Two columns
                 DeviceListLayoutConfig(
                     columns = 2,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    ),
-                    itemSpacing = 12.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp,
+                        ),
+                    itemSpacing = 12.dp,
                 )
             }
             WindowWidthSizeClass.Expanded -> {
-                // Large tablet layout: Three columns  
+                // Large tablet layout: Three columns
                 DeviceListLayoutConfig(
                     columns = 3,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 24.dp,
-                        vertical = 12.dp
-                    ),
-                    itemSpacing = 16.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 24.dp,
+                            vertical = 12.dp,
+                        ),
+                    itemSpacing = 16.dp,
                 )
             }
             else -> {
                 // Fallback to single column
                 DeviceListLayoutConfig(
                     columns = 1,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 8.dp
-                    ),
-                    itemSpacing = 8.dp
+                    contentPadding =
+                        androidx.compose.foundation.layout.PaddingValues(
+                            horizontal = 16.dp,
+                            vertical = 8.dp,
+                        ),
+                    itemSpacing = 8.dp,
                 )
             }
         }
     }
-}

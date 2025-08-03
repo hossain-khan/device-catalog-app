@@ -17,7 +17,7 @@ class NavigationDestinationTest {
         // Verify each destination exists
         assertTrue(
             "Home destination should exist",
-            destinations.any { it is NavigationDestination.AboutHome },
+            destinations.any { it is NavigationDestination.Stats },
         )
         assertTrue(
             "Devices destination should exist",
@@ -35,7 +35,7 @@ class NavigationDestinationTest {
 
     @Test
     fun `verify destination properties are correctly set`() {
-        val home = NavigationDestination.AboutHome
+        val home = NavigationDestination.Stats
         assertEquals("Home route should be 'home'", "home", home.route)
         assertEquals("Home title should be 'Home'", "Home", home.title)
 

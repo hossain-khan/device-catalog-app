@@ -28,7 +28,9 @@ data object DevicesScreen : Screen {
         ) : Event()
 
         data object RefreshDevices : Event()
+
         data object RetryLoading : Event()
+
         data object TogglePagingMode : Event()
     }
 }

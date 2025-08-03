@@ -39,75 +39,80 @@ import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
  * Provides visual feedback and maintains layout structure during loading states.
  */
 @Composable
-fun DeviceCardSkeleton(
-    modifier: Modifier = Modifier,
-) {
+fun DeviceCardSkeleton(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        shape = RoundedCornerShape(12.dp)
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        shape = RoundedCornerShape(12.dp),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             // Device icon skeleton
             Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .shimmerEffect()
+                modifier =
+                    Modifier
+                        .size(56.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .shimmerEffect(),
             )
-            
+
             Spacer(modifier = Modifier.width(16.dp))
-            
+
             // Device information skeleton
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 // Device model name skeleton
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.7f)
-                        .height(20.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .shimmerEffect()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(20.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect(),
                 )
-                
+
                 // Manufacturer and device name skeleton
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .height(16.dp)
-                        .clip(RoundedCornerShape(4.dp))
-                        .shimmerEffect()
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(16.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect(),
                 )
-                
+
                 // Additional info skeleton
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(
-                        modifier = Modifier
-                            .width(60.dp)
-                            .height(14.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .shimmerEffect()
+                        modifier =
+                            Modifier
+                                .width(60.dp)
+                                .height(14.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .shimmerEffect(),
                     )
-                    
+
                     Box(
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(14.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .shimmerEffect()
+                        modifier =
+                            Modifier
+                                .width(80.dp)
+                                .height(14.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .shimmerEffect(),
                     )
                 }
             }
@@ -119,33 +124,37 @@ fun DeviceCardSkeleton(
  * Creates a shimmer effect for loading states.
  * Uses animated gradient to create the loading shimmer animation.
  */
-private fun Modifier.shimmerEffect(): Modifier = composed {
-    val transition = rememberInfiniteTransition(label = "shimmer")
-    val alpha by transition.animateFloat(
-        initialValue = 0.2f,
-        targetValue = 0.9f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "shimmer_alpha"
-    )
-    
-    val shimmerColorScheme = MaterialTheme.colorScheme
-    val shimmerColors = listOf(
-        shimmerColorScheme.surface,
-        shimmerColorScheme.surfaceVariant.copy(alpha = alpha),
-        shimmerColorScheme.surface
-    )
-    
-    background(
-        brush = Brush.linearGradient(
-            colors = shimmerColors,
-            start = Offset.Zero,
-            end = Offset(x = 300f, y = 300f)
+private fun Modifier.shimmerEffect(): Modifier =
+    composed {
+        val transition = rememberInfiniteTransition(label = "shimmer")
+        val alpha by transition.animateFloat(
+            initialValue = 0.2f,
+            targetValue = 0.9f,
+            animationSpec =
+                infiniteRepeatable(
+                    animation = tween(durationMillis = 1000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse,
+                ),
+            label = "shimmer_alpha",
         )
-    )
-}
+
+        val shimmerColorScheme = MaterialTheme.colorScheme
+        val shimmerColors =
+            listOf(
+                shimmerColorScheme.surface,
+                shimmerColorScheme.surfaceVariant.copy(alpha = alpha),
+                shimmerColorScheme.surface,
+            )
+
+        background(
+            brush =
+                Brush.linearGradient(
+                    colors = shimmerColors,
+                    start = Offset.Zero,
+                    end = Offset(x = 300f, y = 300f),
+                ),
+        )
+    }
 
 @Preview(showBackground = true)
 @Composable
@@ -153,7 +162,7 @@ private fun DeviceCardSkeletonPreview() {
     DeviceCatalogAppTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             repeat(3) {
                 DeviceCardSkeleton()
@@ -168,7 +177,7 @@ private fun DeviceCardSkeletonDarkPreview() {
     DeviceCatalogAppTheme {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
         ) {
             repeat(3) {
                 DeviceCardSkeleton()
