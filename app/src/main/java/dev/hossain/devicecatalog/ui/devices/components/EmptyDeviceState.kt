@@ -29,11 +29,11 @@ import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
  */
 @Composable
 fun EmptyDeviceState(
+    modifier: Modifier = Modifier,
     title: String = "No devices found",
     message: String = "We couldn't find any Android devices in the catalog. Please try refreshing or check back later.",
     actionLabel: String? = "Refresh",
-    onActionClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
+    onActionClick: (() -> Unit)? = null
 ) {
     Box(
         modifier =
