@@ -46,8 +46,7 @@ import timber.log.Timber
  * Creates a unique key for a device by combining multiple fields to avoid duplicate keys.
  * Uses manufacturer, device name, and model name to ensure uniqueness.
  */
-private fun createDeviceKey(deviceInfo: DeviceInfo): String =
-    "${deviceInfo.id}-${deviceInfo.hashCode()}"
+private fun createDeviceKey(deviceInfo: DeviceInfo): String = "${deviceInfo.id}-${deviceInfo.hashCode()}"
 
 @CircuitInject(screen = DevicesScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -204,7 +203,7 @@ private fun PaginatedDeviceList(
                         DeviceCard(
                             device = deviceInfo.androidDevice,
                             onClick = {
-                                state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo.androidDevice))
+                                state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo))
                             },
                         )
                     } else {
@@ -261,7 +260,7 @@ private fun PaginatedDeviceList(
                         DeviceCard(
                             device = deviceInfo.androidDevice,
                             onClick = {
-                                state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo.androidDevice))
+                                state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo))
                             },
                         )
                     } else {
@@ -323,7 +322,7 @@ private fun RegularDeviceList(
                     DeviceCard(
                         device = device.androidDevice,
                         onClick = {
-                            state.eventSink(DevicesScreen.Event.DeviceClicked(device.androidDevice))
+                            state.eventSink(DevicesScreen.Event.DeviceClicked(device))
                         },
                     )
                 }
@@ -345,7 +344,7 @@ private fun RegularDeviceList(
                     DeviceCard(
                         device = device.androidDevice,
                         onClick = {
-                            state.eventSink(DevicesScreen.Event.DeviceClicked(device.androidDevice))
+                            state.eventSink(DevicesScreen.Event.DeviceClicked(device))
                         },
                     )
                 }

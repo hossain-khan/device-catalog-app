@@ -25,7 +25,7 @@ data object DevicesScreen : Screen {
 
     sealed class Event : CircuitUiEvent {
         data class DeviceClicked(
-            val device: AndroidDevice,
+            val device: DeviceInfo,
         ) : Event()
 
         data object RefreshDevices : Event()

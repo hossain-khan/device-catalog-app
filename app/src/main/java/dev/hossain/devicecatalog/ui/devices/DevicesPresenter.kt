@@ -55,13 +55,10 @@ class DevicesPresenter(
             eventSink = { event ->
                 when (event) {
                     is DevicesScreen.Event.DeviceClicked -> {
-                        Timber.d("Device clicked: ${event.device.manufacturer} ${event.device.modelName}")
+                        Timber.d("Device clicked: ${event.device}")
                         navigator.goTo(
                             DeviceDetailsScreen(
-                                brand = event.device.brand,
-                                device = event.device.device,
-                                manufacturer = event.device.manufacturer,
-                                modelName = event.device.modelName,
+                                deviceId = event.device.id,
                             ),
                         )
                     }

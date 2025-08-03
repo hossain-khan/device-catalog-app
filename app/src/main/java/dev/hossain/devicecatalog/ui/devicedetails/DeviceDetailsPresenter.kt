@@ -36,33 +36,27 @@ class DeviceDetailsPresenter(
             try {
                 isLoading = true
                 errorMessage = null
-                Timber.d(
-                    "Loading device: brand=${screen.brand}, device=${screen.device}, manufacturer=${screen.manufacturer}, modelName=${screen.modelName}",
-                )
+                Timber.d("Loading device with ID: ${screen.deviceId}")
 
-                val loadedDevice =
-                    deviceRepository.getDeviceByProperties(
-                        brand = screen.brand,
-                        device = screen.device,
-                        manufacturer = screen.manufacturer,
-                        modelName = screen.modelName,
-                    )
+                val loadedDevice = deviceRepository.getDeviceById(screen.deviceId)
                 if (loadedDevice != null) {
                     device = loadedDevice.androidDevice
-                    Timber.i("Successfully loaded device: ${loadedDevice.androidDevice.manufacturer} ${loadedDevice.androidDevice.modelName}")
+                    Timber.i(
+                        "Successfully loaded device: ${loadedDevice.androidDevice.manufacturer} ${loadedDevice.androidDevice.modelName}",
+                    )
                 } else {
                     errorMessage = "Device not found"
-                    Timber.w("Device not found: ${screen.manufacturer} ${screen.modelName}")
+                    Timber.w("Device not found with ID: ${screen.deviceId}")
                 }
             } catch (e: Exception) {
                 errorMessage = "Failed to load device: ${e.message}"
-                Timber.e(e, "Failed to load device: ${screen.manufacturer} ${screen.modelName}")
+                Timber.e(e, "Failed to load device with ID: ${screen.deviceId}")
             } finally {
                 isLoading = false
             }
         }
 
-        LaunchedEffect(screen.brand, screen.device, screen.manufacturer, screen.modelName) {
+        LaunchedEffect(screen.deviceId) {
             loadDevice()
         }
 
