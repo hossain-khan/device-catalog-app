@@ -27,17 +27,18 @@ class DevicesPresenter(
     override fun present(): DevicesScreen.State {
         var usePaging by remember { mutableStateOf(true) }
         var isRefreshing by remember { mutableStateOf(false) }
-        
+
         val devices by deviceRepository.getAllDevices().collectAsState(initial = emptyList())
-        
+
         // Get paged devices by converting AndroidDeviceWithRelations to AndroidDevice
-        val pagedDevices: Flow<PagingData<AndroidDevice>> = remember {
-            deviceRepository.getPagedDevices().map { pagingData ->
-                pagingData.map { deviceWithRelations ->
-                    deviceWithRelations.toModel()
+        val pagedDevices: Flow<PagingData<AndroidDevice>> =
+            remember {
+                deviceRepository.getPagedDevices().map { pagingData ->
+                    pagingData.map { deviceWithRelations ->
+                        deviceWithRelations.toModel()
+                    }
                 }
             }
-        }
 
         return DevicesScreen.State(
             devices = devices,

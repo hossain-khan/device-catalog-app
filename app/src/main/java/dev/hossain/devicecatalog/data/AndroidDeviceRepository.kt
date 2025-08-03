@@ -206,4 +206,65 @@ class AndroidDeviceRepository
                 count
             }
         }
+
+        /**
+         * Get device statistics including counts and breakdowns.
+         */
+        fun getDeviceStats(): Flow<DeviceStats> {
+            Timber.d("Getting device statistics")
+            return getAllDevices().map { devices ->
+                val totalDevices = devices.size
+
+                // Count unique form factors
+                val formFactors = devices.groupingBy { it.formFactor }.eachCount()
+                val totalFormFactors = formFactors.size
+
+                // Get top 10 manufacturers by device count
+                val topManufacturers =
+                    devices
+                        .groupingBy { it.manufacturer }
+                        .eachCount()
+                        .toList()
+                        .sortedByDescending { it.second }
+                        .take(10)
+                        .map { ManufacturerCount(it.first, it.second) }
+
+                Timber.d(
+                    "Device stats - Total: $totalDevices, Form factors: $totalFormFactors, Top manufacturers: ${topManufacturers.size}",
+                )
+
+                DeviceStats(
+                    totalDevices = totalDevices,
+                    totalFormFactors = totalFormFactors,
+                    formFactorBreakdown = formFactors.map { FormFactorCount(it.key, it.value) },
+                    topManufacturers = topManufacturers,
+                )
+            }
+        }
     }
+
+/**
+ * Data class representing device statistics.
+ */
+data class DeviceStats(
+    val totalDevices: Int,
+    val totalFormFactors: Int,
+    val formFactorBreakdown: List<FormFactorCount>,
+    val topManufacturers: List<ManufacturerCount>,
+)
+
+/**
+ * Data class for form factor count statistics.
+ */
+data class FormFactorCount(
+    val formFactor: String,
+    val count: Int,
+)
+
+/**
+ * Data class for manufacturer count statistics.
+ */
+data class ManufacturerCount(
+    val manufacturer: String,
+    val count: Int,
+)

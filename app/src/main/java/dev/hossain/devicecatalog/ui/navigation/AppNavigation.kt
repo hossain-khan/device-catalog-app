@@ -3,8 +3,6 @@ package dev.hossain.devicecatalog.ui.navigation
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -15,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,7 +24,6 @@ import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
-import dev.hossain.devicecatalog.ui.home.HomeScreen
 import timber.log.Timber
 
 /**
@@ -37,11 +35,11 @@ fun AppNavigation(
     windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier,
 ) {
-    val backStack = rememberSaveableBackStack(root = HomeScreen)
+    val landingScreen: NavigationDestination = NavigationDestination.destinations.first()
+    val backStack = rememberSaveableBackStack(root = landingScreen.screen)
     val navigator = rememberCircuitNavigator(backStack)
-    // var selectedDestination : NavigationDestination by rememberSaveable { mutableStateOf(NavigationDestination.AboutHome) }
     var selectedDestination: NavigationDestination by rememberSaveable {
-        mutableStateOf(NavigationDestination.destinations.first())
+        mutableStateOf(landingScreen)
     }
     val useNavigationRail = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
 
@@ -98,12 +96,15 @@ private fun AppNavigationRail(
 ) {
     NavigationRail(modifier = modifier) {
         NavigationDestination.destinations.forEach { destination ->
+            SideEffect {
+                Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+            }
             NavigationRailItem(
                 selected = selectedDestination == destination,
                 onClick = { onNavigationDestinationClicked(destination) },
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.Home, // destination.icon,
+                        imageVector = destination.icon,
                         contentDescription = destination.title,
                     )
                 },
@@ -121,7 +122,9 @@ private fun AppBottomNavigation(
 ) {
     NavigationBar(modifier = modifier) {
         NavigationDestination.destinations.forEach { destination: NavigationDestination ->
-            // Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+            SideEffect {
+                Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+            }
             NavigationBarItem(
                 selected = selectedDestination == destination,
                 onClick = { onNavigationDestinationClicked(destination) },
@@ -132,7 +135,6 @@ private fun AppBottomNavigation(
                     )
                 },
                 label = { Text(destination.title) },
-                // label = { Text("Home") },
             )
         }
     }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,9 +48,8 @@ import timber.log.Timber
  * Creates a unique key for a device by combining multiple fields to avoid duplicate keys.
  * Uses manufacturer, device name, and model name to ensure uniqueness.
  */
-private fun createDeviceKey(device: dev.hossain.android.catalogparser.models.AndroidDevice): String {
-    return "${device.manufacturer}-${device.device}-${device.modelName}-${device.hashCode()}"
-}
+private fun createDeviceKey(device: dev.hossain.android.catalogparser.models.AndroidDevice): String =
+    "${device.manufacturer}-${device.device}-${device.modelName}-${device.hashCode()}"
 
 @CircuitInject(screen = DevicesScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,11 +58,13 @@ fun DevicesUi(
     state: DevicesScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    Timber.d("DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, isEmpty=${state.isEmpty}, usePaging=${state.usePaging}")
-    
+    Timber.d(
+        "DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, isEmpty=${state.isEmpty}, usePaging=${state.usePaging}",
+    )
+
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutConfig = rememberDeviceListLayoutConfig()
-    
+
     // Handle error messages
     LaunchedEffect(state.errorMessage) {
         state.errorMessage?.let { message ->
@@ -71,72 +73,75 @@ fun DevicesUi(
     }
 
     Scaffold(
-        modifier = modifier.semantics {
-            contentDescription = "Device catalog screen with ${state.devices.size} devices"
-        },
+        modifier =
+            modifier.semantics {
+                contentDescription = "Device catalog screen with ${state.devices.size} devices"
+            },
         topBar = {
             TopAppBar(
-                title = { 
+                title = {
                     Text(
-                        text = if (state.usePaging) "Device Catalog" else "All Devices (${state.devices.size})"
-                    ) 
-                }
+                        text = if (state.usePaging) "Device Catalog" else "All Devices (${state.devices.size})",
+                    )
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { state.eventSink(DevicesScreen.Event.TogglePagingMode) }
+                onClick = { state.eventSink(DevicesScreen.Event.TogglePagingMode) },
             ) {
                 Icon(
-                    imageVector = Icons.Default.List,
-                    contentDescription = "Toggle paging mode"
+                    imageVector = Icons.AutoMirrored.Filled.List,
+                    contentDescription = "Toggle paging mode",
                 )
             }
-        }
+        },
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             when {
                 // Show loading state for initial load
                 state.isLoading && !state.isRefreshing -> {
                     LoadingContent(layoutConfig)
                 }
-                
+
                 // Show empty state when no devices and not loading
                 state.isEmpty && !state.isLoading && !state.isRefreshing -> {
                     EmptyDeviceState(
-                        onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) }
+                        onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
                     )
                 }
-                
+
                 // Show paged content when using paging
                 state.usePaging -> {
                     PaginatedDeviceList(
                         state = state,
-                        layoutConfig = layoutConfig
+                        layoutConfig = layoutConfig,
                     )
                 }
-                
+
                 // Show regular list when not using paging
                 else -> {
                     RegularDeviceList(
                         state = state,
-                        layoutConfig = layoutConfig
+                        layoutConfig = layoutConfig,
                     )
                 }
             }
-            
+
             // Show refresh indicator when refreshing
             if (state.isRefreshing) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.TopCenter
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    contentAlignment = Alignment.TopCenter,
                 ) {
                     CircularProgressIndicator()
                 }
@@ -154,7 +159,7 @@ private fun LoadingContent(
         LazyColumn(
             modifier = modifier.fillMaxSize(),
             contentPadding = layoutConfig.contentPadding,
-            verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing)
+            verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
         ) {
             items(10) {
                 DeviceCardSkeleton()
@@ -166,7 +171,7 @@ private fun LoadingContent(
             modifier = modifier.fillMaxSize(),
             contentPadding = layoutConfig.contentPadding,
             verticalItemSpacing = layoutConfig.itemSpacing,
-            horizontalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing)
+            horizontalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
         ) {
             items(10) {
                 DeviceCardSkeleton()
@@ -182,19 +187,19 @@ private fun PaginatedDeviceList(
     modifier: Modifier = Modifier,
 ) {
     val lazyPagingItems = state.pagedDevices.collectAsLazyPagingItems()
-    
+
     Timber.d("PaginatedDeviceList: itemCount=${lazyPagingItems.itemCount}, loadState=${lazyPagingItems.loadState}")
-    
+
     when {
         layoutConfig.columns == 1 -> {
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
                 contentPadding = layoutConfig.contentPadding,
-                verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing)
+                verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
             ) {
                 items(
                     count = lazyPagingItems.itemCount,
-                    key = lazyPagingItems.itemKey { device -> createDeviceKey(device) }
+                    key = lazyPagingItems.itemKey { device -> createDeviceKey(device) },
                 ) { index ->
                     val device = lazyPagingItems[index]
                     if (device != null) {
@@ -202,22 +207,23 @@ private fun PaginatedDeviceList(
                             device = device,
                             onClick = {
                                 state.eventSink(DevicesScreen.Event.DeviceClicked(device.modelName))
-                            }
+                            },
                         )
                     } else {
                         DeviceCardSkeleton()
                     }
                 }
-                
+
                 // Loading indicator for pagination
                 when (lazyPagingItems.loadState.append) {
                     is LoadState.Loading -> {
                         item {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 CircularProgressIndicator()
                             }
@@ -227,10 +233,11 @@ private fun PaginatedDeviceList(
                         item {
                             Text(
                                 text = "Error loading more devices",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                color = MaterialTheme.colorScheme.error
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                color = MaterialTheme.colorScheme.error,
                             )
                         }
                     }
@@ -238,18 +245,18 @@ private fun PaginatedDeviceList(
                 }
             }
         }
-        
+
         else -> {
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(layoutConfig.columns),
                 modifier = modifier.fillMaxSize(),
                 contentPadding = layoutConfig.contentPadding,
                 verticalItemSpacing = layoutConfig.itemSpacing,
-                horizontalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing)
+                horizontalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
             ) {
                 items(
                     count = lazyPagingItems.itemCount,
-                    key = lazyPagingItems.itemKey { device -> createDeviceKey(device) }
+                    key = lazyPagingItems.itemKey { device -> createDeviceKey(device) },
                 ) { index ->
                     val device = lazyPagingItems[index]
                     if (device != null) {
@@ -257,22 +264,23 @@ private fun PaginatedDeviceList(
                             device = device,
                             onClick = {
                                 state.eventSink(DevicesScreen.Event.DeviceClicked(device.modelName))
-                            }
+                            },
                         )
                     } else {
                         DeviceCardSkeleton()
                     }
                 }
-                
+
                 // Loading indicator for pagination
                 when (lazyPagingItems.loadState.append) {
                     is LoadState.Loading -> {
                         item {
                             Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                contentAlignment = Alignment.Center
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                contentAlignment = Alignment.Center,
                             ) {
                                 CircularProgressIndicator()
                             }
@@ -282,10 +290,11 @@ private fun PaginatedDeviceList(
                         item {
                             Text(
                                 text = "Error loading more devices",
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                color = MaterialTheme.colorScheme.error
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                color = MaterialTheme.colorScheme.error,
                             )
                         }
                     }
@@ -307,39 +316,39 @@ private fun RegularDeviceList(
             LazyColumn(
                 modifier = modifier.fillMaxSize(),
                 contentPadding = layoutConfig.contentPadding,
-                verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing)
+                verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
             ) {
                 items(
                     items = state.devices,
-                    key = { device -> createDeviceKey(device) }
+                    key = { device -> createDeviceKey(device) },
                 ) { device ->
                     DeviceCard(
                         device = device,
                         onClick = {
                             state.eventSink(DevicesScreen.Event.DeviceClicked(device.modelName))
-                        }
+                        },
                     )
                 }
             }
         }
-        
+
         else -> {
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(layoutConfig.columns),
                 modifier = modifier.fillMaxSize(),
                 contentPadding = layoutConfig.contentPadding,
                 verticalItemSpacing = layoutConfig.itemSpacing,
-                horizontalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing)
+                horizontalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
             ) {
                 items(
                     items = state.devices,
-                    key = { device -> createDeviceKey(device) }
+                    key = { device -> createDeviceKey(device) },
                 ) { device ->
                     DeviceCard(
                         device = device,
                         onClick = {
                             state.eventSink(DevicesScreen.Event.DeviceClicked(device.modelName))
-                        }
+                        },
                     )
                 }
             }
