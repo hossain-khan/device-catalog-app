@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -34,6 +35,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.R
 import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 
 /**
@@ -89,7 +92,19 @@ fun DeviceCard(
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Settings,
+                        painter =
+                            painterResource(
+                                id =
+                                    when (device.formFactor) {
+                                        FormFactor.PHONE -> R.drawable.mobile_24dp
+                                        FormFactor.TABLET -> R.drawable.tablet_24dp
+                                        FormFactor.TV -> R.drawable.tv_24dp
+                                        FormFactor.WEARABLE -> R.drawable.smart_watch_24dp
+                                        FormFactor.ANDROID_AUTOMOTIVE -> R.drawable.car_automotive_24dp
+                                        FormFactor.CHROMEBOOK -> R.drawable.laptop_chromebook_24dp
+                                        FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> R.drawable.game_controller_24dp
+                                    },
+                            ),
                         contentDescription = null,
                         modifier = Modifier.size(32.dp),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -136,18 +151,16 @@ fun DeviceCard(
                         )
                     }
 
-                    if (device.formFactor.isNotBlank()) {
-                        Text(
-                            text = "•",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = device.formFactor,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    Text(
+                        text = "•",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = device.formFactor.value,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
         }

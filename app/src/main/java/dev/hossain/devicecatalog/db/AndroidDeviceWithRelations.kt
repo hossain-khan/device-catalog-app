@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.db
 import androidx.room.Embedded
 import androidx.room.Relation
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.model.DeviceInfo
 
 /**
@@ -54,7 +55,7 @@ data class AndroidDeviceWithRelations(
             manufacturer = device.manufacturer,
             modelName = device.modelName,
             ram = device.ram,
-            formFactor = device.formFactor,
+            formFactor = FormFactor.fromValue(device.formFactor),
             processorName = device.processorName,
             gpu = device.gpu,
             screenSizes = screenSizes.map { it.screen_size },
@@ -83,7 +84,7 @@ data class AndroidDeviceWithRelations(
                         manufacturer = model.manufacturer,
                         modelName = model.modelName,
                         ram = model.ram,
-                        formFactor = model.formFactor,
+                        formFactor = model.formFactor.value,
                         processorName = model.processorName,
                         gpu = model.gpu,
                     ),

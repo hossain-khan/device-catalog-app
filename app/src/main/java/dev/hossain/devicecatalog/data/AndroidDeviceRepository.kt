@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceEntity
 import dev.hossain.devicecatalog.db.AndroidDeviceWithRelations
@@ -280,7 +281,7 @@ data class DeviceStats(
  * Data class for form factor count statistics.
  */
 data class FormFactorCount(
-    val formFactor: String,
+    val formFactor: FormFactor,
     val count: Int,
 )
 
