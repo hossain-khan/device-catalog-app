@@ -5,6 +5,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.devicecatalog.data.FilterOptions
 import dev.hossain.devicecatalog.model.DeviceInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -26,6 +27,7 @@ data object DevicesScreen : Screen {
         // Filter state  
         val activeFilters: FilterState = FilterState(),
         val isFilterSheetVisible: Boolean = false,
+        val filterOptions: FilterOptions = FilterOptions(emptyList(), emptyList(), emptyList()),
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -55,18 +57,10 @@ data object DevicesScreen : Screen {
         val manufacturers: Set<String> = emptySet(),
         val brands: Set<String> = emptySet(),
         val formFactors: Set<String> = emptySet(),
-        val minRamMb: Int? = null,
-        val maxRamMb: Int? = null,
-        val minSdkVersion: Int? = null,
-        val maxSdkVersion: Int? = null,
     ) {
         val hasActiveFilters: Boolean
             get() = manufacturers.isNotEmpty() || 
                     brands.isNotEmpty() || 
-                    formFactors.isNotEmpty() ||
-                    minRamMb != null || 
-                    maxRamMb != null ||
-                    minSdkVersion != null || 
-                    maxSdkVersion != null
+                    formFactors.isNotEmpty()
     }
 }

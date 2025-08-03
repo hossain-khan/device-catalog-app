@@ -14,6 +14,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.data.FilterOptions
 import dev.hossain.devicecatalog.model.DeviceInfo
 import dev.hossain.devicecatalog.ui.devicedetails.DeviceDetailsScreen
 import dev.zacsweers.metro.AppScope
@@ -24,6 +25,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.flowOf
 import timber.log.Timber
@@ -52,24 +54,35 @@ class DevicesPresenter(
 
         val debouncedQuery by debouncedSearchQuery.collectAsState(initial = searchQuery)
 
-        // Get devices based on search query
-        val devices by if (debouncedQuery.isBlank()) {
-            deviceRepository.getAllDevices()
-        } else {
-            deviceRepository.searchDevices(debouncedQuery)
+        // Get available filter options
+        val filterOptions by deviceRepository.getFilterOptions().collectAsState(initial = FilterOptions(emptyList(), emptyList(), emptyList()))
+
+        // Get devices based on search query and filters
+        val devices by remember(debouncedQuery, activeFilters) {
+            deviceRepository.getFilteredDevices(
+                searchQuery = debouncedQuery,
+                manufacturers = activeFilters.manufacturers,
+                brands = activeFilters.brands,
+                formFactors = activeFilters.formFactors,
+            )
         }.collectAsState(initial = emptyList())
 
-        // Get paged devices based on search query
-        val pagedDevices: Flow<PagingData<DeviceInfo>> = remember(debouncedQuery) {
-            val pagingFlow = if (debouncedQuery.isBlank()) {
-                deviceRepository.getPagedDevices()
+        // Get paged devices based on search query (disable paging when filters are active)
+        val pagedDevices: Flow<PagingData<DeviceInfo>> = remember(debouncedQuery, activeFilters.hasActiveFilters) {
+            if (activeFilters.hasActiveFilters) {
+                // When filters are active, disable paging and use regular list
+                flowOf(PagingData.empty())
             } else {
-                deviceRepository.getPagedDevicesBySearch(debouncedQuery)
-            }
-            
-            pagingFlow.map { pagingData ->
-                pagingData.map { deviceWithRelations ->
-                    deviceWithRelations.toModel()
+                val pagingFlow = if (debouncedQuery.isBlank()) {
+                    deviceRepository.getPagedDevices()
+                } else {
+                    deviceRepository.getPagedDevicesBySearch(debouncedQuery)
+                }
+                
+                pagingFlow.map { pagingData ->
+                    pagingData.map { deviceWithRelations ->
+                        deviceWithRelations.toModel()
+                    }
                 }
             }
         }
@@ -85,6 +98,7 @@ class DevicesPresenter(
             activeFilters = activeFilters,
             isFilterSheetVisible = isFilterSheetVisible,
             usePaging = usePaging,
+            filterOptions = filterOptions,
             eventSink = { event ->
                 when (event) {
                     is DevicesScreen.Event.DeviceClicked -> {

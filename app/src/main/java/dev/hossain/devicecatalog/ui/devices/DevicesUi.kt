@@ -161,8 +161,8 @@ fun DevicesUi(
                         )
                     }
 
-                    // Show paged content when using paging
-                    state.usePaging -> {
+                    // Show paged content when using paging and no filters active
+                    state.usePaging && !state.activeFilters.hasActiveFilters -> {
                         PaginatedDeviceList(
                             state = state,
                             layoutConfig = layoutConfig,
@@ -201,10 +201,9 @@ fun DevicesUi(
                 state.eventSink(DevicesScreen.Event.FilterChanged(filters))
             },
             onClearAll = { state.eventSink(DevicesScreen.Event.ClearAllFilters) },
-            // TODO: Pass available filter options from repository
-            availableManufacturers = emptyList(),
-            availableBrands = emptyList(),
-            availableFormFactors = emptyList(),
+            availableManufacturers = state.filterOptions.manufacturers,
+            availableBrands = state.filterOptions.brands,
+            availableFormFactors = state.filterOptions.formFactors,
         )
     }
 }

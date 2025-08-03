@@ -109,40 +109,6 @@ private fun buildActiveFilterList(filters: DevicesScreen.FilterState): List<Acti
         )
     }
 
-    // Add RAM range filter
-    if (filters.minRamMb != null || filters.maxRamMb != null) {
-        val label = when {
-            filters.minRamMb != null && filters.maxRamMb != null -> 
-                "RAM: ${filters.minRamMb}-${filters.maxRamMb}MB"
-            filters.minRamMb != null -> "RAM: ≥${filters.minRamMb}MB"
-            filters.maxRamMb != null -> "RAM: ≤${filters.maxRamMb}MB"
-            else -> "RAM"
-        }
-        activeFilters.add(
-            ActiveFilter(
-                type = FilterType.RamRange,
-                label = label,
-            ),
-        )
-    }
-
-    // Add SDK version range filter
-    if (filters.minSdkVersion != null || filters.maxSdkVersion != null) {
-        val label = when {
-            filters.minSdkVersion != null && filters.maxSdkVersion != null -> 
-                "API: ${filters.minSdkVersion}-${filters.maxSdkVersion}"
-            filters.minSdkVersion != null -> "API: ≥${filters.minSdkVersion}"
-            filters.maxSdkVersion != null -> "API: ≤${filters.maxSdkVersion}"
-            else -> "API"
-        }
-        activeFilters.add(
-            ActiveFilter(
-                type = FilterType.SdkRange,
-                label = label,
-            ),
-        )
-    }
-
     return activeFilters
 }
 
@@ -155,8 +121,6 @@ sealed class FilterType {
     data class Manufacturer(val value: String) : FilterType()
     data class Brand(val value: String) : FilterType()
     data class FormFactor(val value: String) : FilterType()
-    data object RamRange : FilterType()
-    data object SdkRange : FilterType()
 }
 
 fun DevicesScreen.FilterState.removeFilter(filterType: FilterType): DevicesScreen.FilterState {
@@ -164,7 +128,5 @@ fun DevicesScreen.FilterState.removeFilter(filterType: FilterType): DevicesScree
         is FilterType.Manufacturer -> copy(manufacturers = manufacturers - filterType.value)
         is FilterType.Brand -> copy(brands = brands - filterType.value)
         is FilterType.FormFactor -> copy(formFactors = formFactors - filterType.value)
-        FilterType.RamRange -> copy(minRamMb = null, maxRamMb = null)
-        FilterType.SdkRange -> copy(minSdkVersion = null, maxSdkVersion = null)
     }
 }

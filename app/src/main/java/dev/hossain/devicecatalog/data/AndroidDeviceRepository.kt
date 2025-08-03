@@ -265,6 +265,72 @@ class AndroidDeviceRepository
                 )
             }
         }
+
+        /**
+         * Get filtered devices based on search query and filter criteria.
+         */
+        fun getFilteredDevices(
+            searchQuery: String = "",
+            manufacturers: Set<String> = emptySet(),
+            brands: Set<String> = emptySet(),
+            formFactors: Set<String> = emptySet(),
+        ): Flow<List<DeviceInfo>> {
+            Timber.d("Getting filtered devices with search: '$searchQuery', filters: manufacturers=${manufacturers.size}, brands=${brands.size}, formFactors=${formFactors.size}")
+            
+            return getAllDevices().map { allDevices ->
+                var filteredDevices = allDevices
+                
+                // Apply search filter
+                if (searchQuery.isNotBlank()) {
+                    val searchLower = searchQuery.lowercase()
+                    filteredDevices = filteredDevices.filter { device ->
+                        device.androidDevice.manufacturer.lowercase().contains(searchLower) ||
+                        device.androidDevice.modelName.lowercase().contains(searchLower) ||
+                        device.androidDevice.brand.lowercase().contains(searchLower)
+                    }
+                }
+                
+                // Apply manufacturer filter
+                if (manufacturers.isNotEmpty()) {
+                    filteredDevices = filteredDevices.filter { device ->
+                        manufacturers.contains(device.androidDevice.manufacturer)
+                    }
+                }
+                
+                // Apply brand filter
+                if (brands.isNotEmpty()) {
+                    filteredDevices = filteredDevices.filter { device ->
+                        brands.contains(device.androidDevice.brand)
+                    }
+                }
+                
+                // Apply form factor filter
+                if (formFactors.isNotEmpty()) {
+                    filteredDevices = filteredDevices.filter { device ->
+                        formFactors.contains(device.androidDevice.formFactor.name)
+                    }
+                }
+                
+                Timber.d("Filtered ${allDevices.size} devices down to ${filteredDevices.size}")
+                filteredDevices
+            }
+        }
+        fun getFilterOptions(): Flow<FilterOptions> {
+            Timber.d("Getting filter options")
+            return getAllDevices().map { devices ->
+                val manufacturers = devices.map { it.androidDevice.manufacturer }.distinct().sorted()
+                val brands = devices.map { it.androidDevice.brand }.distinct().sorted()
+                val formFactors = devices.map { it.androidDevice.formFactor.name }.distinct().sorted()
+
+                Timber.d("Filter options - Manufacturers: ${manufacturers.size}, Brands: ${brands.size}, Form factors: ${formFactors.size}")
+
+                FilterOptions(
+                    manufacturers = manufacturers,
+                    brands = brands,
+                    formFactors = formFactors,
+                )
+            }
+        }
     }
 
 /**
@@ -291,4 +357,13 @@ data class FormFactorCount(
 data class ManufacturerCount(
     val manufacturer: String,
     val count: Int,
+)
+
+/**
+ * Data class representing available filter options.
+ */
+data class FilterOptions(
+    val manufacturers: List<String>,
+    val brands: List<String>,
+    val formFactors: List<String>,
 )

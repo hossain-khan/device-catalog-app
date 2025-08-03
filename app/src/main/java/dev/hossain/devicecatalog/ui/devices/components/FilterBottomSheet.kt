@@ -138,38 +138,6 @@ fun FilterBottomSheet(
                             )
                         }
                     }
-
-                    // RAM Range filter
-                    item {
-                        RamRangeFilter(
-                            minRam = currentFilters.minRamMb,
-                            maxRam = currentFilters.maxRamMb,
-                            onRangeChanged = { min, max ->
-                                onFiltersChanged(
-                                    currentFilters.copy(
-                                        minRamMb = min,
-                                        maxRamMb = max,
-                                    ),
-                                )
-                            },
-                        )
-                    }
-
-                    // SDK Version Range filter
-                    item {
-                        SdkVersionRangeFilter(
-                            minSdk = currentFilters.minSdkVersion,
-                            maxSdk = currentFilters.maxSdkVersion,
-                            onRangeChanged = { min, max ->
-                                onFiltersChanged(
-                                    currentFilters.copy(
-                                        minSdkVersion = min,
-                                        maxSdkVersion = max,
-                                    ),
-                                )
-                            },
-                        )
-                    }
                 }
 
                 // Bottom actions
