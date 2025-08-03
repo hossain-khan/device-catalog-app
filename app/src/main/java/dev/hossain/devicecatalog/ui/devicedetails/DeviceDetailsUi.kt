@@ -1,0 +1,462 @@
+package dev.hossain.devicecatalog.ui.devicedetails
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.zacsweers.metro.AppScope
+
+@CircuitInject(DeviceDetailsScreen::class, AppScope::class)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeviceDetailsUi(
+    state: DeviceDetailsScreen.State,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = state.device?.modelName ?: "Device Details",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.BackClicked) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                ),
+            )
+        },
+    ) { innerPadding ->
+        when {
+            state.isLoading -> {
+                LoadingContent(modifier = Modifier.padding(innerPadding))
+            }
+            state.errorMessage != null -> {
+                ErrorContent(
+                    errorMessage = state.errorMessage,
+                    onRetry = { state.eventSink(DeviceDetailsScreen.Event.RetryLoading) },
+                    modifier = Modifier.padding(innerPadding),
+                )
+            }
+            state.device != null -> {
+                DeviceDetailsContent(
+                    device = state.device,
+                    modifier = Modifier.padding(innerPadding),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingContent(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            CircularProgressIndicator()
+            Text(
+                text = "Loading device details...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    errorMessage: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Icon(
+                imageVector = Icons.Default.Warning,
+                contentDescription = null,
+                modifier = Modifier.size(48.dp),
+                tint = MaterialTheme.colorScheme.error,
+            )
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            OutlinedButton(onClick = onRetry) {
+                Text("Retry")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DeviceDetailsContent(
+    device: AndroidDevice,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        // Device header with icon and basic info
+        DeviceHeaderCard(device = device)
+        
+        // Basic device information
+        BasicInfoCard(device = device)
+        
+        // Technical specifications
+        TechnicalSpecsCard(device = device)
+        
+        // Screen information
+        if (device.screenSizes.isNotEmpty() || device.screenDensities.isNotEmpty()) {
+            ScreenInfoCard(device = device)
+        }
+        
+        // Platform information
+        if (device.abis.isNotEmpty() || device.sdkVersions.isNotEmpty() || device.openGlEsVersions.isNotEmpty()) {
+            PlatformInfoCard(device = device)
+        }
+    }
+}
+
+@Composable
+private fun DeviceHeaderCard(device: AndroidDevice) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+        ),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Device icon
+            Surface(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                color = MaterialTheme.colorScheme.primary,
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = when (device.formFactor.lowercase()) {
+                            "phone" -> Icons.Default.Settings // Using Settings as placeholder
+                            "tablet" -> Icons.Default.Settings // Using Settings as placeholder
+                            "tv" -> Icons.Default.Settings // Using Settings as placeholder
+                            else -> Icons.Default.Settings
+                        },
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
+            // Device title and subtitle
+            Column {
+                Text(
+                    text = device.modelName,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Text(
+                    text = "${device.manufacturer} • ${device.brand}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                )
+                if (device.formFactor.isNotBlank()) {
+                    Text(
+                        text = device.formFactor,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun BasicInfoCard(device: AndroidDevice) {
+    InfoCard(title = "Basic Information") {
+        InfoRow(label = "Device Name", value = device.device)
+        InfoRow(label = "Manufacturer", value = device.manufacturer)
+        InfoRow(label = "Brand", value = device.brand)
+        InfoRow(label = "Model", value = device.modelName)
+        if (device.formFactor.isNotBlank()) {
+            InfoRow(label = "Form Factor", value = device.formFactor)
+        }
+    }
+}
+
+@Composable
+private fun TechnicalSpecsCard(device: AndroidDevice) {
+    InfoCard(title = "Technical Specifications") {
+        if (device.ram.isNotBlank()) {
+            InfoRow(label = "RAM", value = device.ram)
+        }
+        if (device.processorName.isNotBlank()) {
+            InfoRow(label = "Processor", value = device.processorName)
+        }
+        if (device.gpu.isNotBlank()) {
+            InfoRow(label = "GPU", value = device.gpu)
+        }
+    }
+}
+
+@Composable
+private fun ScreenInfoCard(device: AndroidDevice) {
+    InfoCard(title = "Screen Information") {
+        if (device.screenSizes.isNotEmpty()) {
+            ChipRow(
+                label = "Screen Sizes",
+                items = device.screenSizes,
+            )
+        }
+        if (device.screenDensities.isNotEmpty()) {
+            ChipRow(
+                label = "Screen Densities",
+                items = device.screenDensities.map { "${it}dpi" },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun PlatformInfoCard(device: AndroidDevice) {
+    InfoCard(title = "Platform Information") {
+        if (device.abis.isNotEmpty()) {
+            ChipRow(
+                label = "Supported ABIs",
+                items = device.abis,
+            )
+        }
+        if (device.sdkVersions.isNotEmpty()) {
+            ChipRow(
+                label = "SDK Versions",
+                items = device.sdkVersions.map { "API $it" },
+            )
+        }
+        if (device.openGlEsVersions.isNotEmpty()) {
+            ChipRow(
+                label = "OpenGL ES Versions",
+                items = device.openGlEsVersions,
+            )
+        }
+    }
+}
+
+@Composable
+private fun InfoCard(
+    title: String,
+    content: @Composable () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary,
+            )
+            content()
+        }
+    }
+}
+
+@Composable
+private fun InfoRow(
+    label: String,
+    value: String,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(2f),
+            textAlign = TextAlign.End,
+        )
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ChipRow(
+    label: String,
+    items: List<String>,
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            items.forEach { item ->
+                SuggestionChip(
+                    onClick = { /* No action needed for display-only chips */ },
+                    label = {
+                        Text(
+                            text = item,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DeviceDetailsPreview() {
+    DeviceCatalogAppTheme {
+        DeviceDetailsUi(
+            state = DeviceDetailsScreen.State(
+                device = AndroidDevice(
+                    brand = "google",
+                    device = "coral",
+                    manufacturer = "Google",
+                    modelName = "Pixel 4",
+                    ram = "6GB",
+                    formFactor = "Phone",
+                    processorName = "Qualcomm Snapdragon 855",
+                    gpu = "Adreno 640",
+                    screenSizes = listOf("1080x2280", "1440x3040"),
+                    screenDensities = listOf(420, 560),
+                    abis = listOf("arm64-v8a", "armeabi-v7a"),
+                    sdkVersions = listOf(28, 29, 30),
+                    openGlEsVersions = listOf("3.2"),
+                ),
+                eventSink = {},
+            ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LoadingPreview() {
+    DeviceCatalogAppTheme {
+        DeviceDetailsUi(
+            state = DeviceDetailsScreen.State(
+                isLoading = true,
+                eventSink = {},
+            ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ErrorPreview() {
+    DeviceCatalogAppTheme {
+        DeviceDetailsUi(
+            state = DeviceDetailsScreen.State(
+                errorMessage = "Device not found",
+                eventSink = {},
+            ),
+        )
+    }
+}

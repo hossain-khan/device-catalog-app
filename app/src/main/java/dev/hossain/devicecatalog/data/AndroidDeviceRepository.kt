@@ -91,6 +91,28 @@ class AndroidDeviceRepository
         }
 
         /**
+         * Get a specific device by its properties (since AndroidDevice doesn't have an ID).
+         */
+        suspend fun getDeviceByProperties(
+            brand: String,
+            device: String,
+            manufacturer: String,
+            modelName: String
+        ): AndroidDevice? {
+            Timber.d("Getting device by properties: brand=$brand, device=$device, manufacturer=$manufacturer, modelName=$modelName")
+            return try {
+                deviceDao
+                    .getDeviceByProperties(brand, device, manufacturer, modelName)
+                    ?.also {
+                        Timber.d("Found device: ${it.device.manufacturer} ${it.device.modelName}")
+                    }?.toModel()
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get device by properties")
+                null
+            }
+        }
+
+        /**
          * Insert a single device with all its related data.
          * @param device The domain model device to insert
          * @return The ID of the inserted device
