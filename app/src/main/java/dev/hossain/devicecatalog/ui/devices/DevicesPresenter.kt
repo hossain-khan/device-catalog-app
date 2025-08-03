@@ -13,6 +13,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.model.DeviceInfo
 import dev.hossain.devicecatalog.ui.devicedetails.DeviceDetailsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -35,7 +36,7 @@ class DevicesPresenter(
         val devices by deviceRepository.getAllDevices().collectAsState(initial = emptyList())
 
         // Get paged devices by converting AndroidDeviceWithRelations to AndroidDevice
-        val pagedDevices: Flow<PagingData<AndroidDevice>> =
+        val pagedDevices: Flow<PagingData<DeviceInfo>> =
             remember {
                 deviceRepository.getPagedDevices().map { pagingData ->
                     pagingData.map { deviceWithRelations ->
@@ -54,13 +55,10 @@ class DevicesPresenter(
             eventSink = { event ->
                 when (event) {
                     is DevicesScreen.Event.DeviceClicked -> {
-                        Timber.d("Device clicked: ${event.device.manufacturer} ${event.device.modelName}")
+                        Timber.d("Device clicked: ${event.device}")
                         navigator.goTo(
                             DeviceDetailsScreen(
-                                brand = event.device.brand,
-                                device = event.device.device,
-                                manufacturer = event.device.manufacturer,
-                                modelName = event.device.modelName,
+                                deviceId = event.device.id,
                             ),
                         )
                     }

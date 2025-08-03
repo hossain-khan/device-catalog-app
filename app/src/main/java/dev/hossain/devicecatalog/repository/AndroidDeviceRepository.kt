@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceWithRelations
+import dev.hossain.devicecatalog.model.DeviceInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -23,7 +24,7 @@ class AndroidDeviceRepository
         /**
          * Get all devices with their relationships as a Flow of domain models.
          */
-        fun getAllDevices(): Flow<List<AndroidDevice>> {
+        fun getAllDevices(): Flow<List<DeviceInfo>> {
             Timber.d("Getting all devices with relationships")
             return deviceDao
                 .getAllDevicesWithRelations()
@@ -41,7 +42,7 @@ class AndroidDeviceRepository
             device: String,
             manufacturer: String,
             modelName: String,
-        ): AndroidDevice? {
+        ): DeviceInfo? {
             Timber.d("Getting device by properties: brand=$brand, device=$device, manufacturer=$manufacturer, modelName=$modelName")
             return try {
                 deviceDao
@@ -58,7 +59,7 @@ class AndroidDeviceRepository
         /**
          * Search devices by manufacturer or model name.
          */
-        fun searchDevices(query: String): Flow<List<AndroidDevice>> {
+        fun searchDevices(query: String): Flow<List<DeviceInfo>> {
             val searchQuery = "%$query%"
             Timber.d("Searching devices with query: $query")
             return deviceDao

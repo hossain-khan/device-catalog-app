@@ -5,6 +5,7 @@ import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.devicecatalog.model.DeviceInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.parcelize.Parcelize
@@ -12,8 +13,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data object DevicesScreen : Screen {
     data class State(
-        val devices: List<AndroidDevice> = emptyList(),
-        val pagedDevices: Flow<PagingData<AndroidDevice>> = emptyFlow(),
+        val devices: List<DeviceInfo> = emptyList(),
+        val pagedDevices: Flow<PagingData<DeviceInfo>> = emptyFlow(),
         val isLoading: Boolean = false,
         val isRefreshing: Boolean = false,
         val isEmpty: Boolean = false,
@@ -24,7 +25,7 @@ data object DevicesScreen : Screen {
 
     sealed class Event : CircuitUiEvent {
         data class DeviceClicked(
-            val device: AndroidDevice,
+            val device: DeviceInfo,
         ) : Event()
 
         data object RefreshDevices : Event()

@@ -8,10 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class DeviceDetailsScreen(
-    val brand: String,
-    val device: String,
-    val manufacturer: String,
-    val modelName: String,
+    val deviceId: Long,
 ) : Screen {
     data class State(
         val device: AndroidDevice? = null,
