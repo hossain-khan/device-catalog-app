@@ -22,6 +22,7 @@ data class DeviceDetailsScreen(
 
     sealed class Event : CircuitUiEvent {
         data object BackClicked : Event()
+
         data object RetryLoading : Event()
     }
 }

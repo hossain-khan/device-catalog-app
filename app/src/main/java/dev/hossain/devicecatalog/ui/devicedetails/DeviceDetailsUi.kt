@@ -29,8 +29,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -72,10 +72,11 @@ fun DeviceDetailsUi(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
             )
         },
     ) { innerPadding ->
@@ -159,26 +160,27 @@ private fun DeviceDetailsContent(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Device header with icon and basic info
         DeviceHeaderCard(device = device)
-        
+
         // Basic device information
         BasicInfoCard(device = device)
-        
+
         // Technical specifications
         TechnicalSpecsCard(device = device)
-        
+
         // Screen information
         if (device.screenSizes.isNotEmpty() || device.screenDensities.isNotEmpty()) {
             ScreenInfoCard(device = device)
         }
-        
+
         // Platform information
         if (device.abis.isNotEmpty() || device.sdkVersions.isNotEmpty() || device.openGlEsVersions.isNotEmpty()) {
             PlatformInfoCard(device = device)
@@ -190,40 +192,44 @@ private fun DeviceDetailsContent(
 private fun DeviceHeaderCard(device: AndroidDevice) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             // Device icon
             Surface(
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(12.dp)),
+                modifier =
+                    Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(12.dp)),
                 color = MaterialTheme.colorScheme.primary,
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector = when (device.formFactor.lowercase()) {
-                            "phone" -> Icons.Default.Settings // Using Settings as placeholder
-                            "tablet" -> Icons.Default.Settings // Using Settings as placeholder
-                            "tv" -> Icons.Default.Settings // Using Settings as placeholder
-                            else -> Icons.Default.Settings
-                        },
+                        imageVector =
+                            when (device.formFactor.lowercase()) {
+                                "phone" -> Icons.Default.Settings // Using Settings as placeholder
+                                "tablet" -> Icons.Default.Settings // Using Settings as placeholder
+                                "tv" -> Icons.Default.Settings // Using Settings as placeholder
+                                else -> Icons.Default.Settings
+                            },
                         contentDescription = null,
                         modifier = Modifier.size(32.dp),
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.width(16.dp))
-            
+
             // Device title and subtitle
             Column {
                 Text(
@@ -327,9 +333,10 @@ private fun InfoCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
@@ -413,24 +420,26 @@ private fun ChipRow(
 private fun DeviceDetailsPreview() {
     DeviceCatalogAppTheme {
         DeviceDetailsUi(
-            state = DeviceDetailsScreen.State(
-                device = AndroidDevice(
-                    brand = "google",
-                    device = "coral",
-                    manufacturer = "Google",
-                    modelName = "Pixel 4",
-                    ram = "6GB",
-                    formFactor = "Phone",
-                    processorName = "Qualcomm Snapdragon 855",
-                    gpu = "Adreno 640",
-                    screenSizes = listOf("1080x2280", "1440x3040"),
-                    screenDensities = listOf(420, 560),
-                    abis = listOf("arm64-v8a", "armeabi-v7a"),
-                    sdkVersions = listOf(28, 29, 30),
-                    openGlEsVersions = listOf("3.2"),
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "google",
+                            device = "coral",
+                            manufacturer = "Google",
+                            modelName = "Pixel 4",
+                            ram = "6GB",
+                            formFactor = "Phone",
+                            processorName = "Qualcomm Snapdragon 855",
+                            gpu = "Adreno 640",
+                            screenSizes = listOf("1080x2280", "1440x3040"),
+                            screenDensities = listOf(420, 560),
+                            abis = listOf("arm64-v8a", "armeabi-v7a"),
+                            sdkVersions = listOf(28, 29, 30),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
                 ),
-                eventSink = {},
-            ),
         )
     }
 }
@@ -440,10 +449,11 @@ private fun DeviceDetailsPreview() {
 private fun LoadingPreview() {
     DeviceCatalogAppTheme {
         DeviceDetailsUi(
-            state = DeviceDetailsScreen.State(
-                isLoading = true,
-                eventSink = {},
-            ),
+            state =
+                DeviceDetailsScreen.State(
+                    isLoading = true,
+                    eventSink = {},
+                ),
         )
     }
 }
@@ -453,10 +463,11 @@ private fun LoadingPreview() {
 private fun ErrorPreview() {
     DeviceCatalogAppTheme {
         DeviceDetailsUi(
-            state = DeviceDetailsScreen.State(
-                errorMessage = "Device not found",
-                eventSink = {},
-            ),
+            state =
+                DeviceDetailsScreen.State(
+                    errorMessage = "Device not found",
+                    eventSink = {},
+                ),
         )
     }
 }

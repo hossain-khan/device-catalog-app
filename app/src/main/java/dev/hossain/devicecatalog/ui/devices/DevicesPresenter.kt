@@ -55,12 +55,14 @@ class DevicesPresenter(
                 when (event) {
                     is DevicesScreen.Event.DeviceClicked -> {
                         Timber.d("Device clicked: ${event.device.manufacturer} ${event.device.modelName}")
-                        navigator.goTo(DeviceDetailsScreen(
-                            brand = event.device.brand,
-                            device = event.device.device,
-                            manufacturer = event.device.manufacturer,
-                            modelName = event.device.modelName
-                        ))
+                        navigator.goTo(
+                            DeviceDetailsScreen(
+                                brand = event.device.brand,
+                                device = event.device.device,
+                                manufacturer = event.device.manufacturer,
+                                modelName = event.device.modelName,
+                            ),
+                        )
                     }
                     DevicesScreen.Event.RefreshDevices -> {
                         Timber.d("Refreshing devices")

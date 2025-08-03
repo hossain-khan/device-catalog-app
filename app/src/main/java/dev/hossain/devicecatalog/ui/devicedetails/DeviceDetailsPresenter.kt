@@ -25,7 +25,6 @@ class DeviceDetailsPresenter(
     @Assisted private val screen: DeviceDetailsScreen,
     private val deviceRepository: AndroidDeviceRepository,
 ) : Presenter<DeviceDetailsScreen.State> {
-
     @Composable
     override fun present(): DeviceDetailsScreen.State {
         var device by remember { mutableStateOf<AndroidDevice?>(null) }
@@ -37,14 +36,17 @@ class DeviceDetailsPresenter(
             try {
                 isLoading = true
                 errorMessage = null
-                Timber.d("Loading device: brand=${screen.brand}, device=${screen.device}, manufacturer=${screen.manufacturer}, modelName=${screen.modelName}")
-                
-                val loadedDevice = deviceRepository.getDeviceByProperties(
-                    brand = screen.brand,
-                    device = screen.device,
-                    manufacturer = screen.manufacturer,
-                    modelName = screen.modelName
+                Timber.d(
+                    "Loading device: brand=${screen.brand}, device=${screen.device}, manufacturer=${screen.manufacturer}, modelName=${screen.modelName}",
                 )
+
+                val loadedDevice =
+                    deviceRepository.getDeviceByProperties(
+                        brand = screen.brand,
+                        device = screen.device,
+                        manufacturer = screen.manufacturer,
+                        modelName = screen.modelName,
+                    )
                 if (loadedDevice != null) {
                     device = loadedDevice
                     Timber.i("Successfully loaded device: ${loadedDevice.manufacturer} ${loadedDevice.modelName}")
@@ -81,7 +83,7 @@ class DeviceDetailsPresenter(
                         }
                     }
                 }
-            }
+            },
         )
     }
 

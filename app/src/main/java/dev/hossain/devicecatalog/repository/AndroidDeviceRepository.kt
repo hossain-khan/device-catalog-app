@@ -40,7 +40,7 @@ class AndroidDeviceRepository
             brand: String,
             device: String,
             manufacturer: String,
-            modelName: String
+            modelName: String,
         ): AndroidDevice? {
             Timber.d("Getting device by properties: brand=$brand, device=$device, manufacturer=$manufacturer, modelName=$modelName")
             return try {
