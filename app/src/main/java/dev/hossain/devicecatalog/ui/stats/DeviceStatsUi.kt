@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.home
+package dev.hossain.devicecatalog.ui.stats
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

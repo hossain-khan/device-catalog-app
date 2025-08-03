@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.home
+package dev.hossain.devicecatalog.ui.stats
 
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
