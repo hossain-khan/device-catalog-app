@@ -160,7 +160,7 @@ private fun FormFactorStatsCard(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Text(
-                            text = formFactor.formFactor,
+                            text = formFactor.formFactor.value,
                             style = MaterialTheme.typography.bodyMedium,
                         )
                         Text(

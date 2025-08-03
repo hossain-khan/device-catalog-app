@@ -38,12 +38,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.R
 import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 
@@ -214,13 +217,19 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        imageVector =
-                            when (device.formFactor.lowercase()) {
-                                "phone" -> Icons.Default.Settings // Using Settings as placeholder
-                                "tablet" -> Icons.Default.Settings // Using Settings as placeholder
-                                "tv" -> Icons.Default.Settings // Using Settings as placeholder
-                                else -> Icons.Default.Settings
-                            },
+                        painter =
+                            painterResource(
+                                id =
+                                    when (device.formFactor) {
+                                        FormFactor.PHONE -> R.drawable.mobile_24dp
+                                        FormFactor.TABLET -> R.drawable.tablet_24dp
+                                        FormFactor.TV -> R.drawable.tv_24dp
+                                        FormFactor.WEARABLE -> R.drawable.smart_watch_24dp
+                                        FormFactor.ANDROID_AUTOMOTIVE -> R.drawable.car_automotive_24dp
+                                        FormFactor.CHROMEBOOK -> R.drawable.laptop_chromebook_24dp
+                                        FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> R.drawable.game_controller_24dp
+                                    },
+                            ),
                         contentDescription = null,
                         modifier = Modifier.size(32.dp),
                         tint = MaterialTheme.colorScheme.onPrimary,
@@ -243,13 +252,12 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                 )
-                if (device.formFactor.isNotBlank()) {
-                    Text(
-                        text = device.formFactor,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
-                    )
-                }
+
+                Text(
+                    text = device.formFactor.value,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                )
             }
         }
     }
@@ -262,9 +270,7 @@ private fun BasicInfoCard(device: AndroidDevice) {
         InfoRow(label = "Manufacturer", value = device.manufacturer)
         InfoRow(label = "Brand", value = device.brand)
         InfoRow(label = "Model", value = device.modelName)
-        if (device.formFactor.isNotBlank()) {
-            InfoRow(label = "Form Factor", value = device.formFactor)
-        }
+        InfoRow(label = "Form Factor", value = device.formFactor.value)
     }
 }
 
@@ -429,7 +435,7 @@ private fun DeviceDetailsPreview() {
                             manufacturer = "Google",
                             modelName = "Pixel 4",
                             ram = "6GB",
-                            formFactor = "Phone",
+                            formFactor = FormFactor.PHONE,
                             processorName = "Qualcomm Snapdragon 855",
                             gpu = "Adreno 640",
                             screenSizes = listOf("1080x2280", "1440x3040"),

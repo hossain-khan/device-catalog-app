@@ -3,7 +3,7 @@ activityCompose = "1.10.1"
 
 # The custom parser library for parsing the Android Device Catalog in CSV.
 # https://github.com/hossain-khan/android-device-catalog-parser
-androidDeviceCatalogParser = "1.6"
+androidDeviceCatalogParser = "1.8"
 
 composeLintChecks = "1.4.2"
 
