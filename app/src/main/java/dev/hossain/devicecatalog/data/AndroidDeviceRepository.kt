@@ -9,6 +9,7 @@ import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceEntity
 import dev.hossain.devicecatalog.db.AndroidDeviceWithRelations
 import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.model.MinMaxRange
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Inject
@@ -22,11 +23,18 @@ class AndroidDeviceRepository
         private val deviceDao: AndroidDeviceDao,
     ) {
         /**
-         * Get paged list of devices with relationships.
-         * Returns the entity with relations for UI display.
+         * Get paged list of devices with relationships, with optional search and filtering.
+         *
+         * @param searchQuery Optional query to search for devices.
+         * @param filters Optional filters to apply to the device list.
+         * @return A flow of paginated device data.
          */
-        fun getPagedDevices(): Flow<PagingData<AndroidDeviceWithRelations>> {
-            Timber.d("Creating paged devices flow")
+        fun getPagedDevices(
+            searchQuery: String = "",
+            filters: dev.hossain.devicecatalog.ui.devices.DevicesScreen.FilterState = dev.hossain.devicecatalog.ui.devices.DevicesScreen.FilterState(),
+        ): Flow<PagingData<AndroidDeviceWithRelations>> {
+            val query = if (searchQuery.isNotBlank()) "%$searchQuery%" else null
+            Timber.d("Creating paged devices flow with search: `$searchQuery` and filters: `$filters`")
             return Pager(
                 config =
                     PagingConfig(
@@ -35,26 +43,25 @@ class AndroidDeviceRepository
                         maxSize = 100,
                     ),
             ) {
-                deviceDao.getPagedDevicesWithRelations()
+                deviceDao.getPagedDevicesWithRelations(
+                    searchQuery = query,
+                    formFactor = filters.formFactor,
+                    minRam = filters.ramRange?.start,
+                    maxRam = filters.ramRange?.endInclusive,
+                    minSdk = filters.sdkVersion,
+                    maxSdk = null, // Corrected: Only filtering by min SDK version
+                    manufacturer = filters.manufacturer,
+                    brand = filters.brand,
+                )
             }.flow
         }
 
         /**
          * Get paged list of devices filtered by search query with relationships.
          */
+        @Deprecated("Use getPagedDevices with searchQuery instead", ReplaceWith("getPagedDevices(searchQuery = query)"))
         fun getPagedDevicesBySearch(query: String): Flow<PagingData<AndroidDeviceWithRelations>> {
-            val searchQuery = "%$query%"
-            Timber.d("Creating paged devices flow with search: $query")
-            return Pager(
-                config =
-                    PagingConfig(
-                        pageSize = 20,
-                        enablePlaceholders = true,
-                        maxSize = 100,
-                    ),
-            ) {
-                deviceDao.getPagedDevicesWithRelationsBySearch(searchQuery)
-            }.flow
+            return getPagedDevices(searchQuery = query)
         }
 
         /**
@@ -264,6 +271,21 @@ class AndroidDeviceRepository
                     topManufacturers = topManufacturers,
                 )
             }
+        }
+
+        // ----------------------------------------------------------------
+        // Methods for providing filter options
+        // ----------------------------------------------------------------
+        fun getAvailableFormFactors(): Flow<List<String>> {
+            return deviceDao.getDistinctFormFactors()
+        }
+
+        fun getRamRange(): Flow<MinMaxRange?> {
+            return deviceDao.getRamRange()
+        }
+
+        fun getSdkRange(): Flow<MinMaxRange?> {
+            return deviceDao.getSdkRange()
         }
     }
 

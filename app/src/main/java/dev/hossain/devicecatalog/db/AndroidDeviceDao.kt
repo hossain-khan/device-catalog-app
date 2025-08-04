@@ -7,10 +7,23 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import dev.hossain.devicecatalog.model.MinMaxRange
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AndroidDeviceDao {
+    // ----------------------------------------------------------------
+    // Device Statistics and Filter Options
+    // ----------------------------------------------------------------
+    @Query("SELECT DISTINCT form_factor FROM device WHERE form_factor IS NOT NULL AND form_factor != '' ORDER BY form_factor ASC")
+    fun getDistinctFormFactors(): Flow<List<String>>
+
+    @Query("SELECT MIN(CAST(ram AS INTEGER)) as min, MAX(CAST(ram AS INTEGER)) as max FROM device WHERE ram GLOB '[0-9]*'")
+    fun getRamRange(): Flow<MinMaxRange?>
+
+    @Query("SELECT MIN(sdk_version) as min, MAX(sdk_version) as max FROM device_sdk")
+    fun getSdkRange(): Flow<MinMaxRange?>
+
     // ----------------------------------------------------------------
     // Basic device operations
     // ----------------------------------------------------------------
@@ -62,10 +75,39 @@ interface AndroidDeviceDao {
     // ----------------------------------------------------------------
 
     @Transaction
+    @Query(
+        """
+        SELECT * FROM device
+        WHERE
+            (:searchQuery IS NULL OR manufacturer LIKE :searchQuery OR model_name LIKE :searchQuery OR brand LIKE :searchQuery OR device LIKE :searchQuery) AND
+            (:formFactor IS NULL OR form_factor = :formFactor) AND
+            (:minRam IS NULL OR (ram GLOB '[0-9]*' AND CAST(ram AS INTEGER) >= :minRam)) AND
+            (:maxRam IS NULL OR (ram GLOB '[0-9]*' AND CAST(ram AS INTEGER) <= :maxRam)) AND
+            (:minSdk IS NULL OR _id IN (SELECT device_id FROM device_sdk WHERE sdk_version >= :minSdk)) AND
+            (:maxSdk IS NULL OR _id IN (SELECT device_id FROM device_sdk WHERE sdk_version <= :maxSdk)) AND
+            (:manufacturer IS NULL OR manufacturer = :manufacturer) AND
+            (:brand IS NULL OR brand = :brand)
+        ORDER BY manufacturer ASC
+        """,
+    )
+    fun getPagedDevicesWithRelations(
+        searchQuery: String?,
+        formFactor: String?,
+        minRam: Int?,
+        maxRam: Int?,
+        minSdk: Int?,
+        maxSdk: Int?,
+        manufacturer: String?,
+        brand: String?,
+    ): PagingSource<Int, AndroidDeviceWithRelations>
+
+    @Transaction
+    @Deprecated("Use getPagedDevicesWithRelations with parameters", replaceWith = ReplaceWith("getPagedDevicesWithRelations(null, null, null, null, null, null, null, null)"))
     @Query("SELECT * FROM device ORDER BY manufacturer ASC")
     fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations>
 
     @Transaction
+    @Deprecated("Use getPagedDevicesWithRelations with parameters", replaceWith = ReplaceWith("getPagedDevicesWithRelations(search, null, null, null, null, null, null, null)"))
     @Query("SELECT * FROM device WHERE manufacturer LIKE :search OR model_name LIKE :search ORDER BY manufacturer ASC")
     fun getPagedDevicesWithRelationsBySearch(search: String): PagingSource<Int, AndroidDeviceWithRelations>
 

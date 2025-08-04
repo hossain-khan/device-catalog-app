@@ -12,21 +12,31 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -35,9 +45,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.ui.devices.components.ActiveFilters
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCard
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCardSkeleton
 import dev.hossain.devicecatalog.ui.devices.components.EmptyDeviceState
+import dev.hossain.devicecatalog.ui.devices.components.FilterBottomSheet
 import dev.hossain.devicecatalog.ui.devices.components.rememberDeviceListLayoutConfig
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
@@ -61,6 +73,8 @@ fun DevicesUi(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutConfig = rememberDeviceListLayoutConfig()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+    val filterSheetState = rememberModalBottomSheetState()
 
     // Handle error messages
     LaunchedEffect(state.errorMessage) {
@@ -69,18 +83,60 @@ fun DevicesUi(
         }
     }
 
+    if (state.showFilterSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { state.eventSink(DevicesScreen.Event.FilterDismissed) },
+            sheetState = filterSheetState,
+        ) {
+            FilterBottomSheet(
+                filterState = state.filters,
+                availableFormFactors = state.availableFormFactors,
+                ramRange = state.ramRange,
+                sdkRange = state.sdkRange,
+                onApplyFilters = { filters ->
+                    state.eventSink(DevicesScreen.Event.FilterApplied(filters))
+                },
+                onClearFilters = {
+                    state.eventSink(DevicesScreen.Event.FilterCleared)
+                },
+            )
+        }
+    }
+
     Scaffold(
         modifier =
-            modifier.semantics {
-                contentDescription = "Device catalog screen with ${state.devices.size} devices"
-            },
+            modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics {
+                    contentDescription = "Device catalog screen with ${state.devices.size} devices"
+                },
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = if (state.usePaging) "Device Catalog" else "All Devices (${state.devices.size})",
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = state.searchQuery,
+                        onValueChange = { state.eventSink(DevicesScreen.Event.SearchQueryChanged(it)) },
+                        placeholder = { Text("Search Devices") },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                        trailingIcon = {
+                            if (state.searchQuery.isNotEmpty()) {
+                                IconButton(
+                                    onClick = { state.eventSink(DevicesScreen.Event.ClearSearchQuery) },
+                                ) {
+                                    Icon(Icons.Default.Clear, contentDescription = "Clear Search")
+                                }
+                            }
+                        },
+                        singleLine = true,
                     )
                 },
+                actions = {
+                    IconButton(onClick = { state.eventSink(DevicesScreen.Event.FilterClicked) }) {
+                        Icon(Icons.Default.FilterList, contentDescription = "Filter Devices")
+                    }
+                },
+                scrollBehavior = scrollBehavior,
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -95,12 +151,17 @@ fun DevicesUi(
             }
         },
     ) { innerPadding ->
-        Box(
+        Column(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
         ) {
+            ActiveFilters(
+                filterState = state.filters,
+                onFilterStateChanged = { state.eventSink(DevicesScreen.Event.FilterApplied(it)) },
+            )
+
             when {
                 // Show loading state for initial load
                 state.isLoading && !state.isRefreshing -> {
