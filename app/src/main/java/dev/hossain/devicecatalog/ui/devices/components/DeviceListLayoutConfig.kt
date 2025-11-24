@@ -42,6 +42,7 @@ fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
                     itemSpacing = 8.dp,
                 )
             }
+
             screenWidthDp < 900.dp -> {
                 // Small tablet layout: Two columns
                 DeviceListLayoutConfig(
@@ -54,6 +55,7 @@ fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
                     itemSpacing = 12.dp,
                 )
             }
+
             else -> {
                 // Large tablet layout: Three columns
                 DeviceListLayoutConfig(
@@ -90,6 +92,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                     itemSpacing = 8.dp,
                 )
             }
+
             WindowWidthSizeClass.Medium -> {
                 // Small tablet layout: Two columns
                 DeviceListLayoutConfig(
@@ -102,6 +105,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                     itemSpacing = 12.dp,
                 )
             }
+
             WindowWidthSizeClass.Expanded -> {
                 // Large tablet layout: Three columns
                 DeviceListLayoutConfig(
@@ -114,6 +118,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                     itemSpacing = 16.dp,
                 )
             }
+
             else -> {
                 // Fallback to single column
                 DeviceListLayoutConfig(

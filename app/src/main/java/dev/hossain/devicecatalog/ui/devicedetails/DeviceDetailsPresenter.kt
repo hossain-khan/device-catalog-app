@@ -15,11 +15,11 @@ import dev.hossain.devicecatalog.data.AndroidDeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@Inject
+@AssistedInject
 class DeviceDetailsPresenter(
     @Assisted private val navigator: Navigator,
     @Assisted private val screen: DeviceDetailsScreen,
@@ -70,6 +70,7 @@ class DeviceDetailsPresenter(
                         Timber.d("Back button clicked")
                         navigator.pop()
                     }
+
                     DeviceDetailsScreen.Event.RetryLoading -> {
                         Timber.d("Retry loading requested")
                         coroutineScope.launch {

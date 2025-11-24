@@ -12,10 +12,10 @@ import dev.hossain.devicecatalog.data.ExampleAppVersionService
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import timber.log.Timber
 
-@Inject
+@AssistedInject
 class DeviceStatsPresenter
     constructor(
         @Assisted private val navigator: Navigator,

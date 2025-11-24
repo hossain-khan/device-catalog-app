@@ -87,6 +87,7 @@ fun DeviceDetailsUi(
             state.isLoading -> {
                 LoadingContent(modifier = Modifier.padding(innerPadding))
             }
+
             state.errorMessage != null -> {
                 ErrorContent(
                     errorMessage = state.errorMessage,
@@ -94,6 +95,7 @@ fun DeviceDetailsUi(
                     modifier = Modifier.padding(innerPadding),
                 )
             }
+
             state.device != null -> {
                 DeviceDetailsContent(
                     device = state.device,

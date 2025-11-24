@@ -18,12 +18,12 @@ import dev.hossain.devicecatalog.ui.devicedetails.DeviceDetailsScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
-import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
-@Inject
+@AssistedInject
 class DevicesPresenter(
     @Assisted private val navigator: Navigator,
     private val deviceRepository: AndroidDeviceRepository,
@@ -62,6 +62,7 @@ class DevicesPresenter(
                             ),
                         )
                     }
+
                     DevicesScreen.Event.RefreshDevices -> {
                         Timber.d("Refreshing devices")
                         isRefreshing = true
@@ -69,10 +70,12 @@ class DevicesPresenter(
                         // For now, just reset the refreshing state
                         isRefreshing = false
                     }
+
                     DevicesScreen.Event.RetryLoading -> {
                         Timber.d("Retrying device loading")
                         // TODO: Implement retry logic
                     }
+
                     DevicesScreen.Event.TogglePagingMode -> {
                         Timber.d("Toggling paging mode from $usePaging to ${!usePaging}")
                         usePaging = !usePaging

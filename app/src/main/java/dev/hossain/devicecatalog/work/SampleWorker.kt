@@ -9,6 +9,7 @@ import dev.hossain.devicecatalog.di.WorkerKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
@@ -21,7 +22,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * @see AppWorkerFactory
  */
-@Inject
+@AssistedInject
 class SampleWorker(
     context: Context,
     @Assisted params: WorkerParameters,
