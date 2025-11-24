@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Search Devices Shortcut -->
+    <shortcut
+        android:shortcutId="search_devices"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:shortcutShortLabel="@string/shortcut_search_short"
+        android:shortcutLongLabel="@string/shortcut_search_long"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="dev.hossain.devicecatalog"
+            android:targetClass="dev.hossain.devicecatalog.MainActivity">
+            <extra android:name="destination" android:value="search" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <!-- Statistics Shortcut -->
+    <shortcut
+        android:shortcutId="view_statistics"
+        android:enabled="true"
+        android:icon="@drawable/ic_statistics"
+        android:shortcutShortLabel="@string/shortcut_statistics_short"
+        android:shortcutLongLabel="@string/shortcut_statistics_long"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="dev.hossain.devicecatalog"
+            android:targetClass="dev.hossain.devicecatalog.MainActivity">
+            <extra android:name="destination" android:value="statistics" />
+        </intent>
+    </shortcut>
+
+    <!-- Bookmarks Shortcut -->
+    <shortcut
+        android:shortcutId="view_bookmarks"
+        android:enabled="true"
+        android:icon="@drawable/ic_bookmark"
+        android:shortcutShortLabel="@string/shortcut_bookmarks_short"
+        android:shortcutLongLabel="@string/shortcut_bookmarks_long"
+        android:shortcutDisabledMessage="@string/shortcut_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="dev.hossain.devicecatalog"
+            android:targetClass="dev.hossain.devicecatalog.MainActivity">
+            <extra android:name="destination" android:value="bookmarks" />
+        </intent>
+    </shortcut>
+</shortcuts>

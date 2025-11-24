@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">Devices</string>
+
+    <!-- App Shortcuts -->
+    <string name="shortcut_search_short">Search</string>
+    <string name="shortcut_search_long">Search Devices</string>
+    <string name="shortcut_statistics_short">Statistics</string>
+    <string name="shortcut_statistics_long">View Statistics</string>
+    <string name="shortcut_bookmarks_short">Bookmarks</string>
+    <string name="shortcut_bookmarks_long">View Bookmarks</string>
+    <string name="shortcut_disabled">Shortcut is currently disabled</string>
+
+    <!-- Notification Channels -->
+    <string name="notification_channel_sync_name">Device Sync</string>
+    <string name="notification_channel_sync_description">Notifications for device catalog sync updates</string>
+
+    <!-- Deep Links -->
+    <string name="deeplink_device_details_title">Device Details</string>
+
+    <!-- Preferences -->
+    <string name="pref_haptic_feedback_key">haptic_feedback_enabled</string>
+    <string name="pref_haptic_feedback_title">Haptic Feedback</string>
+    <string name="pref_haptic_feedback_summary">Enable vibration feedback for interactions</string>
+
+    <!-- Developer Settings -->
+    <string name="dev_settings_title">Developer Settings</string>
+    <string name="dev_settings_feature_flags_title">Feature Flags</string>
+    <string name="dev_settings_performance_title">Performance Metrics</string>
 </resources>
