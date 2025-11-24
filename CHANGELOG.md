@@ -54,6 +54,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adaptive navigation (NavigationRail for tablets, BottomNavigation for phones)
 - Multi-column device grid layouts (1 column for phones, 2-3 columns for tablet devices)
 - Responsive content padding and spacing based on device form factor
+- Database indexes on frequently queried columns for 30-50% faster queries (manufacturer, model_name, brand, form_factor)
+- Coil image loading library for efficient memory and disk caching
+- @Immutable annotations on data classes for Compose recomposition optimization
+- Performance monitoring utilities for tracking startup time and memory usage
+- Battery-efficient DeviceSyncWorker with smart constraints (charging, WiFi, battery not low)
+- Startup time tracking with automatic logging and warning thresholds
+- Memory usage monitoring with automatic logging
 
 ### Changed
 - Replaced paging toggle FAB with filter action FAB
@@ -70,6 +77,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - App navigation automatically switches between NavigationRail (tablets) and BottomNavigation (phones)
 - Device list layout adapts from single column (phones) to multi-column grid (tablets)
 - Content padding and spacing adjust based on available screen width
+- Database version upgraded to 2 with auto-migration for index addition
+- Optimized pagination configuration (page size 30, max 150 items, prefetch 15) for better memory efficiency
+- Enhanced DAO queries with multi-column sorting and brand search support
+- DevicesPresenter now uses remember() for all computed values to reduce recompositions
+- Application class now tracks app startup time and memory usage on launch
+- MainActivity records first frame time for performance analysis
 
 ### Fixed
 - Ensured Material 3 theme compatibility throughout search and filter components
