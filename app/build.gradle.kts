@@ -136,6 +136,8 @@ dependencies {
 
     implementation(libs.androidx.work)
 
+    // WindowManager for foldable device support
+    implementation(libs.androidx.window.manager)
 
     // CSV parser for Android device catalog
     // https://github.com/hossain-khan/android-device-catalog-parser
