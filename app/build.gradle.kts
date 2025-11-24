@@ -139,6 +139,15 @@ dependencies {
     // WindowManager for foldable device support
     implementation(libs.androidx.window.manager)
 
+    // Splash Screen API
+    implementation(libs.androidx.core.splashscreen)
+
+    // Security - EncryptedSharedPreferences
+    implementation(libs.androidx.security.crypto)
+
+    // AppCompat for language preferences
+    implementation(libs.androidx.appcompat)
+
     // Coil for efficient image loading with memory and disk caching
     // https://coil-kt.github.io/coil/
     implementation(libs.coil.compose)

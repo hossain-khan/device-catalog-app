@@ -40,6 +40,16 @@ metro = "0.7.7"
 androidxWork = "2.11.0"
 androidxWindowManager = "1.3.0"
 
+# Splash Screen API - https://developer.android.com/develop/ui/views/launch/splash-screen
+coreSplashscreen = "1.0.1"
+
+# Security - https://developer.android.com/jetpack/androidx/releases/security
+securityCrypto = "1.1.0-alpha03"
+
+# AppCompat for language preferences
+# https://developer.android.com/jetpack/androidx/releases/appcompat
+appcompat = "1.7.0"
+
 # Room Database
 # https://developer.android.com/training/data-storage/room
 roomDb = "2.7.2"
@@ -109,6 +119,17 @@ androidx-work = { group = "androidx.work", name = "work-runtime-ktx", version.re
 # WindowManager - For foldable device support
 # https://developer.android.com/jetpack/androidx/releases/window
 androidx-window-manager = { group = "androidx.window", name = "window", version.ref = "androidxWindowManager" }
+
+# Splash Screen API - https://developer.android.com/develop/ui/views/launch/splash-screen
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+
+# Security - EncryptedSharedPreferences
+# https://developer.android.com/jetpack/androidx/releases/security
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
+# AppCompat for language preferences
+# https://developer.android.com/jetpack/androidx/releases/appcompat
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 

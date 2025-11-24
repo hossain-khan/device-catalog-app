@@ -9,6 +9,7 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dev.hossain.devicecatalog.di.AppGraph
+import dev.hossain.devicecatalog.notification.NotificationChannels
 import dev.hossain.devicecatalog.util.PerformanceMonitor
 import dev.hossain.devicecatalog.work.DeviceSyncWorker
 import dev.hossain.devicecatalog.work.SampleWorker
@@ -40,6 +41,9 @@ class DeviceCatalogApp :
         PerformanceMonitor.recordAppStart()
 
         Timber.plant(Timber.DebugTree())
+
+        // Initialize notification channels
+        NotificationChannels.createNotificationChannels(this)
 
         // Performance: Log initial memory usage
         PerformanceMonitor.logMemoryUsage()

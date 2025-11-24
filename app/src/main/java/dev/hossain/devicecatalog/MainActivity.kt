@@ -9,6 +9,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.LaunchedEffect
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.overlay.ContentWithOverlays
@@ -31,6 +32,9 @@ class MainActivity
     ) : ComponentActivity() {
         @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
         override fun onCreate(savedInstanceState: Bundle?) {
+            // Install splash screen before super.onCreate()
+            installSplashScreen()
+
             enableEdgeToEdge()
             super.onCreate(savedInstanceState)
 
