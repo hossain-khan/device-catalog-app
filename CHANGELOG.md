@@ -61,6 +61,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Battery-efficient DeviceSyncWorker with smart constraints (charging, WiFi, battery not low)
 - Startup time tracking with automatic logging and warning thresholds
 - Memory usage monitoring with automatic logging
+- App shortcuts for quick access to Search, Statistics, and Bookmarks (Android 7.1+)
+- Notification channels for device sync updates (Android 8.0+)
+- Splash screen API implementation with Material 3 design (Android 12+)
+- Haptic feedback utility with Material Design patterns (click, long press, reject, gesture feedback)
+- Per-app language preferences support with 7 languages (Android 13+ with legacy support)
+- Network security configuration with HTTPS enforcement and localhost debugging support
+- Secure storage using EncryptedSharedPreferences for sensitive data (AES256 GCM encryption)
+- Feature flags system for gradual rollouts and A/B testing
+- Developer settings screen showing feature flags and performance metrics
+- Deep linking infrastructure for device details (HTTPS and custom scheme support)
 
 ### Changed
 - Replaced paging toggle FAB with filter action FAB
