@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AccessibilityUtils with proper touch target size constants (48dp minimum)
 - WindowManager dependency for foldable device support
 - Adaptive navigation (NavigationRail for tablets, BottomNavigation for phones)
-- Multi-column device grid layouts (1 column for phones, 2-3 columns for tablets)
+- Multi-column device grid layouts (1 column for phones, 2-3 columns for tablet devices)
 - Responsive content padding and spacing based on device form factor
 
 ### Changed
