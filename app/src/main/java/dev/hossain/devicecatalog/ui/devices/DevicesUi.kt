@@ -1,7 +1,11 @@
 package dev.hossain.devicecatalog.ui.devices
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,17 +15,22 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -35,9 +44,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.ui.devices.components.ActiveFilterChips
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCard
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCardSkeleton
+import dev.hossain.devicecatalog.ui.devices.components.DeviceSearchBar
 import dev.hossain.devicecatalog.ui.devices.components.EmptyDeviceState
+import dev.hossain.devicecatalog.ui.devices.components.FilterBottomSheet
+import dev.hossain.devicecatalog.ui.devices.components.FilterType
 import dev.hossain.devicecatalog.ui.devices.components.rememberDeviceListLayoutConfig
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
@@ -56,91 +69,204 @@ fun DevicesUi(
     modifier: Modifier = Modifier,
 ) {
     Timber.d(
-        "DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, isEmpty=${state.isEmpty}, usePaging=${state.usePaging}",
+        "DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, " +
+            "isEmpty=${state.isEmpty}, usePaging=${state.usePaging}, " +
+            "searchQuery=${state.searchQuery}, resultCount=${state.searchResultCount}",
     )
 
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutConfig = rememberDeviceListLayoutConfig()
 
-    // Handle error messages
+    // Get unique manufacturers for filter
+    val availableManufacturers =
+        remember(state.devices) {
+            state.devices
+                .map { it.androidDevice.manufacturer }
+                .distinct()
+                .sortedBy { it }
+        }
+
+    // Handle error messages with retry action
     LaunchedEffect(state.errorMessage) {
         state.errorMessage?.let { message ->
-            snackbarHostState.showSnackbar(message)
+            val result =
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = "Retry",
+                    duration = SnackbarDuration.Long,
+                )
+            if (result == SnackbarResult.ActionPerformed) {
+                state.eventSink(DevicesScreen.Event.RetryLoading)
+            }
         }
+    }
+
+    // Show filter bottom sheet
+    if (state.showFilterSheet) {
+        FilterBottomSheet(
+            currentFilters = state.activeFilters,
+            availableManufacturers = availableManufacturers,
+            onDismiss = { state.eventSink(DevicesScreen.Event.DismissFilterSheet) },
+            onApplyFilters = { filters ->
+                state.eventSink(DevicesScreen.Event.ApplyFilters(filters))
+            },
+            onClearFilters = {
+                state.eventSink(DevicesScreen.Event.ClearFilters)
+            },
+        )
     }
 
     Scaffold(
         modifier =
             modifier.semantics {
-                contentDescription = "Device catalog screen with ${state.devices.size} devices"
+                contentDescription =
+                    "Device catalog screen with ${state.searchResultCount} devices"
             },
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = if (state.usePaging) "Device Catalog" else "All Devices (${state.devices.size})",
-                    )
+                    val title =
+                        when {
+                            state.searchQuery.isNotBlank() -> {
+                                "Search Results (${state.searchResultCount})"
+                            }
+
+                            state.activeFilters.hasActiveFilters() -> {
+                                "Filtered (${state.searchResultCount})"
+                            }
+
+                            else -> {
+                                "Device Catalog"
+                            }
+                        }
+                    Text(text = title)
                 },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { state.eventSink(DevicesScreen.Event.TogglePagingMode) },
+            BadgedBox(
+                badge = {
+                    AnimatedVisibility(
+                        visible = state.activeFilters.hasActiveFilters(),
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                    ) {
+                        Badge {
+                            Text(text = "${state.activeFilters.activeFilterCount()}")
+                        }
+                    }
+                },
             ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.List,
-                    contentDescription = "Toggle paging mode",
-                )
+                FloatingActionButton(
+                    onClick = { state.eventSink(DevicesScreen.Event.ShowFilterSheet) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FilterList,
+                        contentDescription = "Filter devices",
+                    )
+                }
             }
         },
     ) { innerPadding ->
-        Box(
+        Column(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
         ) {
-            when {
-                // Show loading state for initial load
-                state.isLoading && !state.isRefreshing -> {
-                    LoadingContent(layoutConfig)
-                }
+            // Search bar
+            DeviceSearchBar(
+                query = state.searchQuery,
+                onQueryChange = { query ->
+                    state.eventSink(DevicesScreen.Event.OnSearchQueryChanged(query))
+                },
+                onClearQuery = {
+                    state.eventSink(DevicesScreen.Event.ClearSearch)
+                },
+                resultCount = state.searchResultCount,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            )
 
-                // Show empty state when no devices and not loading
-                state.isEmpty && !state.isLoading && !state.isRefreshing -> {
-                    EmptyDeviceState(
-                        onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
-                    )
-                }
+            // Active filter chips
+            ActiveFilterChips(
+                filters = state.activeFilters,
+                onRemoveFilter = { filterType ->
+                    val updatedFilters =
+                        when (filterType) {
+                            is FilterType.FormFactor -> {
+                                state.activeFilters.copy(
+                                    formFactors = state.activeFilters.formFactors - filterType.formFactor,
+                                )
+                            }
 
-                // Show paged content when using paging
-                state.usePaging -> {
-                    PaginatedDeviceList(
-                        state = state,
-                        layoutConfig = layoutConfig,
-                    )
-                }
+                            is FilterType.Manufacturer -> {
+                                state.activeFilters.copy(
+                                    manufacturers = state.activeFilters.manufacturers - filterType.manufacturer,
+                                )
+                            }
 
-                // Show regular list when not using paging
-                else -> {
-                    RegularDeviceList(
-                        state = state,
-                        layoutConfig = layoutConfig,
-                    )
-                }
-            }
+                            FilterType.SdkRange -> {
+                                state.activeFilters.copy(
+                                    minSdkVersion = null,
+                                    maxSdkVersion = null,
+                                )
+                            }
+                        }
+                    state.eventSink(DevicesScreen.Event.ApplyFilters(updatedFilters))
+                },
+                onClearAll = {
+                    state.eventSink(DevicesScreen.Event.ClearFilters)
+                },
+            )
 
-            // Show refresh indicator when refreshing
-            if (state.isRefreshing) {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                    contentAlignment = Alignment.TopCenter,
-                ) {
-                    CircularProgressIndicator()
+            // Device list with pull-to-refresh
+            PullToRefreshBox(
+                isRefreshing = state.isRefreshing,
+                onRefresh = {
+                    state.eventSink(DevicesScreen.Event.RefreshDevices)
+                },
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                when {
+                    // Show loading state for initial load
+                    state.isLoading && !state.isRefreshing -> {
+                        LoadingContent(layoutConfig)
+                    }
+
+                    // Show empty state for no search results
+                    state.isNoSearchResults -> {
+                        EmptyDeviceState(
+                            message = "No devices found for \"${state.searchQuery}\"",
+                            onActionClick = {
+                                state.eventSink(DevicesScreen.Event.ClearSearch)
+                            },
+                            actionLabel = "Clear Search",
+                        )
+                    }
+
+                    // Show empty state when no devices and not loading
+                    state.isEmpty && !state.isLoading && !state.isRefreshing -> {
+                        EmptyDeviceState(
+                            onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
+                        )
+                    }
+
+                    // Show paged content when using paging
+                    state.usePaging -> {
+                        PaginatedDeviceList(
+                            state = state,
+                            layoutConfig = layoutConfig,
+                        )
+                    }
+
+                    // Show regular list when not using paging
+                    else -> {
+                        RegularDeviceList(
+                            state = state,
+                            layoutConfig = layoutConfig,
+                        )
+                    }
                 }
             }
         }

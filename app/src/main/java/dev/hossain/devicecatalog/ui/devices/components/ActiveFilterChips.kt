@@ -1,0 +1,130 @@
+package dev.hossain.devicecatalog.ui.devices.components
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import dev.hossain.devicecatalog.ui.devices.DevicesScreen
+
+/**
+ * Displays active filter chips that can be removed individually.
+ *
+ * @param filters Current active filters
+ * @param onRemoveFilter Callback when a filter is removed
+ * @param onClearAll Callback when all filters are cleared
+ * @param modifier Modifier for the filter chips row
+ */
+@Composable
+fun ActiveFilterChips(
+    filters: DevicesScreen.FilterState,
+    onRemoveFilter: (FilterType) -> Unit,
+    onClearAll: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    AnimatedVisibility(
+        visible = filters.hasActiveFilters(),
+        enter = expandVertically(),
+        exit = shrinkVertically(),
+        modifier = modifier,
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            // Form factor chips
+            filters.formFactors.forEach { formFactor ->
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.FormFactor(formFactor)) },
+                    label = { Text(text = formFactor.name.replace("_", " ")) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove form factor filter",
+                        )
+                    },
+                )
+            }
+
+            // Manufacturer chips
+            filters.manufacturers.forEach { manufacturer ->
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.Manufacturer(manufacturer)) },
+                    label = { Text(text = manufacturer) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove manufacturer filter",
+                        )
+                    },
+                )
+            }
+
+            // SDK range chip
+            if (filters.minSdkVersion != null || filters.maxSdkVersion != null) {
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.SdkRange) },
+                    label = {
+                        Text(
+                            text =
+                                "API ${filters.minSdkVersion ?: 21}-${filters.maxSdkVersion ?: 35}",
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove SDK range filter",
+                        )
+                    },
+                )
+            }
+
+            // Clear all chip
+            if (filters.activeFilterCount() > 1) {
+                AssistChip(
+                    onClick = onClearAll,
+                    label = { Text(text = "Clear All") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Clear all filters",
+                        )
+                    },
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Represents the type of filter that can be removed.
+ */
+sealed class FilterType {
+    data class FormFactor(
+        val formFactor: dev.hossain.android.catalogparser.models.FormFactor,
+    ) : FilterType()
+
+    data class Manufacturer(
+        val manufacturer: String,
+    ) : FilterType()
+
+    data object SdkRange : FilterType()
+}
