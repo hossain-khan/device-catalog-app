@@ -253,8 +253,63 @@ class AndroidDeviceRepository
                         .take(10)
                         .map { ManufacturerCount(it.first, it.second) }
 
+                // RAM distribution analysis
+                val ramDistribution =
+                    devices
+                        .groupingBy { it.androidDevice.ram }
+                        .eachCount()
+                        .map { RamCount(it.key, it.value) }
+                        .sortedByDescending { it.count }
+
+                // SDK version adoption metrics - get all unique SDK versions across all devices
+                val sdkVersions = mutableMapOf<Int, Int>()
+                devices.forEach { device ->
+                    device.androidDevice.sdkVersions.forEach { sdkVersion ->
+                        sdkVersions[sdkVersion] = sdkVersions.getOrDefault(sdkVersion, 0) + 1
+                    }
+                }
+                val sdkVersionDistribution =
+                    sdkVersions
+                        .map { SdkVersionCount(it.key, it.value) }
+                        .sortedByDescending { it.sdkVersion }
+
+                // Screen density distribution
+                val screenDensities = mutableMapOf<Int, Int>()
+                devices.forEach { device ->
+                    device.androidDevice.screenDensities.forEach { density ->
+                        screenDensities[density] = screenDensities.getOrDefault(density, 0) + 1
+                    }
+                }
+                val screenDensityDistribution =
+                    screenDensities
+                        .map { ScreenDensityCount(it.key, it.value) }
+                        .sortedByDescending { it.density }
+
+                // ABI support statistics
+                val abiSupport = mutableMapOf<String, Int>()
+                devices.forEach { device ->
+                    device.androidDevice.abis.forEach { abi ->
+                        abiSupport[abi] = abiSupport.getOrDefault(abi, 0) + 1
+                    }
+                }
+                val abiDistribution =
+                    abiSupport
+                        .map { AbiCount(it.key, it.value) }
+                        .sortedByDescending { it.count }
+
+                // GPU distribution (top 10)
+                val gpuDistribution =
+                    devices
+                        .groupingBy { it.androidDevice.gpu }
+                        .eachCount()
+                        .toList()
+                        .sortedByDescending { it.second }
+                        .take(10)
+                        .map { GpuCount(it.first, it.second) }
+
                 Timber.d(
-                    "Device stats - Total: $totalDevices, Form factors: $totalFormFactors, Top manufacturers: ${topManufacturers.size}",
+                    "Device stats - Total: $totalDevices, Form factors: $totalFormFactors, Top manufacturers: ${topManufacturers.size}, " +
+                        "RAM types: ${ramDistribution.size}, SDK versions: ${sdkVersionDistribution.size}, ABIs: ${abiDistribution.size}",
                 )
 
                 DeviceStats(
@@ -262,6 +317,11 @@ class AndroidDeviceRepository
                     totalFormFactors = totalFormFactors,
                     formFactorBreakdown = formFactors.map { FormFactorCount(it.key, it.value) },
                     topManufacturers = topManufacturers,
+                    ramDistribution = ramDistribution,
+                    sdkVersionDistribution = sdkVersionDistribution,
+                    screenDensityDistribution = screenDensityDistribution,
+                    abiDistribution = abiDistribution,
+                    gpuDistribution = gpuDistribution,
                 )
             }
         }
@@ -275,6 +335,11 @@ data class DeviceStats(
     val totalFormFactors: Int,
     val formFactorBreakdown: List<FormFactorCount>,
     val topManufacturers: List<ManufacturerCount>,
+    val ramDistribution: List<RamCount>,
+    val sdkVersionDistribution: List<SdkVersionCount>,
+    val screenDensityDistribution: List<ScreenDensityCount>,
+    val abiDistribution: List<AbiCount>,
+    val gpuDistribution: List<GpuCount>,
 )
 
 /**
@@ -283,7 +348,12 @@ data class DeviceStats(
 data class FormFactorCount(
     val formFactor: FormFactor,
     val count: Int,
-)
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
 
 /**
  * Data class for manufacturer count statistics.
@@ -291,4 +361,74 @@ data class FormFactorCount(
 data class ManufacturerCount(
     val manufacturer: String,
     val count: Int,
-)
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
+
+/**
+ * Data class for RAM distribution statistics.
+ */
+data class RamCount(
+    val ram: String,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
+
+/**
+ * Data class for SDK version adoption statistics.
+ */
+data class SdkVersionCount(
+    val sdkVersion: Int,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
+
+/**
+ * Data class for screen density distribution statistics.
+ */
+data class ScreenDensityCount(
+    val density: Int,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
+
+/**
+ * Data class for ABI support statistics.
+ */
+data class AbiCount(
+    val abi: String,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
+
+/**
+ * Data class for GPU distribution statistics.
+ */
+data class GpuCount(
+    val gpu: String,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}

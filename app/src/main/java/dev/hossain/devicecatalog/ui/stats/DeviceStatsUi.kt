@@ -1,31 +1,57 @@
 package dev.hossain.devicecatalog.ui.stats
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.data.DeviceStats
 import dev.hossain.devicecatalog.data.FormFactorCount
 import dev.hossain.devicecatalog.data.ManufacturerCount
+import dev.hossain.devicecatalog.ui.stats.components.BarChartData
+import dev.hossain.devicecatalog.ui.stats.components.ChartLegend
+import dev.hossain.devicecatalog.ui.stats.components.HorizontalBarChart
+import dev.hossain.devicecatalog.ui.stats.components.LegendItem
+import dev.hossain.devicecatalog.ui.stats.components.LineChart
+import dev.hossain.devicecatalog.ui.stats.components.LineChartData
+import dev.hossain.devicecatalog.ui.stats.components.MetricCardData
+import dev.hossain.devicecatalog.ui.stats.components.PieChart
+import dev.hossain.devicecatalog.ui.stats.components.PieChartData
+import dev.hossain.devicecatalog.ui.stats.components.SwipeableMetricCards
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = DeviceStatsScreen::class, scope = AppScope::class)
@@ -38,17 +64,24 @@ fun DeviceStatsUi(
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(title = { Text("Device Statistics") })
+            TopAppBar(
+                title = { Text("Device Statistics") },
+            )
         },
     ) { innerPadding ->
-        if (state.isLoading) {
-            LoadingIndicator(modifier = Modifier.padding(innerPadding))
-        } else {
-            state.stats?.let { stats ->
-                DeviceStatsContent(
-                    stats = stats,
-                    modifier = Modifier.padding(innerPadding),
-                )
+        PullToRefreshBox(
+            isRefreshing = state.isLoading,
+            onRefresh = { state.eventSink(DeviceStatsScreen.Event.RefreshStats) },
+            modifier = Modifier.padding(innerPadding),
+        ) {
+            if (state.isLoading && state.stats == null) {
+                LoadingIndicator()
+            } else {
+                state.stats?.let { stats ->
+                    DeviceStatsContent(
+                        stats = stats,
+                    )
+                }
             }
         }
     }
@@ -76,177 +109,398 @@ private fun DeviceStatsContent(
             androidx.compose.foundation.layout
                 .PaddingValues(16.dp),
     ) {
-        // Overview Statistics
+        // Swipeable metric cards
         item {
-            OverviewStatsCard(stats = stats)
+            val metricCards =
+                listOf(
+                    MetricCardData(
+                        title = "Total Devices",
+                        value = stats.totalDevices.toString(),
+                        subtitle = "Android devices in catalog",
+                    ),
+                    MetricCardData(
+                        title = "Manufacturers",
+                        value = stats.topManufacturers.size.toString(),
+                        subtitle = "Unique device manufacturers",
+                    ),
+                    MetricCardData(
+                        title = "Form Factors",
+                        value = stats.totalFormFactors.toString(),
+                        subtitle = "Different device types",
+                    ),
+                    MetricCardData(
+                        title = "RAM Variants",
+                        value = stats.ramDistribution.size.toString(),
+                        subtitle = "Memory configurations",
+                    ),
+                    MetricCardData(
+                        title = "SDK Versions",
+                        value = stats.sdkVersionDistribution.size.toString(),
+                        subtitle = "Supported Android versions",
+                    ),
+                )
+            SwipeableMetricCards(metrics = metricCards)
         }
 
-        // Form Factor Breakdown
+        // Form Factor Distribution
         item {
-            FormFactorStatsCard(formFactors = stats.formFactorBreakdown)
+            CollapsibleCard(
+                title = "Form Factor Distribution",
+                defaultExpanded = true,
+            ) {
+                FormFactorDistributionContent(
+                    formFactors = stats.formFactorBreakdown,
+                    totalDevices = stats.totalDevices,
+                )
+            }
         }
 
         // Top Manufacturers
         item {
-            TopManufacturersCard(manufacturers = stats.topManufacturers)
+            CollapsibleCard(
+                title = "Top 10 Manufacturers",
+                defaultExpanded = true,
+            ) {
+                ManufacturerDistributionContent(
+                    manufacturers = stats.topManufacturers,
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // RAM Distribution
+        item {
+            CollapsibleCard(
+                title = "RAM Distribution",
+                defaultExpanded = false,
+            ) {
+                RamDistributionContent(
+                    ramDistribution = stats.ramDistribution.take(10),
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // SDK Version Adoption
+        item {
+            CollapsibleCard(
+                title = "SDK Version Adoption",
+                defaultExpanded = false,
+            ) {
+                SdkVersionAdoptionContent(
+                    sdkVersions = stats.sdkVersionDistribution.take(15),
+                )
+            }
+        }
+
+        // Screen Density Distribution
+        item {
+            CollapsibleCard(
+                title = "Screen Density Distribution",
+                defaultExpanded = false,
+            ) {
+                ScreenDensityContent(
+                    densities = stats.screenDensityDistribution.take(10),
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // ABI Support
+        item {
+            CollapsibleCard(
+                title = "ABI Support",
+                defaultExpanded = false,
+            ) {
+                AbiSupportContent(
+                    abis = stats.abiDistribution,
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // GPU Distribution
+        item {
+            CollapsibleCard(
+                title = "Top 10 GPUs",
+                defaultExpanded = false,
+            ) {
+                GpuDistributionContent(
+                    gpus = stats.gpuDistribution,
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // Add bottom padding
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
+/**
+ * Collapsible card component for organizing statistics sections.
+ */
 @Composable
-private fun OverviewStatsCard(
-    stats: DeviceStats,
+private fun CollapsibleCard(
+    title: String,
+    defaultExpanded: Boolean = false,
     modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(defaultExpanded) }
+
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Text(
-                text = "Overview",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-            )
-
+        Column {
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                        .clickable { expanded = !expanded }
+                        .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                StatItem(
-                    label = "Total Devices",
-                    value = stats.totalDevices.toString(),
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
                 )
 
-                StatItem(
-                    label = "Form Factors",
-                    value = stats.totalFormFactors.toString(),
-                )
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        contentDescription = if (expanded) "Collapse" else "Expand",
+                    )
+                }
+            }
+
+            AnimatedVisibility(
+                visible = expanded,
+                enter = expandVertically(),
+                exit = shrinkVertically(),
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                ) {
+                    content()
+                }
             }
         }
     }
 }
 
+/**
+ * Form factor distribution with pie chart and legend.
+ */
 @Composable
-private fun FormFactorStatsCard(
+private fun FormFactorDistributionContent(
     formFactors: List<FormFactorCount>,
-    modifier: Modifier = Modifier,
+    totalDevices: Int,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Text(
-                text = "Form Factor Breakdown",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Column(
-                modifier = Modifier.padding(top = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                formFactors.forEach { formFactor ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Text(
-                            text = formFactor.formFactor.value,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        Text(
-                            text = formFactor.count.toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TopManufacturersCard(
-    manufacturers: List<ManufacturerCount>,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-        ) {
-            Text(
-                text = "Top 10 Manufacturers",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Column(
-                modifier = Modifier.padding(top = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                manufacturers.forEachIndexed { index, manufacturer ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Row {
-                            Text(
-                                text = "${index + 1}. ",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold,
-                            )
-                            Text(
-                                text = manufacturer.manufacturer,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                        Text(
-                            text = "${manufacturer.count} devices",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.secondary,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun StatItem(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+    val chartColors =
+        listOf(
+            Color(0xFF2196F3),
+            Color(0xFF4CAF50),
+            Color(0xFFFFC107),
+            Color(0xFFFF5722),
+            Color(0xFF9C27B0),
         )
+
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        // Pie chart
+        if (formFactors.isNotEmpty()) {
+            PieChart(
+                data =
+                    formFactors.mapIndexed { index, ff ->
+                        PieChartData(
+                            label = ff.formFactor.value,
+                            value = ff.count.toFloat(),
+                            color = chartColors[index % chartColors.size],
+                        )
+                    },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+
+        // Legend with percentages
+        ChartLegend(
+            items =
+                formFactors.mapIndexed { index, ff ->
+                    LegendItem(
+                        label = ff.formFactor.value,
+                        value = "${ff.count} (${String.format("%.1f", ff.percentage(totalDevices))}%)",
+                        color = chartColors[index % chartColors.size],
+                    )
+                },
+        )
+    }
+}
+
+/**
+ * Manufacturer distribution with horizontal bar chart.
+ */
+@Composable
+private fun ManufacturerDistributionContent(
+    manufacturers: List<ManufacturerCount>,
+    totalDevices: Int,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HorizontalBarChart(
+            data =
+                manufacturers.map { manufacturer ->
+                    BarChartData(
+                        label = manufacturer.manufacturer.take(15),
+                        value = manufacturer.count.toFloat(),
+                        valueLabel = "${manufacturer.count} (${String.format("%.1f", manufacturer.percentage(totalDevices))}%)",
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                },
+        )
+    }
+}
+
+/**
+ * RAM distribution content.
+ */
+@Composable
+private fun RamDistributionContent(
+    ramDistribution: List<dev.hossain.devicecatalog.data.RamCount>,
+    totalDevices: Int,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HorizontalBarChart(
+            data =
+                ramDistribution.map { ram ->
+                    BarChartData(
+                        label = ram.ram.take(10),
+                        value = ram.count.toFloat(),
+                        valueLabel = "${ram.count} (${String.format("%.1f", ram.percentage(totalDevices))}%)",
+                        color = MaterialTheme.colorScheme.secondary,
+                    )
+                },
+        )
+    }
+}
+
+/**
+ * SDK version adoption with line chart.
+ */
+@Composable
+private fun SdkVersionAdoptionContent(sdkVersions: List<dev.hossain.devicecatalog.data.SdkVersionCount>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
-            text = label,
+            text = "Device count by SDK version",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        LineChart(
+            data =
+                sdkVersions.map { sdk ->
+                    LineChartData(
+                        label = "API ${sdk.sdkVersion}",
+                        value = sdk.count.toFloat(),
+                    )
+                },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        // SDK version details
+        Column(
+            modifier = Modifier.padding(top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            sdkVersions.take(10).forEach { sdk ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = "API ${sdk.sdkVersion}",
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Text(
+                        text = "${sdk.count} devices",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Screen density distribution content.
+ */
+@Composable
+private fun ScreenDensityContent(
+    densities: List<dev.hossain.devicecatalog.data.ScreenDensityCount>,
+    totalDevices: Int,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HorizontalBarChart(
+            data =
+                densities.map { density ->
+                    BarChartData(
+                        label = "${density.density} dpi",
+                        value = density.count.toFloat(),
+                        valueLabel = "${density.count} (${String.format("%.1f", density.percentage(totalDevices))}%)",
+                        color = MaterialTheme.colorScheme.tertiary,
+                    )
+                },
+        )
+    }
+}
+
+/**
+ * ABI support content.
+ */
+@Composable
+private fun AbiSupportContent(
+    abis: List<dev.hossain.devicecatalog.data.AbiCount>,
+    totalDevices: Int,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HorizontalBarChart(
+            data =
+                abis.map { abi ->
+                    BarChartData(
+                        label = abi.abi,
+                        value = abi.count.toFloat(),
+                        valueLabel = "${abi.count} (${String.format("%.1f", abi.percentage(totalDevices))}%)",
+                        color = Color(0xFF9C27B0),
+                    )
+                },
+        )
+    }
+}
+
+/**
+ * GPU distribution content.
+ */
+@Composable
+private fun GpuDistributionContent(
+    gpus: List<dev.hossain.devicecatalog.data.GpuCount>,
+    totalDevices: Int,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        HorizontalBarChart(
+            data =
+                gpus.map { gpu ->
+                    BarChartData(
+                        label = gpu.gpu.take(15),
+                        value = gpu.count.toFloat(),
+                        valueLabel = "${gpu.count} (${String.format("%.1f", gpu.percentage(totalDevices))}%)",
+                        color = Color(0xFFFF5722),
+                    )
+                },
         )
     }
 }
