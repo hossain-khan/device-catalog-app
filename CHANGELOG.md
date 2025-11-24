@@ -23,6 +23,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Expandable/collapsible specification sections in device detail view with smooth animations
 - Share button in device detail TopAppBar for easy access
 - Emoji-enhanced shareable device text format
+- FloatingActionButton for quick sharing in device detail view
+- Copy-to-clipboard functionality for individual device specifications with snackbar confirmation
+- Material 3 TopAppBarScrollBehavior for better scroll experience
+- Loading skeleton states with shimmer effect for perceived performance
+- Enhanced error state with illustration and improved messaging
+- Semantic labels and heading hierarchy for better accessibility
+- Minimum 48dp touch targets for all interactive elements
 
 ### Changed
 - Replaced paging toggle FAB with filter action FAB
@@ -32,6 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated empty state handling to differentiate between no devices and no search results
 - Device detail view now uses expandable cards with default states (basic info and specs expanded by default)
 - Screen Information and Platform Information sections are collapsed by default to reduce initial scroll
+- Error messages are now more user-friendly with better visual hierarchy
+- Loading states now show skeleton cards instead of centered spinner
 
 ### Fixed
 - Ensured Material 3 theme compatibility throughout search and filter components
