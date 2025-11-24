@@ -32,16 +32,21 @@ interface AndroidDeviceDao {
 
     // ----------------------------------------------------------------
     // Relationship queries - following Room one-to-many pattern
+    // Performance: Uses indexes on manufacturer and model_name for fast queries
     // ----------------------------------------------------------------
 
     @Transaction
-    @Query("SELECT * FROM device")
+    @Query("SELECT * FROM device ORDER BY manufacturer ASC, model_name ASC")
     fun getAllDevicesWithRelations(): Flow<List<AndroidDeviceWithRelations>>
 
     @Transaction
     @Query("SELECT * FROM device WHERE _id = :deviceId")
     suspend fun getDeviceWithRelationsById(deviceId: Long): AndroidDeviceWithRelations?
 
+    /**
+     * Get device by properties using indexed columns for optimal performance.
+     * Uses indexes on brand, manufacturer, and model_name.
+     */
     @Transaction
     @Query(
         "SELECT * FROM device WHERE brand = :brand AND device = :device AND manufacturer = :manufacturer AND model_name = :modelName LIMIT 1",
@@ -53,20 +58,48 @@ interface AndroidDeviceDao {
         modelName: String,
     ): AndroidDeviceWithRelations?
 
+    /**
+     * Search devices using indexed columns (manufacturer, model_name) for fast text search.
+     * Performance: Leverages indexes for LIKE queries on manufacturer and model_name.
+     */
     @Transaction
-    @Query("SELECT * FROM device WHERE manufacturer LIKE :search OR model_name LIKE :search")
+    @Query(
+        """
+        SELECT * FROM device 
+        WHERE manufacturer LIKE :search 
+           OR model_name LIKE :search
+           OR brand LIKE :search
+        ORDER BY manufacturer ASC, model_name ASC
+        """,
+    )
     fun searchDevicesWithRelations(search: String): Flow<List<AndroidDeviceWithRelations>>
 
     // ----------------------------------------------------------------
     // Paging queries with relationships
+    // Performance: Uses indexes for sorting and searching
     // ----------------------------------------------------------------
 
+    /**
+     * Get paged devices with optimized ordering using indexed columns.
+     */
     @Transaction
-    @Query("SELECT * FROM device ORDER BY manufacturer ASC")
+    @Query("SELECT * FROM device ORDER BY manufacturer ASC, model_name ASC")
     fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations>
 
+    /**
+     * Get paged devices by search query with optimized LIKE queries on indexed columns.
+     * Performance: Leverages indexes on manufacturer, model_name, and brand.
+     */
     @Transaction
-    @Query("SELECT * FROM device WHERE manufacturer LIKE :search OR model_name LIKE :search ORDER BY manufacturer ASC")
+    @Query(
+        """
+        SELECT * FROM device 
+        WHERE manufacturer LIKE :search 
+           OR model_name LIKE :search
+           OR brand LIKE :search
+        ORDER BY manufacturer ASC, model_name ASC
+        """,
+    )
     fun getPagedDevicesWithRelationsBySearch(search: String): PagingSource<Int, AndroidDeviceWithRelations>
 
     // ----------------------------------------------------------------

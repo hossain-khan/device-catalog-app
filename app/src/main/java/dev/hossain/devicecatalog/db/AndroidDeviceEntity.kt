@@ -2,9 +2,26 @@ package dev.hossain.devicecatalog.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "device")
+/**
+ * Main device entity with indexes on frequently queried columns for optimal performance.
+ * Indexes added for:
+ * - manufacturer: Used in search and filtering
+ * - model_name: Used in search queries
+ * - brand: Used in device property lookups
+ * - form_factor: Used in filtering operations
+ */
+@Entity(
+    tableName = "device",
+    indices = [
+        Index(value = ["manufacturer"]),
+        Index(value = ["model_name"]),
+        Index(value = ["brand"]),
+        Index(value = ["form_factor"]),
+    ],
+)
 data class AndroidDeviceEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")

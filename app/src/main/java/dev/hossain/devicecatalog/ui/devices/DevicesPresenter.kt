@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.ui.devices
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,7 @@ class DevicesPresenter(
         // Debounced search query to avoid excessive queries
         var debouncedSearchQuery by remember { mutableStateOf("") }
 
+        // Performance: Use LaunchedEffect with snapshotFlow for debouncing to reduce recompositions
         LaunchedEffect(Unit) {
             snapshotFlow { searchQuery }
                 .debounce(300) // 300ms debounce for search
@@ -66,6 +68,7 @@ class DevicesPresenter(
         }
 
         // Get devices based on search query and filters
+        // Performance: Use collectAsState with remember to avoid unnecessary recompositions
         val allDevices by remember(debouncedSearchQuery) {
             if (debouncedSearchQuery.isBlank()) {
                 deviceRepository.getAllDevices()
@@ -75,12 +78,14 @@ class DevicesPresenter(
         }.collectAsState(initial = emptyList())
 
         // Apply filters to the devices
+        // Performance: Use remember with explicit keys to only recalculate when dependencies change
         val filteredDevices =
             remember(allDevices, activeFilters) {
                 applyFilters(allDevices, activeFilters)
             }
 
         // Get paged devices with search and filter
+        // Performance: Use remember to avoid recreating flow on each recomposition
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
             remember(debouncedSearchQuery) {
                 val flow =
@@ -99,8 +104,14 @@ class DevicesPresenter(
                 }
             }
 
-        val isSearchActive = searchQuery.isNotBlank()
-        val isNoSearchResults = isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+        // Performance: Use derivedStateOf for computed values that depend on state
+        // derivedStateOf is specifically designed for derived state and will only recompute when dependencies change
+        val isSearchActive by remember { derivedStateOf { searchQuery.isNotBlank() } }
+        val isNoSearchResults by remember {
+            derivedStateOf {
+                isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+            }
+        }
 
         return DevicesScreen.State(
             devices = filteredDevices,

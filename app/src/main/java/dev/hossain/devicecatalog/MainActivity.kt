@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.compose.runtime.LaunchedEffect
 import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.overlay.ContentWithOverlays
@@ -15,6 +16,7 @@ import com.slack.circuit.sharedelements.SharedElementTransitionLayout
 import dev.hossain.devicecatalog.di.ActivityKey
 import dev.hossain.devicecatalog.ui.navigation.AppNavigation
 import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.util.PerformanceMonitor
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
@@ -34,6 +36,12 @@ class MainActivity
 
             setContent {
                 val windowSizeClass = calculateWindowSizeClass(this)
+
+                // Performance: Record first frame when composition starts
+                LaunchedEffect(Unit) {
+                    PerformanceMonitor.recordFirstFrame()
+                    PerformanceMonitor.logMemoryUsage()
+                }
 
                 DeviceCatalogAppTheme {
                     // See https://slackhq.github.io/circuit/circuit-content/
