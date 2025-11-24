@@ -1,5 +1,7 @@
 package dev.hossain.devicecatalog.ui.devicedetails
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -7,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -31,6 +34,7 @@ class DeviceDetailsPresenter(
         var isLoading by remember { mutableStateOf(true) }
         var errorMessage by remember { mutableStateOf<String?>(null) }
         val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
 
         suspend fun loadDevice() {
             try {
@@ -56,6 +60,25 @@ class DeviceDetailsPresenter(
             }
         }
 
+        fun shareDevice(device: AndroidDevice) {
+            try {
+                Timber.d("Sharing device: ${device.modelName}")
+                val shareText = generateDeviceShareText(device)
+                val shareIntent =
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_SUBJECT, "${device.manufacturer} ${device.modelName}")
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                val chooserIntent = Intent.createChooser(shareIntent, "Share device details")
+                chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(chooserIntent)
+                Timber.i("Share dialog opened successfully")
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to share device")
+            }
+        }
+
         LaunchedEffect(screen.deviceId) {
             loadDevice()
         }
@@ -77,6 +100,10 @@ class DeviceDetailsPresenter(
                             loadDevice()
                         }
                     }
+
+                    DeviceDetailsScreen.Event.ShareClicked -> {
+                        device?.let { shareDevice(it) }
+                    }
                 }
             },
         )
@@ -91,3 +118,45 @@ class DeviceDetailsPresenter(
         ): DeviceDetailsPresenter
     }
 }
+
+/**
+ * Generates shareable text for device specifications.
+ */
+private fun generateDeviceShareText(device: AndroidDevice): String =
+    buildString {
+        appendLine("📱 ${device.manufacturer} ${device.modelName}")
+        appendLine()
+        appendLine("Device: ${device.device}")
+        appendLine("Brand: ${device.brand}")
+        appendLine("Form Factor: ${device.formFactor.value}")
+        appendLine()
+
+        if (device.ram.isNotBlank()) {
+            appendLine("💾 RAM: ${device.ram}")
+        }
+        if (device.processorName.isNotBlank()) {
+            appendLine("⚙️ Processor: ${device.processorName}")
+        }
+        if (device.gpu.isNotBlank()) {
+            appendLine("🎮 GPU: ${device.gpu}")
+        }
+
+        if (device.screenSizes.isNotEmpty()) {
+            appendLine()
+            appendLine("📺 Screen Sizes: ${device.screenSizes.joinToString(", ")}")
+        }
+        if (device.screenDensities.isNotEmpty()) {
+            appendLine("Screen Densities: ${device.screenDensities.joinToString(", ") { "${it}dpi" }}")
+        }
+
+        if (device.abis.isNotEmpty()) {
+            appendLine()
+            appendLine("🔧 ABIs: ${device.abis.joinToString(", ")}")
+        }
+        if (device.sdkVersions.isNotEmpty()) {
+            appendLine("📱 SDK Versions: ${device.sdkVersions.joinToString(", ") { "API $it" }}")
+        }
+        if (device.openGlEsVersions.isNotEmpty()) {
+            appendLine("🎨 OpenGL ES: ${device.openGlEsVersions.joinToString(", ")}")
+        }
+    }

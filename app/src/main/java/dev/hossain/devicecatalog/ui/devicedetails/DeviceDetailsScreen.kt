@@ -21,5 +21,7 @@ data class DeviceDetailsScreen(
         data object BackClicked : Event()
 
         data object RetryLoading : Event()
+
+        data object ShareClicked : Event()
     }
 }

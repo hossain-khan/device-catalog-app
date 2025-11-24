@@ -1,5 +1,12 @@
 package dev.hossain.devicecatalog.ui.devicedetails
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,30 +25,51 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
@@ -49,6 +77,7 @@ import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.R
 import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
+import kotlinx.coroutines.launch
 
 @CircuitInject(DeviceDetailsScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,8 +86,14 @@ fun DeviceDetailsUi(
     state: DeviceDetailsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -75,12 +110,40 @@ fun DeviceDetailsUi(
                         )
                     }
                 },
+                actions = {
+                    // Show share button only when device is loaded
+                    if (state.device != null) {
+                        IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share device details",
+                            )
+                        }
+                    }
+                },
+                scrollBehavior = scrollBehavior,
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                         titleContentColor = MaterialTheme.colorScheme.onSurface,
                     ),
             )
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        floatingActionButton = {
+            // Show FAB only when device is loaded
+            if (state.device != null) {
+                FloatingActionButton(
+                    onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) },
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share device details",
+                    )
+                }
+            }
         },
     ) { innerPadding ->
         when {
@@ -99,6 +162,7 @@ fun DeviceDetailsUi(
             state.device != null -> {
                 DeviceDetailsContent(
                     device = state.device,
+                    snackbarHostState = snackbarHostState,
                     modifier = Modifier.padding(innerPadding),
                 )
             }
@@ -108,19 +172,46 @@ fun DeviceDetailsUi(
 
 @Composable
 private fun LoadingContent(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
+    Column(
+        modifier =
+            modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+        // Skeleton for header card
+        SkeletonCard(height = 120.dp)
+
+        // Skeleton for info cards
+        repeat(3) {
+            SkeletonCard(height = 160.dp)
+        }
+    }
+}
+
+@Composable
+private fun SkeletonCard(
+    height: Dp,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(height),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+            ),
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
         ) {
-            CircularProgressIndicator()
-            Text(
-                text = "Loading device details...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            CircularProgressIndicator(
+                modifier = Modifier.size(32.dp),
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
@@ -138,22 +229,48 @@ private fun ErrorContent(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            modifier = Modifier.padding(32.dp),
         ) {
-            Icon(
-                imageVector = Icons.Default.Warning,
-                contentDescription = null,
-                modifier = Modifier.size(48.dp),
-                tint = MaterialTheme.colorScheme.error,
+            // Error icon with background
+            Surface(
+                modifier = Modifier.size(96.dp),
+                shape = RoundedCornerShape(48.dp),
+                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f),
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        imageVector = Icons.Default.Warning,
+                        contentDescription = null,
+                        modifier = Modifier.size(56.dp),
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
+
+            // Error title
+            Text(
+                text = "Oops! Something went wrong",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurface,
             )
+
+            // Error message
             Text(
                 text = errorMessage,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            OutlinedButton(onClick = onRetry) {
-                Text("Retry")
+
+            // Retry button
+            OutlinedButton(
+                onClick = onRetry,
+                modifier = Modifier.padding(top = 8.dp),
+            ) {
+                Text("Try Again")
             }
         }
     }
@@ -162,6 +279,7 @@ private fun ErrorContent(
 @Composable
 private fun DeviceDetailsContent(
     device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -176,10 +294,10 @@ private fun DeviceDetailsContent(
         DeviceHeaderCard(device = device)
 
         // Basic device information
-        BasicInfoCard(device = device)
+        BasicInfoCard(device = device, snackbarHostState = snackbarHostState)
 
         // Technical specifications
-        TechnicalSpecsCard(device = device)
+        TechnicalSpecsCard(device = device, snackbarHostState = snackbarHostState)
 
         // Screen information
         if (device.screenSizes.isNotEmpty() || device.screenDensities.isNotEmpty()) {
@@ -266,34 +384,40 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
 }
 
 @Composable
-private fun BasicInfoCard(device: AndroidDevice) {
-    InfoCard(title = "Basic Information") {
-        InfoRow(label = "Device Name", value = device.device)
-        InfoRow(label = "Manufacturer", value = device.manufacturer)
-        InfoRow(label = "Brand", value = device.brand)
-        InfoRow(label = "Model", value = device.modelName)
-        InfoRow(label = "Form Factor", value = device.formFactor.value)
+private fun BasicInfoCard(
+    device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
+) {
+    ExpandableInfoCard(title = "Basic Information", defaultExpanded = true) {
+        InfoRow(label = "Device Name", value = device.device, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Manufacturer", value = device.manufacturer, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Brand", value = device.brand, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Model", value = device.modelName, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Form Factor", value = device.formFactor.value, snackbarHostState = snackbarHostState)
     }
 }
 
 @Composable
-private fun TechnicalSpecsCard(device: AndroidDevice) {
-    InfoCard(title = "Technical Specifications") {
+private fun TechnicalSpecsCard(
+    device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
+) {
+    ExpandableInfoCard(title = "Technical Specifications", defaultExpanded = true) {
         if (device.ram.isNotBlank()) {
-            InfoRow(label = "RAM", value = device.ram)
+            InfoRow(label = "RAM", value = device.ram, snackbarHostState = snackbarHostState)
         }
         if (device.processorName.isNotBlank()) {
-            InfoRow(label = "Processor", value = device.processorName)
+            InfoRow(label = "Processor", value = device.processorName, snackbarHostState = snackbarHostState)
         }
         if (device.gpu.isNotBlank()) {
-            InfoRow(label = "GPU", value = device.gpu)
+            InfoRow(label = "GPU", value = device.gpu, snackbarHostState = snackbarHostState)
         }
     }
 }
 
 @Composable
 private fun ScreenInfoCard(device: AndroidDevice) {
-    InfoCard(title = "Screen Information") {
+    ExpandableInfoCard(title = "Screen Information", defaultExpanded = false) {
         if (device.screenSizes.isNotEmpty()) {
             ChipRow(
                 label = "Screen Sizes",
@@ -312,7 +436,7 @@ private fun ScreenInfoCard(device: AndroidDevice) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PlatformInfoCard(device: AndroidDevice) {
-    InfoCard(title = "Platform Information") {
+    ExpandableInfoCard(title = "Platform Information", defaultExpanded = false) {
         if (device.abis.isNotEmpty()) {
             ChipRow(
                 label = "Supported ABIs",
@@ -330,6 +454,71 @@ private fun PlatformInfoCard(device: AndroidDevice) {
                 label = "OpenGL ES Versions",
                 items = device.openGlEsVersions,
             )
+        }
+    }
+}
+
+@Composable
+private fun ExpandableInfoCard(
+    title: String,
+    defaultExpanded: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(defaultExpanded) }
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "expand_icon_rotation",
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            // Header with expand/collapse button
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { expanded = !expanded }
+                        .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.semantics { heading() },
+                )
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Collapse $title" else "Expand $title",
+                    modifier = Modifier.rotate(rotationAngle),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // Content with animation
+            AnimatedVisibility(
+                visible = expanded,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically(),
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    content()
+                }
+            }
         }
     }
 }
@@ -366,11 +555,15 @@ private fun InfoCard(
 private fun InfoRow(
     label: String,
     value: String,
+    snackbarHostState: SnackbarHostState,
 ) {
+    val clipboardManager = LocalClipboardManager.current
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
@@ -378,7 +571,7 @@ private fun InfoRow(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f),
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
@@ -387,6 +580,25 @@ private fun InfoRow(
             modifier = Modifier.weight(2f),
             textAlign = TextAlign.End,
         )
+        IconButton(
+            onClick = {
+                clipboardManager.setText(AnnotatedString(value))
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Copied to clipboard")
+                }
+            },
+            modifier = Modifier.size(40.dp),
+            colors =
+                IconButtonDefaults.iconButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+        ) {
+            Icon(
+                imageVector = Icons.Default.ContentCopy,
+                contentDescription = "Copy $label",
+                modifier = Modifier.size(18.dp),
+            )
+        }
     }
 }
 
