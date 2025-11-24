@@ -102,7 +102,9 @@ fun rememberFoldableDeviceInfo(): State<FoldableDeviceInfo> {
                                 FoldablePosture.HALF_OPENED_VERTICAL
                             }
 
-                            else -> FoldablePosture.NORMAL
+                            else -> {
+                                FoldablePosture.NORMAL
+                            }
                         }
                     }
 
