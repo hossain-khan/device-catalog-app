@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Search result count display in app bar title
 - Error handling with Snackbar and retry action
 - Debounced search implementation for optimal performance
+- Sharing functionality for device specifications via Android sharing system
+- Expandable/collapsible specification sections in device detail view with smooth animations
+- Share button in device detail TopAppBar for easy access
+- Emoji-enhanced shareable device text format
 
 ### Changed
 - Replaced paging toggle FAB with filter action FAB
@@ -26,6 +30,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced DevicesPresenter with search and filter logic
 - Improved DevicesUi with integrated search bar and filter UI components
 - Updated empty state handling to differentiate between no devices and no search results
+- Device detail view now uses expandable cards with default states (basic info and specs expanded by default)
+- Screen Information and Platform Information sections are collapsed by default to reduce initial scroll
 
 ### Fixed
 - Ensured Material 3 theme compatibility throughout search and filter components

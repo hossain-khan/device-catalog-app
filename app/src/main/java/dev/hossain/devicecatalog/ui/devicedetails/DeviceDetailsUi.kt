@@ -1,5 +1,12 @@
 package dev.hossain.devicecatalog.ui.devicedetails
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +25,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,9 +44,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -73,6 +87,17 @@ fun DeviceDetailsUi(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                         )
+                    }
+                },
+                actions = {
+                    // Show share button only when device is loaded
+                    if (state.device != null) {
+                        IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = "Share device details",
+                            )
+                        }
                     }
                 },
                 colors =
@@ -267,7 +292,7 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
 
 @Composable
 private fun BasicInfoCard(device: AndroidDevice) {
-    InfoCard(title = "Basic Information") {
+    ExpandableInfoCard(title = "Basic Information", defaultExpanded = true) {
         InfoRow(label = "Device Name", value = device.device)
         InfoRow(label = "Manufacturer", value = device.manufacturer)
         InfoRow(label = "Brand", value = device.brand)
@@ -278,7 +303,7 @@ private fun BasicInfoCard(device: AndroidDevice) {
 
 @Composable
 private fun TechnicalSpecsCard(device: AndroidDevice) {
-    InfoCard(title = "Technical Specifications") {
+    ExpandableInfoCard(title = "Technical Specifications", defaultExpanded = true) {
         if (device.ram.isNotBlank()) {
             InfoRow(label = "RAM", value = device.ram)
         }
@@ -293,7 +318,7 @@ private fun TechnicalSpecsCard(device: AndroidDevice) {
 
 @Composable
 private fun ScreenInfoCard(device: AndroidDevice) {
-    InfoCard(title = "Screen Information") {
+    ExpandableInfoCard(title = "Screen Information", defaultExpanded = false) {
         if (device.screenSizes.isNotEmpty()) {
             ChipRow(
                 label = "Screen Sizes",
@@ -312,7 +337,7 @@ private fun ScreenInfoCard(device: AndroidDevice) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PlatformInfoCard(device: AndroidDevice) {
-    InfoCard(title = "Platform Information") {
+    ExpandableInfoCard(title = "Platform Information", defaultExpanded = false) {
         if (device.abis.isNotEmpty()) {
             ChipRow(
                 label = "Supported ABIs",
@@ -330,6 +355,69 @@ private fun PlatformInfoCard(device: AndroidDevice) {
                 label = "OpenGL ES Versions",
                 items = device.openGlEsVersions,
             )
+        }
+    }
+}
+
+@Composable
+private fun ExpandableInfoCard(
+    title: String,
+    defaultExpanded: Boolean = false,
+    content: @Composable () -> Unit,
+) {
+    var expanded by remember { mutableStateOf(defaultExpanded) }
+    val rotationAngle by animateFloatAsState(
+        targetValue = if (expanded) 180f else 0f,
+        label = "expand_icon_rotation",
+    )
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            // Header with expand/collapse button
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { expanded = !expanded },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    modifier = Modifier.rotate(rotationAngle),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // Content with animation
+            AnimatedVisibility(
+                visible = expanded,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically(),
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    content()
+                }
+            }
         }
     }
 }
