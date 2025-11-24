@@ -56,6 +56,15 @@ class DevicesPresenter(
                 }
         }
 
+        // Handle refresh with simulated delay since database is pre-loaded
+        LaunchedEffect(isRefreshing) {
+            if (isRefreshing) {
+                // Simulate a brief refresh to show the indicator
+                kotlinx.coroutines.delay(500)
+                isRefreshing = false
+            }
+        }
+
         // Get devices based on search query and filters
         val allDevices by remember(debouncedSearchQuery) {
             if (debouncedSearchQuery.isBlank()) {
@@ -90,7 +99,6 @@ class DevicesPresenter(
                 }
             }
 
-        val devices = if (usePaging) allDevices else filteredDevices
         val isSearchActive = searchQuery.isNotBlank()
         val isNoSearchResults = isSearchActive && filteredDevices.isEmpty() && !isRefreshing
 
@@ -119,16 +127,16 @@ class DevicesPresenter(
 
                     DevicesScreen.Event.RefreshDevices -> {
                         Timber.d("Refreshing devices")
+                        // Trigger refresh state
+                        // Note: The database is pre-loaded and reactive via Flow
+                        // In a production app, this would trigger remote data refresh
                         isRefreshing = true
-                        // Reset refreshing state after a short delay
-                        // In a real app, this would reload data from a remote source
-                        isRefreshing = false
                     }
 
                     DevicesScreen.Event.RetryLoading -> {
                         Timber.d("Retrying device loading")
+                        // Trigger refresh to retry
                         isRefreshing = true
-                        isRefreshing = false
                     }
 
                     DevicesScreen.Event.TogglePagingMode -> {
@@ -208,15 +216,18 @@ class DevicesPresenter(
 
         // SDK version filter
         if (filters.minSdkVersion != null || filters.maxSdkVersion != null) {
-            // Get the minimum SDK version from the device's supported SDKs
+            // Get the device's supported SDK versions
             val deviceSdks = device.sdkVersions
+
+            // Skip devices with no SDK information
             if (deviceSdks.isEmpty()) {
                 return false
             }
 
-            val minDeviceSdk = deviceSdks.minOrNull() ?: 0
-            val maxDeviceSdk = deviceSdks.maxOrNull() ?: 0
+            val minDeviceSdk = deviceSdks.minOrNull() ?: return false
+            val maxDeviceSdk = deviceSdks.maxOrNull() ?: return false
 
+            // Check if device SDK range overlaps with filter range
             if (filters.minSdkVersion != null && maxDeviceSdk < filters.minSdkVersion) {
                 return false
             }

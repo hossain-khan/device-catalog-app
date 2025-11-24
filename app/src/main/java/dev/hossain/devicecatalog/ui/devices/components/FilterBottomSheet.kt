@@ -39,11 +39,14 @@ import androidx.compose.ui.unit.dp
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.ui.devices.DevicesScreen
 
+/** Maximum number of manufacturers to display in the filter sheet for optimal mobile UX */
+private const val TOP_MANUFACTURERS_COUNT = 10
+
 /**
  * Filter bottom sheet for device filtering.
  *
  * @param currentFilters Current active filters
- * @param availableManufacturers List of available manufacturers to filter by
+ * @param availableManufacturers List of available manufacturers to filter by (will show top 10)
  * @param onDismiss Callback when bottom sheet is dismissed
  * @param onApplyFilters Callback when filters are applied
  * @param onClearFilters Callback when filters are cleared
@@ -164,7 +167,7 @@ fun FilterBottomSheet(
 
             // Manufacturer Filter
             Text(
-                text = "Manufacturer (Top 10)",
+                text = "Manufacturer (Top $TOP_MANUFACTURERS_COUNT)",
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 8.dp),
             )
@@ -173,7 +176,7 @@ fun FilterBottomSheet(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                availableManufacturers.take(10).forEach { manufacturer ->
+                availableManufacturers.take(TOP_MANUFACTURERS_COUNT).forEach { manufacturer ->
                     FilterChip(
                         selected = manufacturer in manufacturers,
                         onClick = {

@@ -97,8 +97,8 @@ fun ActiveFilterChips(
                 )
             }
 
-            // Clear all chip
-            if (filters.activeFilterCount() > 1) {
+            // Clear all chip - always show when there are active filters
+            if (filters.hasActiveFilters()) {
                 AssistChip(
                     onClick = onClearAll,
                     label = { Text(text = "Clear All") },
