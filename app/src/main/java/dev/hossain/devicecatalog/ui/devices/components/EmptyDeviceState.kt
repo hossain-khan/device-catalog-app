@@ -33,7 +33,7 @@ fun EmptyDeviceState(
     title: String = "No devices found",
     message: String = "We couldn't find any Android devices in the catalog. Please try refreshing or check back later.",
     actionLabel: String? = "Refresh",
-    onActionClick: (() -> Unit)? = null
+    onActionClick: (() -> Unit)? = null,
 ) {
     Box(
         modifier =
