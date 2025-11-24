@@ -42,6 +42,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Collapsible card sections for organized statistics presentation
 - Pull-to-refresh functionality in statistics screen
 - Percentage calculations for all statistical metrics
+- Comprehensive responsive design system with adaptive layouts
+- WindowSizeUtils for responsive breakpoint detection (phone <600dp, tablet 600dp+)
+- DeviceFormFactor enum for identifying device types (PHONE, TABLET_SMALL, TABLET_LARGE)
+- FoldableDeviceUtils for detecting and handling foldable device states
+- Support for half-opened horizontal (tabletop mode) and vertical (book mode) fold states
+- TwoPaneLayout composable for tablet master-detail layouts
+- MasterDetailLayout and AdaptiveListDetailLayout for responsive list+detail views
+- AccessibilityUtils with proper touch target size constants (48dp minimum)
+- WindowManager dependency for foldable device support
+- Adaptive navigation (NavigationRail for tablets, BottomNavigation for phones)
+- Multi-column device grid layouts (1 column for phones, 2-3 columns for tablets)
+- Responsive content padding and spacing based on device form factor
 
 ### Changed
 - Replaced paging toggle FAB with filter action FAB
@@ -55,6 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Loading states now show skeleton cards instead of centered spinner
 - Enhanced DeviceStats data model to include RAM, SDK, screen density, ABI, and GPU distributions
 - Statistics screen now uses Material 3 design with improved visual hierarchy
+- App navigation automatically switches between NavigationRail (tablets) and BottomNavigation (phones)
+- Device list layout adapts from single column (phones) to multi-column grid (tablets)
+- Content padding and spacing adjust based on available screen width
 
 ### Fixed
 - Ensured Material 3 theme compatibility throughout search and filter components
