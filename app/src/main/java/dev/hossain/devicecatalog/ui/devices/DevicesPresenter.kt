@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.ui.devices
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -104,11 +105,13 @@ class DevicesPresenter(
             }
 
         // Performance: Use derivedStateOf for computed values that depend on state
-        val isSearchActive = remember(searchQuery) { searchQuery.isNotBlank() }
-        val isNoSearchResults =
-            remember(isSearchActive, filteredDevices, isRefreshing) {
+        // derivedStateOf is specifically designed for derived state and will only recompute when dependencies change
+        val isSearchActive by remember { derivedStateOf { searchQuery.isNotBlank() } }
+        val isNoSearchResults by remember {
+            derivedStateOf {
                 isSearchActive && filteredDevices.isEmpty() && !isRefreshing
             }
+        }
 
         return DevicesScreen.State(
             devices = filteredDevices,
