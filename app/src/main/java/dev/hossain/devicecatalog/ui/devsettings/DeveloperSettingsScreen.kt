@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.feature.FeatureFlags
+import dev.hossain.devicecatalog.util.LanguagePreferences
 import dev.hossain.devicecatalog.util.PerformanceMonitor
 
 /**
@@ -94,7 +95,7 @@ fun DeveloperSettingsScreen(
 
             items(featureFlags.toList()) { (key, value) ->
                 FeatureFlagItem(
-                    name = key.removePrefix("feature_").replace("_", " ").replaceFirstChar { it.uppercase() },
+                    name = LanguagePreferences.formatFeatureFlagName(key),
                     enabled = value,
                     onToggle = { newValue ->
                         FeatureFlags.setFlag(context, key, newValue)

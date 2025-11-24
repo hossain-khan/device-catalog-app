@@ -1,6 +1,7 @@
 package dev.hossain.devicecatalog.feature
 
 import android.content.Context
+import dev.hossain.devicecatalog.prefs.PreferenceKeys
 import timber.log.Timber
 
 /**
@@ -57,7 +58,7 @@ object FeatureFlags {
         context: Context,
         key: String,
     ): Boolean {
-        val prefs = context.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.FEATURE_FLAGS, Context.MODE_PRIVATE)
         val defaultValue = defaultFlags[key] ?: false
         val value = prefs.getBoolean(key, defaultValue)
         Timber.v("Feature flag $key: $value")
@@ -72,7 +73,7 @@ object FeatureFlags {
         key: String,
         value: Boolean,
     ) {
-        val prefs = context.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.FEATURE_FLAGS, Context.MODE_PRIVATE)
         prefs.edit().putBoolean(key, value).apply()
         Timber.d("Feature flag $key set to: $value")
     }
@@ -81,7 +82,7 @@ object FeatureFlags {
      * Gets all feature flags for display in developer settings.
      */
     fun getAllFlags(context: Context): Map<String, Boolean> {
-        val prefs = context.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.FEATURE_FLAGS, Context.MODE_PRIVATE)
         return defaultFlags.mapValues { (key, defaultValue) ->
             prefs.getBoolean(key, defaultValue)
         }
@@ -91,7 +92,7 @@ object FeatureFlags {
      * Resets all flags to their default values.
      */
     fun resetToDefaults(context: Context) {
-        val prefs = context.getSharedPreferences("feature_flags", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.FEATURE_FLAGS, Context.MODE_PRIVATE)
         prefs.edit().clear().apply()
         Timber.d("Feature flags reset to defaults")
     }

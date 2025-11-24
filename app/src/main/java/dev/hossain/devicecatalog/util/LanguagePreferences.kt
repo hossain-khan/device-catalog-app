@@ -6,6 +6,7 @@ import android.os.LocaleList
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import dev.hossain.devicecatalog.prefs.PreferenceKeys
 import timber.log.Timber
 import java.util.Locale
 
@@ -44,7 +45,7 @@ object LanguagePreferences {
      * Gets the current app language.
      */
     fun getCurrentLanguage(context: Context): String? {
-        val prefs = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.APP_PREFERENCES, Context.MODE_PRIVATE)
         return prefs.getString(PREF_LANGUAGE, null)
     }
 
@@ -97,12 +98,12 @@ object LanguagePreferences {
         context: Context,
         languageTag: String,
     ) {
-        val prefs = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.APP_PREFERENCES, Context.MODE_PRIVATE)
         prefs.edit().putString(PREF_LANGUAGE, languageTag).apply()
     }
 
     private fun removeLanguagePreference(context: Context) {
-        val prefs = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences(PreferenceKeys.APP_PREFERENCES, Context.MODE_PRIVATE)
         prefs.edit().remove(PREF_LANGUAGE).apply()
     }
 
@@ -120,6 +121,16 @@ object LanguagePreferences {
             LanguageOption("ko", "한국어"),
             LanguageOption("zh", "中文"),
         )
+
+    /**
+     * Formats a feature flag key to a human-readable display name.
+     * Example: "feature_haptic_feedback" -> "Haptic Feedback"
+     */
+    fun formatFeatureFlagName(key: String): String =
+        key
+            .removePrefix("feature_")
+            .replace("_", " ")
+            .replaceFirstChar { it.uppercase() }
 
     data class LanguageOption(
         val tag: String,

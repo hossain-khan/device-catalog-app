@@ -14,7 +14,6 @@
             android:targetClass="dev.hossain.devicecatalog.MainActivity">
             <extra android:name="destination" android:value="search" />
         </intent>
-        <categories android:name="android.shortcut.conversation" />
     </shortcut>
 
     <!-- Statistics Shortcut -->

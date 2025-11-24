@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import dev.hossain.devicecatalog.prefs.PreferenceKeys
 import timber.log.Timber
 
 /**
@@ -24,7 +25,7 @@ class SecurePreferences(
     private val sharedPreferences: SharedPreferences =
         EncryptedSharedPreferences.create(
             context,
-            SECURE_PREFS_FILE_NAME,
+            PreferenceKeys.SECURE_PREFERENCES,
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
@@ -39,9 +40,9 @@ class SecurePreferences(
     ) {
         try {
             sharedPreferences.edit().putString(key, value).apply()
-            Timber.d("Stored secure preference: $key")
+            Timber.d("Stored secure preference successfully")
         } catch (e: Exception) {
-            Timber.e(e, "Failed to store secure preference: $key")
+            Timber.e(e, "Failed to store secure preference")
         }
     }
 
@@ -55,7 +56,7 @@ class SecurePreferences(
         try {
             sharedPreferences.getString(key, defaultValue)
         } catch (e: Exception) {
-            Timber.e(e, "Failed to retrieve secure preference: $key")
+            Timber.e(e, "Failed to retrieve secure preference")
             defaultValue
         }
 
@@ -68,9 +69,9 @@ class SecurePreferences(
     ) {
         try {
             sharedPreferences.edit().putBoolean(key, value).apply()
-            Timber.d("Stored secure preference: $key = $value")
+            Timber.d("Stored secure preference successfully")
         } catch (e: Exception) {
-            Timber.e(e, "Failed to store secure preference: $key")
+            Timber.e(e, "Failed to store secure preference")
         }
     }
 
@@ -84,7 +85,7 @@ class SecurePreferences(
         try {
             sharedPreferences.getBoolean(key, defaultValue)
         } catch (e: Exception) {
-            Timber.e(e, "Failed to retrieve secure preference: $key")
+            Timber.e(e, "Failed to retrieve secure preference")
             defaultValue
         }
 
@@ -94,9 +95,9 @@ class SecurePreferences(
     fun remove(key: String) {
         try {
             sharedPreferences.edit().remove(key).apply()
-            Timber.d("Removed secure preference: $key")
+            Timber.d("Removed secure preference successfully")
         } catch (e: Exception) {
-            Timber.e(e, "Failed to remove secure preference: $key")
+            Timber.e(e, "Failed to remove secure preference")
         }
     }
 
@@ -110,9 +111,5 @@ class SecurePreferences(
         } catch (e: Exception) {
             Timber.e(e, "Failed to clear secure preferences")
         }
-    }
-
-    companion object {
-        private const val SECURE_PREFS_FILE_NAME = "secure_preferences"
     }
 }
