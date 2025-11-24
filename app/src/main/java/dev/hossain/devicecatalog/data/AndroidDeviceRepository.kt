@@ -24,15 +24,24 @@ class AndroidDeviceRepository
         /**
          * Get paged list of devices with relationships.
          * Returns the entity with relations for UI display.
+         *
+         * Performance optimizations:
+         * - Page size: 30 items for optimal balance between network/DB calls and memory
+         * - Initial load size: 45 items (1.5x page size) for faster initial display
+         * - Prefetch distance: 15 items to ensure smooth scrolling
+         * - Max size: 150 items to prevent excessive memory usage on low-end devices
+         * - Placeholders enabled for better perceived performance
          */
         fun getPagedDevices(): Flow<PagingData<AndroidDeviceWithRelations>> {
-            Timber.d("Creating paged devices flow")
+            Timber.d("Creating paged devices flow with optimized pagination config")
             return Pager(
                 config =
                     PagingConfig(
-                        pageSize = 20,
+                        pageSize = 30,
+                        initialLoadSize = 45,
+                        prefetchDistance = 15,
                         enablePlaceholders = true,
-                        maxSize = 100,
+                        maxSize = 150,
                     ),
             ) {
                 deviceDao.getPagedDevicesWithRelations()
@@ -41,16 +50,23 @@ class AndroidDeviceRepository
 
         /**
          * Get paged list of devices filtered by search query with relationships.
+         *
+         * Performance optimizations for search results:
+         * - Smaller page size (25) since search results are typically smaller
+         * - Reduced max size (120) to conserve memory during search
+         * - Optimized for quick result display
          */
         fun getPagedDevicesBySearch(query: String): Flow<PagingData<AndroidDeviceWithRelations>> {
             val searchQuery = "%$query%"
-            Timber.d("Creating paged devices flow with search: $query")
+            Timber.d("Creating paged devices flow with search: $query (optimized pagination)")
             return Pager(
                 config =
                     PagingConfig(
-                        pageSize = 20,
+                        pageSize = 25,
+                        initialLoadSize = 40,
+                        prefetchDistance = 12,
                         enablePlaceholders = true,
-                        maxSize = 100,
+                        maxSize = 120,
                     ),
             ) {
                 deviceDao.getPagedDevicesWithRelationsBySearch(searchQuery)

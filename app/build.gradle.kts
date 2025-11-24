@@ -139,6 +139,11 @@ dependencies {
     // WindowManager for foldable device support
     implementation(libs.androidx.window.manager)
 
+    // Coil for efficient image loading with memory and disk caching
+    // https://coil-kt.github.io/coil/
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // CSV parser for Android device catalog
     // https://github.com/hossain-khan/android-device-catalog-parser
     implementation(libs.android.device.catalog.parser)

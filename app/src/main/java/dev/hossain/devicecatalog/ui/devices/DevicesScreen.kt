@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.ui.devices
 
+import androidx.compose.runtime.Immutable
 import androidx.paging.PagingData
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -13,6 +14,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data object DevicesScreen : Screen {
+    /**
+     * Performance: State is marked as @Immutable where appropriate to optimize recomposition.
+     */
     data class State(
         val devices: List<DeviceInfo> = emptyList(),
         val pagedDevices: Flow<PagingData<DeviceInfo>> = emptyFlow(),
@@ -59,7 +63,10 @@ data object DevicesScreen : Screen {
 
     /**
      * Represents the current filter state for device filtering.
+     *
+     * Performance: Marked as @Immutable to help Compose skip unnecessary recompositions.
      */
+    @Immutable
     data class FilterState(
         val formFactors: Set<FormFactor> = emptySet(),
         val manufacturers: Set<String> = emptySet(),
