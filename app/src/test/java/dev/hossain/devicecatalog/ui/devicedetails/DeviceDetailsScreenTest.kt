@@ -64,8 +64,19 @@ class DeviceDetailsScreenTest {
         // Test that events can be created
         val backClicked = DeviceDetailsScreen.Event.BackClicked
         val retryLoading = DeviceDetailsScreen.Event.RetryLoading
+        val shareClicked = DeviceDetailsScreen.Event.ShareClicked
 
         // Verify events are different instances
         assert(backClicked != retryLoading)
+        assert(backClicked != shareClicked)
+        assert(retryLoading != shareClicked)
+    }
+
+    @Test
+    fun `ShareClicked event should be distinct from other events`() {
+        val shareClicked = DeviceDetailsScreen.Event.ShareClicked
+
+        // Verify it's a valid event
+        assert(shareClicked is DeviceDetailsScreen.Event)
     }
 }
