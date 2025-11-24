@@ -20,11 +20,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
@@ -35,24 +37,33 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,6 +74,7 @@ import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.R
 import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
+import kotlinx.coroutines.launch
 
 @CircuitInject(DeviceDetailsScreen::class, AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,8 +83,14 @@ fun DeviceDetailsUi(
     state: DeviceDetailsScreen.State,
     modifier: Modifier = Modifier,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -100,6 +118,7 @@ fun DeviceDetailsUi(
                         }
                     }
                 },
+                scrollBehavior = scrollBehavior,
                 colors =
                     TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface,
@@ -107,6 +126,7 @@ fun DeviceDetailsUi(
                     ),
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { innerPadding ->
         when {
             state.isLoading -> {
@@ -124,6 +144,7 @@ fun DeviceDetailsUi(
             state.device != null -> {
                 DeviceDetailsContent(
                     device = state.device,
+                    snackbarHostState = snackbarHostState,
                     modifier = Modifier.padding(innerPadding),
                 )
             }
@@ -187,6 +208,7 @@ private fun ErrorContent(
 @Composable
 private fun DeviceDetailsContent(
     device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -201,10 +223,10 @@ private fun DeviceDetailsContent(
         DeviceHeaderCard(device = device)
 
         // Basic device information
-        BasicInfoCard(device = device)
+        BasicInfoCard(device = device, snackbarHostState = snackbarHostState)
 
         // Technical specifications
-        TechnicalSpecsCard(device = device)
+        TechnicalSpecsCard(device = device, snackbarHostState = snackbarHostState)
 
         // Screen information
         if (device.screenSizes.isNotEmpty() || device.screenDensities.isNotEmpty()) {
@@ -291,27 +313,33 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
 }
 
 @Composable
-private fun BasicInfoCard(device: AndroidDevice) {
+private fun BasicInfoCard(
+    device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
+) {
     ExpandableInfoCard(title = "Basic Information", defaultExpanded = true) {
-        InfoRow(label = "Device Name", value = device.device)
-        InfoRow(label = "Manufacturer", value = device.manufacturer)
-        InfoRow(label = "Brand", value = device.brand)
-        InfoRow(label = "Model", value = device.modelName)
-        InfoRow(label = "Form Factor", value = device.formFactor.value)
+        InfoRow(label = "Device Name", value = device.device, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Manufacturer", value = device.manufacturer, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Brand", value = device.brand, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Model", value = device.modelName, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Form Factor", value = device.formFactor.value, snackbarHostState = snackbarHostState)
     }
 }
 
 @Composable
-private fun TechnicalSpecsCard(device: AndroidDevice) {
+private fun TechnicalSpecsCard(
+    device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
+) {
     ExpandableInfoCard(title = "Technical Specifications", defaultExpanded = true) {
         if (device.ram.isNotBlank()) {
-            InfoRow(label = "RAM", value = device.ram)
+            InfoRow(label = "RAM", value = device.ram, snackbarHostState = snackbarHostState)
         }
         if (device.processorName.isNotBlank()) {
-            InfoRow(label = "Processor", value = device.processorName)
+            InfoRow(label = "Processor", value = device.processorName, snackbarHostState = snackbarHostState)
         }
         if (device.gpu.isNotBlank()) {
-            InfoRow(label = "GPU", value = device.gpu)
+            InfoRow(label = "GPU", value = device.gpu, snackbarHostState = snackbarHostState)
         }
     }
 }
@@ -454,11 +482,15 @@ private fun InfoCard(
 private fun InfoRow(
     label: String,
     value: String,
+    snackbarHostState: SnackbarHostState,
 ) {
+    val clipboardManager = LocalClipboardManager.current
+    val coroutineScope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
@@ -466,7 +498,7 @@ private fun InfoRow(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f),
         )
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
@@ -475,6 +507,25 @@ private fun InfoRow(
             modifier = Modifier.weight(2f),
             textAlign = TextAlign.End,
         )
+        IconButton(
+            onClick = {
+                clipboardManager.setText(AnnotatedString(value))
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Copied to clipboard")
+                }
+            },
+            modifier = Modifier.size(40.dp),
+            colors =
+                IconButtonDefaults.iconButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+        ) {
+            Icon(
+                imageVector = Icons.Default.ContentCopy,
+                contentDescription = "Copy $label",
+                modifier = Modifier.size(18.dp),
+            )
+        }
     }
 }
 
