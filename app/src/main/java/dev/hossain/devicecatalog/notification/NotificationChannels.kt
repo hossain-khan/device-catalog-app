@@ -49,6 +49,20 @@ object NotificationChannels {
 
     /**
      * Creates a notification builder for the sync channel.
+     *
+     * **Important**: Caller must set required notification properties before building:
+     * - Small icon via `setSmallIcon()`
+     * - Content title via `setContentTitle()`
+     * - Content text via `setContentText()`
+     *
+     * Example usage:
+     * ```kotlin
+     * val notification = NotificationChannels.createSyncNotificationBuilder(context)
+     *     .setSmallIcon(R.drawable.ic_notification)
+     *     .setContentTitle("Sync Complete")
+     *     .setContentText("Device catalog updated")
+     *     .build()
+     * ```
      */
     fun createSyncNotificationBuilder(context: Context): NotificationCompat.Builder =
         NotificationCompat

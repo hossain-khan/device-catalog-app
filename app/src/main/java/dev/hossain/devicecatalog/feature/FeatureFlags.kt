@@ -96,4 +96,14 @@ object FeatureFlags {
         prefs.edit().clear().apply()
         Timber.d("Feature flags reset to defaults")
     }
+
+    /**
+     * Formats a feature flag key to a human-readable display name.
+     * Example: "feature_haptic_feedback" -> "Haptic Feedback"
+     */
+    fun formatFeatureFlagName(key: String): String =
+        key
+            .removePrefix("feature_")
+            .replace("_", " ")
+            .replaceFirstChar { it.uppercase() }
 }

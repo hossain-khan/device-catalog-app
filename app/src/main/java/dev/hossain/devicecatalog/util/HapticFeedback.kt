@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import dev.hossain.devicecatalog.R
 import dev.hossain.devicecatalog.prefs.PreferenceKeys
 import timber.log.Timber
 
@@ -86,7 +87,7 @@ class HapticFeedback(
      */
     private fun isHapticFeedbackEnabled(): Boolean {
         val prefs = context.getSharedPreferences(PreferenceKeys.APP_PREFERENCES, Context.MODE_PRIVATE)
-        return prefs.getBoolean("haptic_feedback_enabled", true)
+        return prefs.getBoolean(context.getString(R.string.pref_haptic_feedback_key), true)
     }
 }
 

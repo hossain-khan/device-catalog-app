@@ -122,16 +122,6 @@ object LanguagePreferences {
             LanguageOption("zh", "中文"),
         )
 
-    /**
-     * Formats a feature flag key to a human-readable display name.
-     * Example: "feature_haptic_feedback" -> "Haptic Feedback"
-     */
-    fun formatFeatureFlagName(key: String): String =
-        key
-            .removePrefix("feature_")
-            .replace("_", " ")
-            .replaceFirstChar { it.uppercase() }
-
     data class LanguageOption(
         val tag: String,
         val displayName: String,
