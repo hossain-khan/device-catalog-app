@@ -123,7 +123,11 @@ fun rememberFoldableDeviceInfo(): State<FoldableDeviceInfo> {
             val occlusionType =
                 when (foldingFeature.occlusionType) {
                     FoldingFeature.OcclusionType.FULL -> OcclusionType.FULL
+
                     FoldingFeature.OcclusionType.NONE -> OcclusionType.NONE
+
+                    // Note: WindowManager's FoldingFeature.OcclusionType only has FULL and NONE
+                    // The else branch handles potential future additions
                     else -> OcclusionType.NONE
                 }
 
