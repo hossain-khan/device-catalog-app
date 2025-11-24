@@ -226,6 +226,7 @@ private fun PaginatedDeviceList(
                             }
                         }
                     }
+
                     is LoadState.Error -> {
                         item {
                             Text(
@@ -238,6 +239,7 @@ private fun PaginatedDeviceList(
                             )
                         }
                     }
+
                     else -> {}
                 }
             }
@@ -283,6 +285,7 @@ private fun PaginatedDeviceList(
                             }
                         }
                     }
+
                     is LoadState.Error -> {
                         item {
                             Text(
@@ -295,6 +298,7 @@ private fun PaginatedDeviceList(
                             )
                         }
                     }
+
                     else -> {}
                 }
             }
