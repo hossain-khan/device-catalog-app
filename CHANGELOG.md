@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- DeviceCatalogNavigationType enum for adaptive navigation (Bottom Navigation, Navigation Rail, Permanent Drawer) following Reply app best practices
+- DeviceCatalogContentType enum for determining single pane vs dual pane layouts
+- Permanent navigation drawer support for expanded screens (840dp+) with app title and navigation items
+- WindowSizeClass extension functions `toNavigationType()` and `toContentType()` for adaptive layout decisions
+- Multi-device preview annotations for navigation components (Compact, Medium, Expanded)
+- Unit tests for DeviceCatalogNavigationType and DeviceCatalogContentType utilities
 - Search functionality with real-time search and 300ms debouncing for device name, manufacturer, and brand
 - Filter system with form factor, manufacturer, and SDK version range filtering
 - Material 3 SearchBar component with clear functionality
@@ -73,6 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deep linking infrastructure for device details (HTTPS and custom scheme support)
 
 ### Changed
+- AppNavigation now uses DeviceCatalogNavigationType for cleaner navigation type selection following Reply app patterns
+- Navigation adapts between three modes: Bottom Navigation (phones), Navigation Rail (small tablets), and Permanent Drawer (large tablets/desktops)
 - Replaced paging toggle FAB with filter action FAB
 - Updated DevicesScreen state to include search and filter parameters
 - Enhanced DevicesPresenter with search and filter logic
