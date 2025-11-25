@@ -7,7 +7,7 @@ import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
-import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.core.model.DeviceInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.parcelize.Parcelize

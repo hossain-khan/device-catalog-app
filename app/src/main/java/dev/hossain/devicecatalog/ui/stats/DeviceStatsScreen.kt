@@ -3,7 +3,7 @@ package dev.hossain.devicecatalog.ui.stats
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import dev.hossain.devicecatalog.data.DeviceStats
+import dev.hossain.devicecatalog.core.data.DeviceStats
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

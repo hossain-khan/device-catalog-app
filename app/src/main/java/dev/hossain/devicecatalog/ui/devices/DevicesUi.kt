@@ -46,7 +46,7 @@ import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
-import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.ui.devices.components.ActiveFilterChips
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCard
 import dev.hossain.devicecatalog.ui.devices.components.DeviceCardSkeleton

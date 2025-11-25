@@ -22,4 +22,20 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Device Catalog"
+
+// Main application module
 include(":app")
+
+// Core modules
+include(":core:common")
+include(":core:data")
+include(":core:database")
+include(":core:designsystem")
+include(":core:model")
+include(":core:ui")
+
+// Feature modules
+include(":feature:devices")
+include(":feature:devicedetails")
+include(":feature:statistics")
+include(":feature:settings")

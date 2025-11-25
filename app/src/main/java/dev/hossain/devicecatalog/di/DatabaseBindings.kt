@@ -2,8 +2,8 @@ package dev.hossain.devicecatalog.di
 
 import android.content.Context
 import androidx.room.Room
-import dev.hossain.devicecatalog.db.AndroidDeviceDao
-import dev.hossain.devicecatalog.db.AppDatabase
+import dev.hossain.devicecatalog.core.database.AndroidDeviceDao
+import dev.hossain.devicecatalog.core.database.AppDatabase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesTo

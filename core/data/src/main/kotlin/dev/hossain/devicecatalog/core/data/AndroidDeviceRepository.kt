@@ -1,16 +1,14 @@
-package dev.hossain.devicecatalog.data
+package dev.hossain.devicecatalog.core.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
-import dev.hossain.devicecatalog.db.AndroidDeviceDao
-import dev.hossain.devicecatalog.db.AndroidDeviceEntity
-import dev.hossain.devicecatalog.db.AndroidDeviceWithRelations
-import dev.hossain.devicecatalog.model.DeviceInfo
-import dev.zacsweers.metro.AppScope
-import dev.zacsweers.metro.ContributesTo
+import dev.hossain.devicecatalog.core.database.AndroidDeviceDao
+import dev.hossain.devicecatalog.core.database.AndroidDeviceEntity
+import dev.hossain.devicecatalog.core.database.AndroidDeviceWithRelations
+import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

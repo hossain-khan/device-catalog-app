@@ -1,0 +1,362 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "20e41ae7b4d825aed91860d4deb69d78",
+    "entities": [
+      {
+        "tableName": "device",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brand` TEXT NOT NULL, `device` TEXT NOT NULL, `manufacturer` TEXT NOT NULL, `model_name` TEXT NOT NULL, `ram` TEXT NOT NULL, `form_factor` TEXT NOT NULL, `processor_name` TEXT NOT NULL, `gpu` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "brand",
+            "columnName": "brand",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "device",
+            "columnName": "device",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manufacturer",
+            "columnName": "manufacturer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "modelName",
+            "columnName": "model_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ram",
+            "columnName": "ram",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "formFactor",
+            "columnName": "form_factor",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "processorName",
+            "columnName": "processor_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gpu",
+            "columnName": "gpu",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_manufacturer",
+            "unique": false,
+            "columnNames": [
+              "manufacturer"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_manufacturer` ON `${TABLE_NAME}` (`manufacturer`)"
+          },
+          {
+            "name": "index_device_model_name",
+            "unique": false,
+            "columnNames": [
+              "model_name"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_model_name` ON `${TABLE_NAME}` (`model_name`)"
+          },
+          {
+            "name": "index_device_brand",
+            "unique": false,
+            "columnNames": [
+              "brand"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_brand` ON `${TABLE_NAME}` (`brand`)"
+          },
+          {
+            "name": "index_device_form_factor",
+            "unique": false,
+            "columnNames": [
+              "form_factor"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_form_factor` ON `${TABLE_NAME}` (`form_factor`)"
+          }
+        ]
+      },
+      {
+        "tableName": "device_abi",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `abi` TEXT NOT NULL, PRIMARY KEY(`device_id`, `abi`), FOREIGN KEY(`device_id`) REFERENCES `device`(`_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "abi",
+            "columnName": "abi",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "abi"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_abi_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_abi_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_opengl",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `opengl_version` TEXT NOT NULL, PRIMARY KEY(`device_id`, `opengl_version`), FOREIGN KEY(`device_id`) REFERENCES `device`(`_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "opengl_version",
+            "columnName": "opengl_version",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "opengl_version"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_opengl_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_opengl_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_screen_density",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `screen_density` INTEGER NOT NULL, PRIMARY KEY(`device_id`, `screen_density`), FOREIGN KEY(`device_id`) REFERENCES `device`(`_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screen_density",
+            "columnName": "screen_density",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "screen_density"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_screen_density_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_screen_density_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_screen_size",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `screen_size` TEXT NOT NULL, PRIMARY KEY(`device_id`, `screen_size`), FOREIGN KEY(`device_id`) REFERENCES `device`(`_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "screen_size",
+            "columnName": "screen_size",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "screen_size"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_screen_size_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_screen_size_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "_id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "device_sdk",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`device_id` INTEGER NOT NULL, `sdk_version` INTEGER NOT NULL, PRIMARY KEY(`device_id`, `sdk_version`), FOREIGN KEY(`device_id`) REFERENCES `device`(`_id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "device_id",
+            "columnName": "device_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sdk_version",
+            "columnName": "sdk_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "device_id",
+            "sdk_version"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_device_sdk_device_id",
+            "unique": false,
+            "columnNames": [
+              "device_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_device_sdk_device_id` ON `${TABLE_NAME}` (`device_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "device",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "device_id"
+            ],
+            "referencedColumns": [
+              "_id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '20e41ae7b4d825aed91860d4deb69d78')"
+    ]
+  }
+}

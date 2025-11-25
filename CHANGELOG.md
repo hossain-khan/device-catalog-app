@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Multi-module architecture following Now in Android patterns
+  - Core modules: `:core:common`, `:core:data`, `:core:database`, `:core:designsystem`, `:core:model`, `:core:ui`
+  - Feature modules: `:feature:devices`, `:feature:devicedetails`, `:feature:statistics`, `:feature:settings`
 - Compose Compiler metrics and reports configuration for performance analysis
 - Documentation in README for interpreting Compose metrics and reports
 - Build-logic convention plugins for consistent build configuration
@@ -18,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `devicecatalog.jvm.library` - Configure pure Kotlin/JVM modules
 
 ### Changed
+- Refactored to multi-module architecture for improved build times and separation of concerns
+- Moved database layer to `:core:database` module
+- Moved repository and data classes to `:core:data` module
+- Moved theme and design components to `:core:designsystem` module
+- Moved domain models to `:core:model` module
+- Moved common utilities to `:core:common` module
 - Optimized Gradle build performance with advanced JVM and GC settings from Now in Android project
 - Enabled parallel execution for faster builds
 - Enabled configuration caching for improved build times
