@@ -96,5 +96,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Ensured Material 3 theme compatibility throughout search and filter components
+- Fixed lint errors by replacing deprecated `Modifier.composed` with standard modifier chains
+- Fixed Compose parameter ordering errors by making `modifier` the first optional parameter
+- Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
+- Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
 [Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/v1.0.0...HEAD

@@ -1,10 +1,7 @@
 package dev.hossain.devicecatalog.ui.adaptive
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -43,20 +40,15 @@ fun Modifier.accessibleClickable(
     enabled: Boolean = true,
     onClick: () -> Unit,
 ): Modifier =
-    composed {
-        val interactionSource = remember { MutableInteractionSource() }
-        this
-            .semantics {
-                this.contentDescription = contentDescription
-                this.role = semanticRole
-            }.clickable(
-                enabled = enabled,
-                role = semanticRole,
-                interactionSource = interactionSource,
-                indication = null, // Using null for Material 3 compatibility
-                onClick = onClick,
-            )
-    }
+    this
+        .semantics {
+            this.contentDescription = contentDescription
+            this.role = semanticRole
+        }.clickable(
+            enabled = enabled,
+            role = semanticRole,
+            onClick = onClick,
+        )
 
 /**
  * Adds semantic content description to the modifier.

@@ -24,17 +24,17 @@ import androidx.compose.ui.unit.dp
  *
  * @param showTwoPane Whether to show two panes side by side
  * @param listPane The content for the list/master pane
+ * @param modifier Modifier for the container
  * @param detailPane The content for the detail pane (null to show only list)
  * @param listPaneWeight The weight of the list pane (0.0 to 1.0)
- * @param modifier Modifier for the container
  */
 @Composable
 fun TwoPaneLayout(
     showTwoPane: Boolean,
     listPane: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     detailPane: (@Composable () -> Unit)? = null,
     listPaneWeight: Float = 0.4f,
-    modifier: Modifier = Modifier,
 ) {
     if (showTwoPane && detailPane != null) {
         // Two-pane layout for tablets
@@ -88,8 +88,10 @@ fun TwoPaneLayout(
  * @param showMasterDetail Whether to show master-detail layout
  * @param masterContent The master/list content
  * @param detailContent The detail content (null shows placeholder)
- * @param masterPaneRatio Ratio of master pane width (default 0.35 = 35%)
+ * @param detailPlaceholder Placeholder content when no detail is selected
+ * @param showDetail Whether to show detail content
  * @param modifier Modifier for the container
+ * @param masterPaneRatio Ratio of master pane width (default 0.35 = 35%)
  */
 @Composable
 fun MasterDetailLayout(
@@ -98,8 +100,8 @@ fun MasterDetailLayout(
     detailContent: @Composable () -> Unit,
     detailPlaceholder: @Composable () -> Unit,
     showDetail: Boolean,
-    masterPaneRatio: Float = 0.35f,
     modifier: Modifier = Modifier,
+    masterPaneRatio: Float = 0.35f,
 ) {
     if (showMasterDetail) {
         // Master-detail side by side for tablets
