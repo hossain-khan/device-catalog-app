@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-11-25
+
 ### Added
 - DeviceCatalogNavigationType enum for adaptive navigation (Bottom Navigation, Navigation Rail, Permanent Drawer) following Reply app best practices
 - DeviceCatalogContentType enum for determining single pane vs dual pane layouts
@@ -109,4 +111,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/hossain-khan/device-catalog-app/releases/tag/1.0.0
