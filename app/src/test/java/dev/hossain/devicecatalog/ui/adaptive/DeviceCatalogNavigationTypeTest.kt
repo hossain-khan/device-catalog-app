@@ -178,11 +178,11 @@ class DeviceCatalogNavigationTypeTest {
 
     @Test
     fun `DeviceCatalogNavigationType has three values`() {
-        assertEquals(3, DeviceCatalogNavigationType.values().size)
+        assertEquals(3, DeviceCatalogNavigationType.entries.size)
     }
 
     @Test
     fun `DeviceCatalogContentType has two values`() {
-        assertEquals(2, DeviceCatalogContentType.values().size)
+        assertEquals(2, DeviceCatalogContentType.entries.size)
     }
 }
