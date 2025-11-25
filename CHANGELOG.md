@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Optimized Gradle build performance with advanced JVM and GC settings from Now in Android project
+- Enabled parallel execution for faster builds
+- Enabled configuration caching for improved build times
+- Disabled unused build features (resvalues, shaders) to reduce build overhead
+
 ## [1.0.0] - 2025-11-25
 
 ### Added
