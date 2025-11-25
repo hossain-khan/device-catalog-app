@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Compose Compiler metrics and reports configuration for performance analysis
+- Documentation in README for interpreting Compose metrics and reports
+
 ### Changed
 - Optimized Gradle build performance with advanced JVM and GC settings from Now in Android project
 - Enabled parallel execution for faster builds
