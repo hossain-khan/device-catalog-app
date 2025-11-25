@@ -104,6 +104,20 @@ kotlin {
     }
 }
 
+composeCompiler {
+    // Enable Compose Compiler metrics for performance analysis
+    // Run with: ./gradlew assembleRelease -PenableComposeCompilerMetrics=true
+    if (project.findProperty("enableComposeCompilerMetrics") == "true") {
+        metricsDestination = layout.buildDirectory.dir("compose-metrics")
+    }
+
+    // Enable Compose Compiler reports for stability analysis
+    // Run with: ./gradlew assembleRelease -PenableComposeCompilerReports=true
+    if (project.findProperty("enableComposeCompilerReports") == "true") {
+        reportsDestination = layout.buildDirectory.dir("compose-reports")
+    }
+}
+
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
