@@ -1,0 +1,24 @@
+package dev.hossain.devicecatalog.core.database
+
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+
+@Entity(
+    tableName = "device_abi",
+    primaryKeys = ["device_id", "abi"],
+    foreignKeys = [
+        ForeignKey(
+            entity = AndroidDeviceEntity::class,
+            parentColumns = ["_id"],
+            childColumns = ["device_id"],
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index(value = ["device_id"])],
+)
+data class DeviceAbi(
+    val device_id: Long,
+    val abi: String,
+)
