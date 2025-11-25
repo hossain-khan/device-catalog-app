@@ -10,12 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Compose Compiler metrics and reports configuration for performance analysis
 - Documentation in README for interpreting Compose metrics and reports
+- Build-logic convention plugins for consistent build configuration
+  - `devicecatalog.android.application` - Configure Android application modules
+  - `devicecatalog.android.library` - Configure Android library modules
+  - `devicecatalog.android.compose` - Configure Jetpack Compose
+  - `devicecatalog.android.feature` - Configure feature modules (compose + metro)
+  - `devicecatalog.jvm.library` - Configure pure Kotlin/JVM modules
 
 ### Changed
 - Optimized Gradle build performance with advanced JVM and GC settings from Now in Android project
 - Enabled parallel execution for faster builds
 - Enabled configuration caching for improved build times
 - Disabled unused build features (resvalues, shaders) to reduce build overhead
+- Refactored app module to use convention plugins, removing duplicated build configuration
 
 ## [1.0.0] - 2025-11-25
 
