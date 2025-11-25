@@ -59,7 +59,7 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() {
         }.apply {
             jvmTarget.set(JvmTarget.JVM_17)
             // Enable all warnings as errors if the project property is set
-            if (warningsAsErrors.toBoolean()) {
+            if (warningsAsErrors?.toBooleanStrictOrNull() == true) {
                 allWarningsAsErrors.set(true)
             }
         }
