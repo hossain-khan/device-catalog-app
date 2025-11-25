@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.stats.components
+package dev.hossain.devicecatalog.feature.statistics.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween

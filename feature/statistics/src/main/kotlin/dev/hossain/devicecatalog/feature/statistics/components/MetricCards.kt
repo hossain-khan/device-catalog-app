@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.stats.components
+package dev.hossain.devicecatalog.feature.statistics.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi

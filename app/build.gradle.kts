@@ -88,6 +88,20 @@ android {
 }
 
 dependencies {
+    // Core modules
+    implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:database"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:model"))
+    implementation(project(":core:ui"))
+
+    // Feature modules
+    implementation(project(":feature:devices"))
+    implementation(project(":feature:devicedetails"))
+    implementation(project(":feature:statistics"))
+    implementation(project(":feature:settings"))
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)

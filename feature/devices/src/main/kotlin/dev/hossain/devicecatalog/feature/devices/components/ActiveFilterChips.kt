@@ -19,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.hossain.devicecatalog.ui.devices.DevicesScreen
+import dev.hossain.devicecatalog.feature.devices.DevicesScreen
 
 /**
  * Displays active filter chips that can be removed individually.

@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.stats
+package dev.hossain.devicecatalog.feature.statistics
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -39,19 +39,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
-import dev.hossain.devicecatalog.data.DeviceStats
-import dev.hossain.devicecatalog.data.FormFactorCount
-import dev.hossain.devicecatalog.data.ManufacturerCount
-import dev.hossain.devicecatalog.ui.stats.components.BarChartData
-import dev.hossain.devicecatalog.ui.stats.components.ChartLegend
-import dev.hossain.devicecatalog.ui.stats.components.HorizontalBarChart
-import dev.hossain.devicecatalog.ui.stats.components.LegendItem
-import dev.hossain.devicecatalog.ui.stats.components.LineChart
-import dev.hossain.devicecatalog.ui.stats.components.LineChartData
-import dev.hossain.devicecatalog.ui.stats.components.MetricCardData
-import dev.hossain.devicecatalog.ui.stats.components.PieChart
-import dev.hossain.devicecatalog.ui.stats.components.PieChartData
-import dev.hossain.devicecatalog.ui.stats.components.SwipeableMetricCards
+import dev.hossain.devicecatalog.core.data.DeviceStats
+import dev.hossain.devicecatalog.core.data.FormFactorCount
+import dev.hossain.devicecatalog.core.data.ManufacturerCount
+import dev.hossain.devicecatalog.feature.statistics.components.BarChartData
+import dev.hossain.devicecatalog.feature.statistics.components.ChartLegend
+import dev.hossain.devicecatalog.feature.statistics.components.HorizontalBarChart
+import dev.hossain.devicecatalog.feature.statistics.components.LegendItem
+import dev.hossain.devicecatalog.feature.statistics.components.LineChart
+import dev.hossain.devicecatalog.feature.statistics.components.LineChartData
+import dev.hossain.devicecatalog.feature.statistics.components.MetricCardData
+import dev.hossain.devicecatalog.feature.statistics.components.PieChart
+import dev.hossain.devicecatalog.feature.statistics.components.PieChartData
+import dev.hossain.devicecatalog.feature.statistics.components.SwipeableMetricCards
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = DeviceStatsScreen::class, scope = AppScope::class)
@@ -369,7 +369,7 @@ private fun ManufacturerDistributionContent(
  */
 @Composable
 private fun RamDistributionContent(
-    ramDistribution: List<dev.hossain.devicecatalog.data.RamCount>,
+    ramDistribution: List<dev.hossain.devicecatalog.core.data.RamCount>,
     totalDevices: Int,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -391,7 +391,7 @@ private fun RamDistributionContent(
  * SDK version adoption with line chart.
  */
 @Composable
-private fun SdkVersionAdoptionContent(sdkVersions: List<dev.hossain.devicecatalog.data.SdkVersionCount>) {
+private fun SdkVersionAdoptionContent(sdkVersions: List<dev.hossain.devicecatalog.core.data.SdkVersionCount>) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             text = "Device count by SDK version",
@@ -441,7 +441,7 @@ private fun SdkVersionAdoptionContent(sdkVersions: List<dev.hossain.devicecatalo
  */
 @Composable
 private fun ScreenDensityContent(
-    densities: List<dev.hossain.devicecatalog.data.ScreenDensityCount>,
+    densities: List<dev.hossain.devicecatalog.core.data.ScreenDensityCount>,
     totalDevices: Int,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -464,7 +464,7 @@ private fun ScreenDensityContent(
  */
 @Composable
 private fun AbiSupportContent(
-    abis: List<dev.hossain.devicecatalog.data.AbiCount>,
+    abis: List<dev.hossain.devicecatalog.core.data.AbiCount>,
     totalDevices: Int,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -487,7 +487,7 @@ private fun AbiSupportContent(
  */
 @Composable
 private fun GpuDistributionContent(
-    gpus: List<dev.hossain.devicecatalog.data.GpuCount>,
+    gpus: List<dev.hossain.devicecatalog.core.data.GpuCount>,
     totalDevices: Int,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {

@@ -1,5 +1,6 @@
 plugins {
     id("devicecatalog.android.feature")
+    alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlinter)
 }
 

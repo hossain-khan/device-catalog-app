@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.stats
+package dev.hossain.devicecatalog.feature.statistics
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -6,9 +6,9 @@ import androidx.compose.runtime.produceState
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.devicecatalog.data.AndroidDeviceRepository
-import dev.hossain.devicecatalog.data.DeviceStats
-import dev.hossain.devicecatalog.data.ExampleAppVersionService
+import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.core.data.DeviceStats
+import dev.hossain.devicecatalog.core.data.ExampleAppVersionService
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory

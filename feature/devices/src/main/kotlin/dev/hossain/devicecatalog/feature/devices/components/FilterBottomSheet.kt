@@ -37,7 +37,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import dev.hossain.android.catalogparser.models.FormFactor
-import dev.hossain.devicecatalog.ui.devices.DevicesScreen
+import dev.hossain.devicecatalog.feature.devices.DevicesScreen
 
 /** Maximum number of manufacturers to display in the filter sheet for optimal mobile UX */
 private const val TOP_MANUFACTURERS_COUNT = 10
