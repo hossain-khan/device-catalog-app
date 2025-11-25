@@ -635,27 +635,33 @@ private fun ChipRow(
     }
 }
 
-@Preview(showBackground = true)
+// Preview variations for different device types and themes
+
+@Preview(
+    name = "Phone - Light",
+    showBackground = true,
+    showSystemUi = true,
+)
 @Composable
-private fun DeviceDetailsPreview() {
-    DeviceCatalogAppTheme {
+private fun DeviceDetailsPreviewPhoneLight() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
         DeviceDetailsUi(
             state =
                 DeviceDetailsScreen.State(
                     device =
                         AndroidDevice(
                             brand = "google",
-                            device = "coral",
+                            device = "husky",
                             manufacturer = "Google",
-                            modelName = "Pixel 4",
-                            ram = "6GB",
+                            modelName = "Pixel 8 Pro",
+                            ram = "12GB",
                             formFactor = FormFactor.PHONE,
-                            processorName = "Qualcomm Snapdragon 855",
-                            gpu = "Adreno 640",
-                            screenSizes = listOf("1080x2280", "1440x3040"),
-                            screenDensities = listOf(420, 560),
+                            processorName = "Google Tensor G3",
+                            gpu = "Mali-G715 MC10",
+                            screenSizes = listOf("1344x2992"),
+                            screenDensities = listOf(489),
                             abis = listOf("arm64-v8a", "armeabi-v7a"),
-                            sdkVersions = listOf(28, 29, 30),
+                            sdkVersions = listOf(34),
                             openGlEsVersions = listOf("3.2"),
                         ),
                     eventSink = {},
@@ -664,10 +670,245 @@ private fun DeviceDetailsPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Phone - Dark",
+    showBackground = true,
+    showSystemUi = true,
+)
 @Composable
-private fun LoadingPreview() {
-    DeviceCatalogAppTheme {
+private fun DeviceDetailsPreviewPhoneDark() {
+    DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "samsung",
+                            device = "e3q",
+                            manufacturer = "Samsung",
+                            modelName = "Galaxy S24 Ultra",
+                            ram = "12GB",
+                            formFactor = FormFactor.PHONE,
+                            processorName = "Snapdragon 8 Gen 3",
+                            gpu = "Adreno 750",
+                            screenSizes = listOf("1440x3088"),
+                            screenDensities = listOf(505),
+                            abis = listOf("arm64-v8a", "armeabi-v7a", "armeabi"),
+                            sdkVersions = listOf(33, 34),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Tablet",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewTablet() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "samsung",
+                            device = "gts9",
+                            manufacturer = "Samsung",
+                            modelName = "Galaxy Tab S9",
+                            ram = "8GB",
+                            formFactor = FormFactor.TABLET,
+                            processorName = "Snapdragon 8 Gen 2",
+                            gpu = "Adreno 740",
+                            screenSizes = listOf("1600x2560"),
+                            screenDensities = listOf(274),
+                            abis = listOf("arm64-v8a", "armeabi-v7a"),
+                            sdkVersions = listOf(33),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "TV",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewTV() {
+    DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "google",
+                            device = "chromecast",
+                            manufacturer = "Google",
+                            modelName = "Chromecast with Google TV",
+                            ram = "2GB",
+                            formFactor = FormFactor.TV,
+                            processorName = "Amlogic S905D3G",
+                            gpu = "Mali-G31 MP2",
+                            screenSizes = listOf("1920x1080", "3840x2160"),
+                            screenDensities = listOf(320, 640),
+                            abis = listOf("arm64-v8a", "armeabi-v7a", "armeabi"),
+                            sdkVersions = listOf(29, 30, 31),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Wearable",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewWearable() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "google",
+                            device = "rover",
+                            manufacturer = "Google",
+                            modelName = "Pixel Watch 2",
+                            ram = "2GB",
+                            formFactor = FormFactor.WEARABLE,
+                            processorName = "Qualcomm Snapdragon W5 Gen 1",
+                            gpu = "Adreno 702",
+                            screenSizes = listOf("384x384"),
+                            screenDensities = listOf(320),
+                            abis = listOf("arm64-v8a", "armeabi-v7a"),
+                            sdkVersions = listOf(33),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Chromebook",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewChromebook() {
+    DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "acer",
+                            device = "puff",
+                            manufacturer = "Acer",
+                            modelName = "Chromebook Spin 713",
+                            ram = "8GB",
+                            formFactor = FormFactor.CHROMEBOOK,
+                            processorName = "Intel Core i5-10210U",
+                            gpu = "Intel UHD Graphics",
+                            screenSizes = listOf("2256x1504"),
+                            screenDensities = listOf(220),
+                            abis = listOf("x86_64", "x86", "arm64-v8a", "armeabi-v7a"),
+                            sdkVersions = listOf(30, 31, 32),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Automotive",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewAutomotive() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "polestar",
+                            device = "aaos_polestar2",
+                            manufacturer = "Polestar",
+                            modelName = "Polestar 2",
+                            ram = "8GB",
+                            formFactor = FormFactor.ANDROID_AUTOMOTIVE,
+                            processorName = "Qualcomm Snapdragon 820A",
+                            gpu = "Adreno 530",
+                            screenSizes = listOf("1920x1080"),
+                            screenDensities = listOf(160),
+                            abis = listOf("arm64-v8a", "armeabi-v7a"),
+                            sdkVersions = listOf(29, 30),
+                            openGlEsVersions = listOf("3.2"),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Minimal Data",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewMinimal() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        DeviceDetailsUi(
+            state =
+                DeviceDetailsScreen.State(
+                    device =
+                        AndroidDevice(
+                            brand = "unknown",
+                            device = "generic_device",
+                            manufacturer = "Generic",
+                            modelName = "Generic Device",
+                            ram = "1GB",
+                            formFactor = FormFactor.PHONE,
+                            processorName = "Unknown Processor",
+                            gpu = "Unknown GPU",
+                            screenSizes = emptyList(),
+                            screenDensities = emptyList(),
+                            abis = emptyList(),
+                            sdkVersions = emptyList(),
+                            openGlEsVersions = emptyList(),
+                        ),
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "Loading State",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceDetailsPreviewLoading() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
         DeviceDetailsUi(
             state =
                 DeviceDetailsScreen.State(
@@ -678,14 +919,18 @@ private fun LoadingPreview() {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Error State",
+    showBackground = true,
+    showSystemUi = true,
+)
 @Composable
-private fun ErrorPreview() {
-    DeviceCatalogAppTheme {
+private fun DeviceDetailsPreviewError() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
         DeviceDetailsUi(
             state =
                 DeviceDetailsScreen.State(
-                    errorMessage = "Device not found",
+                    errorMessage = "Device not found in the catalog. Please check the device ID and try again.",
                     eventSink = {},
                 ),
         )
