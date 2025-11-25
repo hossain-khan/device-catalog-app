@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Now in Android Best Practices analysis document (`docs/NOW_IN_ANDROID_BEST_PRACTICES_ISSUES.md`) with 12 detailed GitHub issue specifications for AI agents to implement
 - DeviceCatalogNavigationType enum for adaptive navigation (Bottom Navigation, Navigation Rail, Permanent Drawer) following Reply app best practices
 - DeviceCatalogContentType enum for determining single pane vs dual pane layouts
 - Permanent navigation drawer support for expanded screens (840dp+) with app title and navigation items
