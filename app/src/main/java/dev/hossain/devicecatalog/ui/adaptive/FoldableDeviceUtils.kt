@@ -74,70 +74,73 @@ fun rememberFoldableDeviceInfo(): State<FoldableDeviceInfo> {
 
     val windowLayoutInfo =
         activity.windowLayoutInfoFlow().collectAsState(
-            initial = WindowLayoutInfo(emptyList()),
+            initial = null,
         )
 
-    return androidx.compose.runtime.derivedStateOf {
-        val foldingFeature =
-            windowLayoutInfo.value.displayFeatures
-                .filterIsInstance<FoldingFeature>()
-                .firstOrNull()
+    return androidx.compose.runtime.remember {
+        androidx.compose.runtime.derivedStateOf {
+            val displayFeatures = windowLayoutInfo.value?.displayFeatures ?: emptyList()
+            val foldingFeature =
+                displayFeatures
+                    .filterIsInstance<FoldingFeature>()
+                    .firstOrNull()
 
-        if (foldingFeature == null) {
-            FoldableDeviceInfo()
-        } else {
-            val posture =
-                when (foldingFeature.state) {
-                    FoldingFeature.State.FLAT -> {
-                        FoldablePosture.FULLY_OPENED
-                    }
+            if (foldingFeature == null) {
+                FoldableDeviceInfo()
+            } else {
+                val posture =
+                    when (foldingFeature.state) {
+                        FoldingFeature.State.FLAT -> {
+                            FoldablePosture.FULLY_OPENED
+                        }
 
-                    FoldingFeature.State.HALF_OPENED -> {
-                        when (foldingFeature.orientation) {
-                            FoldingFeature.Orientation.HORIZONTAL -> {
-                                FoldablePosture.HALF_OPENED_HORIZONTAL
+                        FoldingFeature.State.HALF_OPENED -> {
+                            when (foldingFeature.orientation) {
+                                FoldingFeature.Orientation.HORIZONTAL -> {
+                                    FoldablePosture.HALF_OPENED_HORIZONTAL
+                                }
+
+                                FoldingFeature.Orientation.VERTICAL -> {
+                                    FoldablePosture.HALF_OPENED_VERTICAL
+                                }
+
+                                else -> {
+                                    FoldablePosture.NORMAL
+                                }
                             }
+                        }
 
-                            FoldingFeature.Orientation.VERTICAL -> {
-                                FoldablePosture.HALF_OPENED_VERTICAL
-                            }
-
-                            else -> {
-                                FoldablePosture.NORMAL
-                            }
+                        else -> {
+                            FoldablePosture.NORMAL
                         }
                     }
 
-                    else -> {
-                        FoldablePosture.NORMAL
+                val orientation =
+                    when (foldingFeature.orientation) {
+                        FoldingFeature.Orientation.HORIZONTAL -> FoldOrientation.HORIZONTAL
+                        FoldingFeature.Orientation.VERTICAL -> FoldOrientation.VERTICAL
+                        else -> FoldOrientation.NONE
                     }
-                }
 
-            val orientation =
-                when (foldingFeature.orientation) {
-                    FoldingFeature.Orientation.HORIZONTAL -> FoldOrientation.HORIZONTAL
-                    FoldingFeature.Orientation.VERTICAL -> FoldOrientation.VERTICAL
-                    else -> FoldOrientation.NONE
-                }
+                val occlusionType =
+                    when (foldingFeature.occlusionType) {
+                        FoldingFeature.OcclusionType.FULL -> OcclusionType.FULL
 
-            val occlusionType =
-                when (foldingFeature.occlusionType) {
-                    FoldingFeature.OcclusionType.FULL -> OcclusionType.FULL
+                        FoldingFeature.OcclusionType.NONE -> OcclusionType.NONE
 
-                    FoldingFeature.OcclusionType.NONE -> OcclusionType.NONE
+                        // Note: WindowManager's FoldingFeature.OcclusionType only has FULL and NONE
+                        // The else branch handles potential future additions
+                        else -> OcclusionType.NONE
+                    }
 
-                    // Note: WindowManager's FoldingFeature.OcclusionType only has FULL and NONE
-                    // The else branch handles potential future additions
-                    else -> OcclusionType.NONE
-                }
-
-            FoldableDeviceInfo(
-                posture = posture,
-                isFoldingFeatureAvailable = true,
-                foldPosition = foldingFeature.bounds.centerX(),
-                foldOrientation = orientation,
-                occlusionType = occlusionType,
-            )
+                FoldableDeviceInfo(
+                    posture = posture,
+                    isFoldingFeatureAvailable = true,
+                    foldPosition = foldingFeature.bounds.centerX(),
+                    foldOrientation = orientation,
+                    occlusionType = occlusionType,
+                )
+            }
         }
     }
 }

@@ -245,8 +245,8 @@ private fun DeviceStatsContent(
 @Composable
 private fun CollapsibleCard(
     title: String,
-    defaultExpanded: Boolean = false,
     modifier: Modifier = Modifier,
+    defaultExpanded: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(defaultExpanded) }
