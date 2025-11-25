@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 
 /**
  * Empty state component displayed when no devices are available.

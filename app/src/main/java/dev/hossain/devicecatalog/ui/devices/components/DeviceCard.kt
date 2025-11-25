@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.R
-import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 
 /**
  * Material 3 device card component with proper touch targets and accessibility support.
