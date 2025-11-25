@@ -30,8 +30,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.feature.FeatureFlags
+import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.util.PerformanceMonitor
 
 /**
@@ -203,5 +205,94 @@ private fun MetricRow(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
         )
+    }
+}
+
+// Preview variations
+
+@Preview(
+    name = "Developer Settings - Light",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeveloperSettingsScreenPreviewLight() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        DeveloperSettingsScreen(
+            onBackClick = {},
+        )
+    }
+}
+
+@Preview(
+    name = "Developer Settings - Dark",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeveloperSettingsScreenPreviewDark() {
+    DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
+        DeveloperSettingsScreen(
+            onBackClick = {},
+        )
+    }
+}
+
+@Preview(
+    name = "Feature Flag Item - Enabled",
+    showBackground = true,
+)
+@Composable
+private fun FeatureFlagItemPreviewEnabled() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        FeatureFlagItem(
+            name = "Enable Advanced Filtering",
+            enabled = true,
+            onToggle = {},
+        )
+    }
+}
+
+@Preview(
+    name = "Feature Flag Item - Disabled",
+    showBackground = true,
+)
+@Composable
+private fun FeatureFlagItemPreviewDisabled() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        FeatureFlagItem(
+            name = "Enable Experimental Features",
+            enabled = false,
+            onToggle = {},
+        )
+    }
+}
+
+@Preview(
+    name = "Performance Metrics Card",
+    showBackground = true,
+)
+@Composable
+private fun PerformanceMetricsCardPreview() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        PerformanceMetricsCard()
+    }
+}
+
+@Preview(
+    name = "Metric Row",
+    showBackground = true,
+)
+@Composable
+private fun MetricRowPreview() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            MetricRow("App Start Time", "234ms")
+            MetricRow("First Frame Time", "156ms")
+            MetricRow("Memory Usage", "128MB / 512MB")
+        }
     }
 }
