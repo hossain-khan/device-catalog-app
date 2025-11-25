@@ -2,22 +2,21 @@
 
 ## Project Overview
 
-This is an Android application that provides a catalog of Android devices with detailed specifications. The app uses a hybrid approach combining SQLDelight for schema definition and Room for runtime database operations with proper one-to-many relationships.
+This is an Android application that provides a catalog of Android devices with detailed specifications. The app uses Room database for data persistence with proper one-to-many relationships.
 Check the [PRD](../project-resources/PRD.md) document for detailed requirements and features.
 
 ## Architecture & Tech Stack
 
 ### Core Technologies
 - **Language**: Kotlin with Jetpack Compose
-- **Database**: Room + SQLDelight (hybrid approach)
+- **Database**: Room with one-to-many relationships
 - **Dependency Injection**: Metro
 - **UI Architecture**: Circuit (Compose-driven architecture)
 - **Build System**: Gradle with Version Catalog
 - **Logging**: Timber
 
 ### Key Libraries
-- **Room Database**: For runtime database operations and relationships
-- **SQLDelight**: For schema definition and database generation
+- **Room Database**: For data persistence with proper entity relationships
 - **Jetpack Compose**: Modern Android UI toolkit
 - **Metro**: Dependency injection framework
 - **Paging 3**: For efficient list loading
@@ -27,12 +26,13 @@ Check the [PRD](../project-resources/PRD.md) document for detailed requirements 
 
 ## Database Architecture
 
-### Hybrid SQLDelight + Room Approach
+### Room Database Approach
 
-The project uses a unique hybrid approach:
+The project uses Room database with proper entity relationships:
 
-1. **SQLDelight** (`Device.sq`) defines the database schema and generates the actual database file
-2. **Room** provides runtime access with proper entity relationships and type safety
+1. **Room** entities define the database schema with annotations
+2. **Room** DAO provides type-safe database access with relationship queries
+3. Database schema is exported for validation (version 2 with auto-migrations)
 
 ### Database Schema
 
@@ -81,10 +81,7 @@ fun getAllDevicesWithRelations(): Flow<List<AndroidDeviceWithRelations>>
 NOTE: Database is already preloaded with the app.
 
 ### Data Layer (`/data/`)
-- `AndroidDeviceRepository.kt` - Repository pattern with Timber logging
-
-### Schema Definition
-- `Device.sq` - SQLDelight schema defining tables and relationships
+- `AndroidDeviceRepository.kt` - Repository pattern with Timber logging and Metro DI
 
 ## Development Guidelines
 
@@ -97,7 +94,7 @@ NOTE: Database is already preloaded with the app.
 
 ### Adding New Features
 
-1. **Schema Changes**: Update `Device.sq` first, then Room entities
+1. **Schema Changes**: Update Room entities and increment database version, add migrations if needed
 2. **Repository Methods**: Add comprehensive logging with `Timber`
 3. **Error Handling**: Always wrap database operations in try-catch
 4. **Testing**: Use Room's testing utilities. Use fake over mock for testing.
@@ -219,21 +216,18 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ### Testing Guidelines
 
 - **Unit Tests**: Required for all repositories and data access operations
-- **Assertions**: Always use [AssertK](https://github.com/assertk-org/assertk) for all test assertions when it's available in the project
-  - **NEVER use JUnit assertions** (`assertEquals`, `assertTrue`, `assertNotNull`, etc.) if AssertK is available
-  - Use assertk's fluent API: `assertThat(actual).isEqualTo(expected)`
-  - Common assertions: `isEqualTo()`, `isNotNull()`, `isTrue()`, `isFalse()`, `hasSize()`, `isEmpty()`, `isInstanceOf()`, `isCloseTo()`
-  - Benefits: Kotlin-native, better error messages, type-safe, null-safe
+- **Assertions**: Use standard JUnit assertions (`assertEquals`, `assertTrue`, `assertFalse`, `assertNotNull`, etc.)
+  - The project currently uses JUnit 4 assertions
+  - Keep assertions simple and readable
   - Example:
     ```kotlin
-    import assertk.assertThat
-    import assertk.assertions.*
+    import org.junit.Assert.*
     
     @Test
     fun `test example`() {
         val result = someFunction()
-        assertThat(result).isEqualTo("expected")
-        assertThat(result).hasLength(8)
+        assertEquals("expected", result)
+        assertTrue(result.isNotEmpty())
     }
     ```
 - **Test Doubles**: Use fakes instead of mocks when possible
@@ -246,9 +240,9 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 
 ### Testing Database
 
-1. **Room Testing**: Use `@Database(exportSchema = true)` for schema validation
+1. **Room Testing**: Use `@Database(exportSchema = true)` for schema validation (already configured)
 2. **In-Memory Database**: For unit tests
-3. **Migration Testing**: Test schema changes thoroughly
+3. **Migration Testing**: Test schema changes thoroughly, auto-migrations are configured
 
 ## Build Configuration
 
@@ -289,10 +283,10 @@ val pagedDevices = repository.getPagedDevices()
 ## Troubleshooting
 
 ### Schema Validation Errors
-1. Ensure SQLDelight schema matches Room entities exactly
+1. Ensure Room entities match database schema exactly
 2. Check primary key definitions
 3. Verify foreign key relationships
-4. Regenerate database from updated SQLDelight schema
+4. Update database version and add migrations when schema changes
 
 ### Performance Issues
 1. Check if proper indexes exist on foreign keys
@@ -309,7 +303,7 @@ val pagedDevices = repository.getPagedDevices()
 - Raw SQLite operations (use Room instead)
 - Manual relationship handling (use `@Relation`)
 - Synchronous database operations (use suspend functions)
-- Multiple database libraries (stick to Room + SQLDelight hybrid)
+- Multiple database libraries (stick to Room)
 
 ## Development Workflow
 
@@ -447,7 +441,7 @@ git commit -m "Add feature X
 
 - [Room Documentation](https://developer.android.com/training/data-storage/room)
 - [Room Relationships](https://developer.android.com/training/data-storage/room/relationships)
-- [SQLDelight Documentation](https://cashapp.github.io/sqldelight/)
+- [Room Migrations](https://developer.android.com/training/data-storage/room/migrating-db-versions)
 - [Circuit Architecture](https://slackhq.github.io/circuit/)
 - [Circuit Testing Guide](https://slackhq.github.io/circuit/testing/)
 - [Timber Logging](https://github.com/JakeWharton/timber)
@@ -468,12 +462,13 @@ git commit -m "Add feature X
   - If the section header already exists, **add your entry to the existing section** rather than creating a duplicate header
   - Only create a new section header if it doesn't already exist in `[Unreleased]`
 - Use [Semantic Versioning](https://semver.org/) for version numbers (MAJOR.MINOR.PATCH)
-- Prefer constructor injection over field injection
-- Write comprehensive unit tests for new features
+- Use Metro DI with constructor injection (via `@Inject` constructor parameters)
+- Write comprehensive unit tests for new features using JUnit assertions
 - Follow the existing code structure and patterns
 - Don't use PII (Personally Identifiable Information) in code examples or tests
 - **Do NOT create summary markdown files** (like `FEATURE_SUMMARY.md`, `SCREENS_IMPLEMENTATION.md`, etc.) for features or bug fixes
 - Keep documentation in existing files like README.md, CHANGELOG.md, or inline code comments
+- The app uses Room database only (no SQLDelight) with proper entity relationships and auto-migrations
 
 ### GitHub Operations
 
