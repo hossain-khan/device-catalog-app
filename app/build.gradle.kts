@@ -1,10 +1,9 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
+    id("devicecatalog.android.application")
+    id("devicecatalog.android.compose")
     alias(libs.plugins.androidx.room)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ksp)
     alias(libs.plugins.metro)
@@ -13,12 +12,9 @@ plugins {
 
 android {
     namespace = "dev.hossain.devicecatalog"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "dev.hossain.devicecatalog"
-        minSdk = 28
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
 
@@ -73,13 +69,7 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
     buildFeatures {
-        compose = true
         buildConfig = true
     }
 
@@ -94,27 +84,6 @@ android {
         // via constructor parameters and instantiated by our DI framework (Metro) rather
         // than the Android system's default no-arg constructor mechanism.
         disable += "Instantiatable"
-    }
-}
-
-kotlin {
-    // See https://kotlinlang.org/docs/gradle-compiler-options.html
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
-    }
-}
-
-composeCompiler {
-    // Enable Compose Compiler metrics for performance analysis
-    // Run with: ./gradlew assembleRelease -PenableComposeCompilerMetrics=true
-    if (project.findProperty("enableComposeCompilerMetrics") == "true") {
-        metricsDestination = layout.buildDirectory.dir("compose-metrics")
-    }
-
-    // Enable Compose Compiler reports for stability analysis
-    // Run with: ./gradlew assembleRelease -PenableComposeCompilerReports=true
-    if (project.findProperty("enableComposeCompilerReports") == "true") {
-        reportsDestination = layout.buildDirectory.dir("compose-reports")
     }
 }
 
