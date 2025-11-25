@@ -13,13 +13,13 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:model"))
+    api(project(":core:model"))
 
-    implementation(libs.androidx.room.runtime)
+    api(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
-    implementation(libs.androidx.paging.runtime)
+    api(libs.androidx.room.ktx)
+    api(libs.androidx.room.paging)
+    api(libs.androidx.paging.runtime)
 
     implementation(libs.kotlinx.serialization.json)
 

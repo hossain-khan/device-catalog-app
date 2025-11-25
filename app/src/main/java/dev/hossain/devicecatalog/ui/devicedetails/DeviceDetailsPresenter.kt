@@ -14,7 +14,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.AndroidDevice
-import dev.hossain.devicecatalog.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory

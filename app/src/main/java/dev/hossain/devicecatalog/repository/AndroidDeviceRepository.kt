@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.db.AndroidDeviceDao
 import dev.hossain.devicecatalog.db.AndroidDeviceWithRelations
-import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.core.model.DeviceInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber

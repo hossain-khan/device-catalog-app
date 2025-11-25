@@ -9,11 +9,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-    implementation(project(":core:model"))
-    implementation(project(":core:database"))
+    api(project(":core:common"))
+    api(project(":core:model"))
+    api(project(":core:database"))
 
-    implementation(libs.androidx.paging.runtime)
+    api(libs.androidx.paging.runtime)
     implementation(libs.javax.inject)
     implementation(libs.timber)
 }

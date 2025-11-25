@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
-import dev.hossain.devicecatalog.model.DeviceInfo
+import dev.hossain.devicecatalog.core.model.DeviceInfo
 
 /**
  * Data class representing an Android device with all its related entities.
