@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `devicecatalog.android.compose` - Configure Jetpack Compose
   - `devicecatalog.android.feature` - Configure feature modules (compose + metro)
   - `devicecatalog.jvm.library` - Configure pure Kotlin/JVM modules
+- Design system components in `:core:designsystem` module
+  - `DeviceCatalogIcons` object for centralized icon management with all app icons
+  - `DeviceCatalogButton` and variants (Secondary, Outlined, Text) following Material 3 guidelines
+  - `DeviceCatalogCard` and `DeviceCatalogElevatedCard` for consistent card designs
+  - `DeviceCatalogTopAppBar` for consistent top bar implementation
+  - `DeviceCatalogLoadingWheel` and variants for loading states
+  - `DeviceCatalogBackground` and gradient background components
+  - Preview annotations for all design system components
 
 ### Changed
 - Refactored to multi-module architecture for improved build times and separation of concerns
@@ -32,6 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled configuration caching for improved build times
 - Disabled unused build features (resvalues, shaders) to reduce build overhead
 - Refactored app module to use convention plugins, removing duplicated build configuration
+- Updated all app module files to use theme from `:core:designsystem` instead of local `ui.theme` package
+- Migrated theme tests from app module to `:core:designsystem` module
+
+### Removed
+- Duplicate theme files from app module (`ui.theme` package)
+- Old theme test from app module (migrated to `:core:designsystem`)
 
 ## [1.0.0] - 2025-11-25
 

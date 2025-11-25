@@ -34,8 +34,8 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.devicecatalog.circuit.overlay.AppInfoOverlay
-import dev.hossain.devicecatalog.data.Email
 import dev.hossain.devicecatalog.core.common.ExampleAppVersionService
+import dev.hossain.devicecatalog.data.Email
 import dev.hossain.devicecatalog.data.ExampleEmailRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted

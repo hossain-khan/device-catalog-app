@@ -18,4 +18,7 @@ dependencies {
     api(libs.androidx.ui.text.google.fonts)
 
     debugApi(libs.androidx.ui.tooling)
+
+    // Testing dependencies
+    testImplementation(libs.junit)
 }

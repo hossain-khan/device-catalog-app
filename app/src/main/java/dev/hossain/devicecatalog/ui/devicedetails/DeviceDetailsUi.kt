@@ -75,7 +75,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.R
-import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.launch
 

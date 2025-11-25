@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.ui.theme
+package dev.hossain.devicecatalog.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 import org.junit.Assert.assertEquals

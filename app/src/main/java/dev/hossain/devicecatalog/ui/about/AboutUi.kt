@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
-import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = AboutScreen::class, scope = AppScope::class)

@@ -30,7 +30,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 
 /**
  * Shimmer loading skeleton for device cards while content is loading.

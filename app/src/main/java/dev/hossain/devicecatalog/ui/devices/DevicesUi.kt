@@ -496,7 +496,7 @@ private fun RegularDeviceList(
 )
 @Composable
 private fun DevicesUiPreviewLight() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme(
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -514,7 +514,7 @@ private fun DevicesUiPreviewLight() {
 )
 @Composable
 private fun DevicesUiPreviewDark() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme(
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {
@@ -532,7 +532,7 @@ private fun DevicesUiPreviewDark() {
 )
 @Composable
 private fun DevicesUiPreviewWithSearch() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme(
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -550,7 +550,7 @@ private fun DevicesUiPreviewWithSearch() {
 )
 @Composable
 private fun DevicesUiPreviewWithFilters() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme(
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -575,7 +575,7 @@ private fun DevicesUiPreviewWithFilters() {
 )
 @Composable
 private fun DevicesUiPreviewLoading() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme(
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -593,7 +593,7 @@ private fun DevicesUiPreviewLoading() {
 )
 @Composable
 private fun DevicesUiPreviewEmpty() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme(
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {

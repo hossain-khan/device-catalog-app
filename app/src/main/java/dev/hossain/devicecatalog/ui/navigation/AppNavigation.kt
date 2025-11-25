@@ -249,7 +249,7 @@ private fun AppBottomNavigation(
 )
 @Composable
 private fun AppNavigationDrawerContentPreviewCompact() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
         AppNavigationDrawerContent(
             selectedDestination = NavigationDestination.Devices,
             onNavigationDestinationClicked = {},
@@ -265,7 +265,7 @@ private fun AppNavigationDrawerContentPreviewCompact() {
 )
 @Composable
 private fun AppNavigationDrawerContentPreviewMedium() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
         AppNavigationDrawerContent(
             selectedDestination = NavigationDestination.Stats,
             onNavigationDestinationClicked = {},
@@ -281,7 +281,7 @@ private fun AppNavigationDrawerContentPreviewMedium() {
 )
 @Composable
 private fun AppNavigationRailPreview() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
         AppNavigationRail(
             selectedDestination = NavigationDestination.Devices,
             onNavigationDestinationClicked = {},
@@ -297,7 +297,7 @@ private fun AppNavigationRailPreview() {
 )
 @Composable
 private fun AppBottomNavigationPreview() {
-    dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
         AppBottomNavigation(
             selectedDestination = NavigationDestination.Devices,
             onNavigationDestinationClicked = {},
