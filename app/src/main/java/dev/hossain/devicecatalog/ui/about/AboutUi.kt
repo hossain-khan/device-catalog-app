@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.ui.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = AboutScreen::class, scope = AppScope::class)
@@ -56,5 +58,79 @@ fun AboutUi(
                 modifier = Modifier.padding(top = 16.dp),
             )
         }
+    }
+}
+
+// Preview variations
+
+@Preview(
+    name = "About Screen - Light",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun AboutUiPreviewLight() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        AboutUi(
+            state =
+                AboutScreen.State(
+                    appVersion = "1.0.0",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "About Screen - Dark",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun AboutUiPreviewDark() {
+    DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
+        AboutUi(
+            state =
+                AboutScreen.State(
+                    appVersion = "1.0.0",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "About Screen - Beta Version",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun AboutUiPreviewBeta() {
+    DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
+        AboutUi(
+            state =
+                AboutScreen.State(
+                    appVersion = "2.0.0-beta.1",
+                    eventSink = {},
+                ),
+        )
+    }
+}
+
+@Preview(
+    name = "About Screen - Dev Build",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun AboutUiPreviewDev() {
+    DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
+        AboutUi(
+            state =
+                AboutScreen.State(
+                    appVersion = "3.0.0-SNAPSHOT",
+                    eventSink = {},
+                ),
+        )
     }
 }
