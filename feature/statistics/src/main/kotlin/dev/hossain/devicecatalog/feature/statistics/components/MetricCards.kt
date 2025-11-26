@@ -127,6 +127,9 @@ private fun PageIndicator(
     isSelected: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val selectedColor = MaterialTheme.colorScheme.primary
+    val unselectedColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
+
     Canvas(
         modifier =
             modifier
@@ -134,7 +137,7 @@ private fun PageIndicator(
                 .size(if (isSelected) 10.dp else 8.dp),
     ) {
         drawCircle(
-            color = if (isSelected) Color(0xFF2196F3) else Color(0xFFBDBDBD),
+            color = if (isSelected) selectedColor else unselectedColor,
         )
     }
 }
