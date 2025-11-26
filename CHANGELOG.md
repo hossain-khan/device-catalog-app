@@ -53,6 +53,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated all app module files to use theme from `:core:designsystem` instead of local `ui.theme` package
 - Migrated theme tests from app module to `:core:designsystem` module
 
+### Fixed
+- Removed redundant Scaffold from bottom navigation layout to prevent double-scaffold issues
+  - Screens already provide their own Scaffold with TopAppBar
+  - Navigation layer now only provides navigation chrome (bottom bar, rail, drawer)
+  - Improves layout consistency and prevents padding/inset conflicts
+
 ### Removed
 - Duplicate theme files from app module (`ui.theme` package)
 - Old theme test from app module (migrated to `:core:designsystem`)
