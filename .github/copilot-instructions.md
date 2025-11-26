@@ -7,20 +7,27 @@ Check the [PRD](../project-resources/PRD.md) document for detailed requirements 
 
 ## Architecture & Tech Stack
 
+### Architecture Pattern
+This app follows **multi-module architecture** based on [Now in Android](https://github.com/android/nowinandroid) best practices:
+- **Modular design**: Separation between core, feature, and app layers
+- **Convention plugins**: Consistent build configuration via `build-logic` module
+- **Offline-first**: Data layer with repository pattern
+- **Unidirectional data flow**: Circuit Presenter/UI pattern
+
 ### Core Technologies
 - **Language**: Kotlin with Jetpack Compose
 - **Database**: Room with one-to-many relationships
-- **Dependency Injection**: Metro
+- **Dependency Injection**: Metro (compile-time DI)
 - **UI Architecture**: Circuit (Compose-driven architecture)
-- **Build System**: Gradle with Version Catalog
+- **Build System**: Gradle with Version Catalog + Convention Plugins
 - **Logging**: Timber
 
 ### Key Libraries
 - **Room Database**: For data persistence with proper entity relationships
 - **Jetpack Compose**: Modern Android UI toolkit
-- **Metro**: Dependency injection framework
+- **Metro**: Compile-time dependency injection framework
 - **Paging 3**: For efficient list loading
-- **Circuit**: Slack's Compose-driven architecture
+- **Circuit**: Slack's Compose-driven architecture with code generation
 - **Timber**: Logging framework
 - **Work Manager**: Background processing
 
@@ -71,19 +78,120 @@ fun getAllDevicesWithRelations(): Flow<List<AndroidDeviceWithRelations>>
 
 ## Project Structure
 
-### Database Layer (`/db/`)
-- `AppDatabase.kt` - Room database configuration
+The app follows a **multi-module architecture** with clear separation of concerns:
+
+### App Module (`:app`)
+Main application module that:
+- Configures Circuit navigation and screens
+- Sets up dependency injection with Metro
+- Contains example/sample files for reference (circuit screens, workers)
+- Note: May contain some legacy code being migrated to core/feature modules
+
+### Core Modules
+Foundation modules used across features:
+
+#### `:core:database`
+Room database layer with entity relationships
+- `AppDatabase.kt` - Room database configuration with auto-migrations
 - `AndroidDeviceDao.kt` - Data access operations with relationship queries
 - `AndroidDeviceEntity.kt` - Main device entity
-- `AndroidDeviceWithRelations.kt` - Relationship data class
-- `DeviceAbi.kt`, `DeviceOpenGl.kt`, etc. - Related entities
+- `AndroidDeviceWithRelations.kt` - Data class for one-to-many relationships
+- `DeviceAbi.kt`, `DeviceOpenGl.kt`, `DeviceScreenDensity.kt`, etc. - Related entities
+- **Location**: `core/database/src/main/kotlin/dev/hossain/devicecatalog/core/database/`
+- **Note**: Database is preloaded with the app
 
-NOTE: Database is already preloaded with the app.
-
-### Data Layer (`/data/`)
+#### `:core:data`
+Repository layer with business logic
 - `AndroidDeviceRepository.kt` - Repository pattern with Timber logging and Metro DI
+- Provides data to feature modules
+- **Location**: `core/data/src/main/kotlin/dev/hossain/devicecatalog/core/data/`
+
+#### `:core:model`
+Domain models and data classes
+- `DeviceInfo.kt` - Core device information model
+- Shared across all modules
+- **Location**: `core/model/src/main/kotlin/dev/hossain/devicecatalog/core/model/`
+
+#### `:core:designsystem`
+Material 3 design system and reusable UI components
+- `Theme.kt`, `Color.kt`, `Type.kt` - Material 3 theming
+- `DeviceCatalogIcons.kt` - Centralized icon management
+- `DeviceCatalogButton.kt` - Consistent button components
+- `DeviceCatalogCard.kt` - Card components
+- `DeviceCatalogTopAppBar.kt` - Top app bar component
+- `DeviceCatalogLoadingWheel.kt` - Loading indicators
+- `DeviceCatalogBackground.kt` - Background components
+- **Location**: `core/designsystem/src/main/kotlin/dev/hossain/devicecatalog/core/designsystem/`
+
+#### `:core:common`
+Shared utilities and common code
+- `FeatureFlags.kt` - Feature flag management
+- `PreferenceKeys.kt` - Shared preference keys
+- `PerformanceMonitor.kt` - Performance monitoring utilities
+- **Location**: `core/common/src/main/kotlin/dev/hossain/devicecatalog/core/common/`
+
+#### `:core:ui`
+Common UI components and utilities (currently being populated)
+- **Location**: `core/ui/src/main/kotlin/dev/hossain/devicecatalog/core/ui/`
+
+### Feature Modules
+Self-contained features with their own screens, presenters, and UI:
+
+#### `:feature:devices`
+Device list screen with search, filters, and pagination
+- `DevicesScreen.kt` - Circuit screen definition
+- `DevicesPresenter.kt` - Business logic and state management
+- `DevicesUi.kt` - Composable UI
+- `components/` - Feature-specific UI components (DeviceCard, FilterBottomSheet, etc.)
+- **Location**: `feature/devices/src/main/kotlin/dev/hossain/devicecatalog/feature/devices/`
+
+#### `:feature:devicedetails`
+Device details screen showing full specifications
+- `DeviceDetailsScreen.kt` - Circuit screen definition
+- `DeviceDetailsPresenter.kt` - Business logic
+- `DeviceDetailsUi.kt` - Composable UI
+- **Location**: `feature/devicedetails/src/main/kotlin/dev/hossain/devicecatalog/feature/devicedetails/`
+
+#### `:feature:statistics`
+Statistics and about screens
+- `DeviceStatsScreen.kt`, `DeviceStatsPresenter.kt`, `DeviceStatsUi.kt` - Statistics screen
+- `AboutScreen.kt`, `AboutPresenter.kt`, `AboutUi.kt` - About screen
+- `components/` - Feature-specific components
+- **Location**: `feature/statistics/src/main/kotlin/dev/hossain/devicecatalog/feature/statistics/`
+
+#### `:feature:settings`
+Developer settings and preferences
+- `DeveloperSettingsScreen.kt` - Settings screen
+- **Location**: `feature/settings/src/main/kotlin/dev/hossain/devicecatalog/feature/settings/`
+
+### Build Logic (`:build-logic`)
+Gradle convention plugins for consistent configuration:
+- `AndroidApplicationConventionPlugin.kt` - App module configuration
+- `AndroidLibraryConventionPlugin.kt` - Library module configuration
+- `AndroidFeatureConventionPlugin.kt` - Feature module configuration (Compose + Metro)
+- `AndroidComposeConventionPlugin.kt` - Compose-specific configuration
+- `JvmLibraryConventionPlugin.kt` - Pure Kotlin/JVM modules
+- **Location**: `build-logic/convention/src/main/kotlin/`
+
+### Module Dependencies
+- Feature modules depend on: `core:common`, `core:data`, `core:database`, `core:designsystem`, `core:model`
+- Core modules have minimal dependencies between each other
+- App module depends on all core and feature modules
 
 ## Development Guidelines
+
+### Working with Multi-Module Architecture
+
+1. **Module Independence**: Feature modules should be independent and not depend on other feature modules (except for navigation)
+2. **Shared Code**: Place shared code in appropriate core modules:
+   - `core:common` - Utilities, constants, feature flags
+   - `core:model` - Domain models and data classes
+   - `core:designsystem` - UI components and theme
+   - `core:database` - Database entities and DAOs
+   - `core:data` - Repositories and data sources
+3. **Avoid Circular Dependencies**: Core modules should not depend on feature modules
+4. **Convention Plugins**: Always use convention plugins instead of duplicating build configuration
+5. **Namespace Convention**: Use `dev.hossain.devicecatalog.core.<module>` or `dev.hossain.devicecatalog.feature.<module>`
 
 ### Database Operations
 
@@ -94,17 +202,44 @@ NOTE: Database is already preloaded with the app.
 
 ### Adding New Features
 
-1. **Schema Changes**: Update Room entities and increment database version, add migrations if needed
-2. **Repository Methods**: Add comprehensive logging with `Timber`
-3. **Error Handling**: Always wrap database operations in try-catch
-4. **Testing**: Use Room's testing utilities. Use fake over mock for testing.
+When adding new features, follow the multi-module architecture:
+
+1. **Create Feature Module**: Create a new module under `feature/` directory
+   - Use `:feature:featurename` naming convention
+   - Apply `devicecatalog.android.feature` convention plugin in `build.gradle.kts`
+   - Add dependencies to required core modules
+
+2. **Implement Circuit Screen**: Follow the Screen/Presenter/UI pattern
+   - `FeatureScreen.kt` - Define the screen with `@Parcelize` and `@CircuitInject`
+   - `FeaturePresenter.kt` - Implement business logic and state management
+   - `FeatureUi.kt` - Implement the composable UI
+   - See existing features like `:feature:devices` as reference
+
+3. **Use Design System**: Always use components from `:core:designsystem`
+   - Use `DeviceCatalogButton`, `DeviceCatalogCard`, etc.
+   - Follow Material 3 theming with `MaterialTheme.colorScheme`
+   - Never hardcode colors or create custom themes
+
+4. **Database Changes**: 
+   - Update Room entities in `:core:database` and increment database version
+   - Add migrations if needed (auto-migrations are configured)
+   - Update repository in `:core:data` if needed
+
+5. **Add to Navigation**: Register screen in app module's Circuit configuration
+
+6. **Testing**: 
+   - Use Room's testing utilities for database tests
+   - Use Circuit's `circuit-test` library with `FakeNavigator` for screen tests
+   - Use fake implementations over mocks
 
 #### Example template files
-Some example files are here as reference implementations, for example:
-* [ExampleEmailDetailsScreen.kt](../app/src/main/java/dev/hossain/devicecatalog/circuit/ExampleEmailDetailsScreen.kt) is a circuit screen
-* [ExampleInboxScreen.kt](../app/src/main/java/dev/hossain/devicecatalog/circuit/ExampleInboxScreen.kt) another circuit screen that shows navigation between screens
-* [AppInfoOverlay.kt](../app/src/main/java/dev/hossain/devicecatalog/circuit/overlay/AppInfoOverlay.kt) shows how to show bottomsheet using circuit
-* [SampleWorker.kt](../app/src/main/java/dev/hossain/devicecatalog/work/SampleWorker.kt) shows how to use `WorkManager` worker for background tasks
+The app module contains example/sample files for reference implementations:
+* `app/src/main/java/dev/hossain/devicecatalog/circuit/ExampleEmailDetailsScreen.kt` - Example Circuit screen
+* `app/src/main/java/dev/hossain/devicecatalog/circuit/ExampleInboxScreen.kt` - Example Circuit screen with navigation
+* `app/src/main/java/dev/hossain/devicecatalog/circuit/overlay/AppInfoOverlay.kt` - Example bottomsheet using Circuit overlay
+* `app/src/main/java/dev/hossain/devicecatalog/work/SampleWorker.kt` - Example WorkManager worker for background tasks
+
+**Note**: For production features, create proper feature modules under `feature/` instead of adding to app module.
 
 ### Code Style
 
@@ -246,6 +381,50 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 
 ## Build Configuration
 
+### Multi-Module Architecture
+The project uses a multi-module architecture with the following structure:
+- **`:app`** - Main application module
+- **`:core:*`** - Core/foundation modules (common, data, database, designsystem, model, ui)
+- **`:feature:*`** - Feature modules (devices, devicedetails, statistics, settings)
+- **`:build-logic`** - Convention plugins for build configuration
+
+### Convention Plugins (`build-logic/convention`)
+All modules use convention plugins for consistent configuration. Available plugins:
+
+1. **`devicecatalog.android.application`** - Configure Android application modules
+   - Sets up Android app configuration, signing, build types
+   - Includes Kotlin and Android defaults
+
+2. **`devicecatalog.android.library`** - Configure Android library modules
+   - Sets up Android library configuration
+   - Includes Kotlin and Android defaults
+   - Used by core modules
+
+3. **`devicecatalog.android.compose`** - Configure Jetpack Compose
+   - Enables Compose compiler
+   - Sets up Compose dependencies
+   - Can generate Compose metrics and reports
+
+4. **`devicecatalog.android.feature`** - Configure feature modules
+   - Combines library + compose + Metro DI configuration
+   - Standard setup for all feature modules
+   - Used by `:feature:*` modules
+
+5. **`devicecatalog.jvm.library`** - Configure pure Kotlin/JVM modules
+   - For modules without Android dependencies
+
+### Using Convention Plugins
+In your module's `build.gradle.kts`:
+```kotlin
+plugins {
+    id("devicecatalog.android.feature")  // For feature modules
+    // or
+    id("devicecatalog.android.library")  // For core modules
+    // Add other plugins as needed
+    alias(libs.plugins.ksp)
+}
+```
+
 ### Version Catalog (`gradle/libs.versions.toml`)
 All dependencies are managed through the version catalog. When adding new dependencies:
 
@@ -255,29 +434,41 @@ All dependencies are managed through the version catalog. When adding new depend
 
 ### Key Gradle Plugins
 - `androidx.room` - Room compiler and schema export
-- `ksp` - Kotlin Symbol Processing for Room
+- `ksp` - Kotlin Symbol Processing for Room and Circuit code generation
 - `kotlin.compose` - Compose compiler
+- `metro` - Metro dependency injection code generation
+- `kotlinter` - Kotlin linting and formatting
 
 ## Common Patterns
 
 ### Database Initialization
 ```kotlin
-// Repository usage
-val devices = repository.getAllDevices().collect { deviceList ->
-    // Handle device list with all relationships loaded
+// Repository is injected via Metro DI in presenters
+class DevicesPresenter @Inject constructor(
+    private val repository: AndroidDeviceRepository
+) : Presenter<DevicesScreen.State> {
+    // Use repository methods
+    val devices = repository.getAllDevices()
 }
 ```
 
 ### Inserting with Relationships
 ```kotlin
-val device = AndroidDevice(/* device data */)
+val device = AndroidDeviceEntity(/* device data */)
 val deviceId = repository.insertDevice(device) // Handles all relationships
 ```
 
 ### Paging with Relationships
 ```kotlin
+// In repository (core:data module)
+fun getPagedDevices(): Flow<PagingData<AndroidDeviceWithRelations>> {
+    return dao.getPagedDevices()
+        .map { /* transform if needed */ }
+}
+
+// In presenter (feature module)
 val pagedDevices = repository.getPagedDevices()
-// Returns PagingData<AndroidDeviceWithRelations>
+    .cachedIn(presenterScope)
 ```
 
 ## Troubleshooting
@@ -408,11 +599,17 @@ git commit -m "Add feature X
 ### Common Gradle Tasks
 
 ```bash
-# Build the project
+# Build the entire project (all modules)
 ./gradlew build
 
-# Run specific module tests
-./gradlew :app:test
+# Build specific module
+./gradlew :feature:devices:build
+
+# Run tests for all modules
+./gradlew test
+
+# Run tests for specific module
+./gradlew :core:data:test
 
 # Check code formatting (doesn't modify files)
 ./gradlew lintKotlin
@@ -428,14 +625,24 @@ git commit -m "Add feature X
 
 # Run app on connected device
 ./gradlew installDebug
+
+# Check project structure
+./gradlew projects
+
+# See module dependencies
+./gradlew :app:dependencies
 ```
 
 ## Future Considerations
 
-1. **Database Migrations**: Plan for schema evolution with Room migrations
-2. **Testing Strategy**: Expand test coverage for relationship queries
-3. **Performance Monitoring**: Add database operation metrics
-4. **Caching Strategy**: Consider adding caching layer if needed
+1. **Domain Layer**: Consider adding use cases in a `:core:domain` module for complex business logic
+2. **Offline-First**: Enhance repository with sync strategies and offline support
+3. **UI State Modeling**: Standardize UI state with sealed hierarchies across features
+4. **Screenshot Testing**: Add Roborazzi for visual regression testing
+5. **Baseline Profiles**: Add baseline profiles for improved app startup performance
+6. **Analytics Module**: Create `:core:analytics` for event tracking
+7. **Testing Infrastructure**: Expand test doubles (fakes) for better testability
+8. **Performance Monitoring**: Add database operation metrics and Compose performance tracking
 
 ## Resources
 
@@ -451,6 +658,9 @@ git commit -m "Add feature X
 - [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
 - [Android Dynamic Color Guide](https://developer.android.com/develop/ui/views/theming/dynamic-colors)
 - [Android Test Doubles Guide](https://developer.android.com/training/testing/fundamentals/test-doubles)
+- [Now in Android Repository](https://github.com/android/nowinandroid) - Reference for best practices
+- [Modularization Learning Journey](https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md)
+- [Architecture Learning Journey](https://github.com/android/nowinandroid/blob/main/docs/ArchitectureLearningJourney.md)
 
 ## Notes for AI Assistants
 
@@ -464,11 +674,16 @@ git commit -m "Add feature X
 - Use [Semantic Versioning](https://semver.org/) for version numbers (MAJOR.MINOR.PATCH)
 - Use Metro DI with constructor injection (via `@Inject` constructor parameters)
 - Write comprehensive unit tests for new features using JUnit assertions
-- Follow the existing code structure and patterns
+- Follow the **multi-module architecture**: Create feature modules under `feature/`, use core modules for shared code
+- Use **convention plugins** from `build-logic` for consistent build configuration
+- Always use **`:core:designsystem`** components instead of creating custom UI components
+- Place shared utilities in appropriate core modules (`core:common`, `core:model`, etc.)
+- Feature modules should use the Circuit Screen/Presenter/UI pattern
+- Source files use **`kotlin/`** directory (not `java/`) - follow existing module structure
 - Don't use PII (Personally Identifiable Information) in code examples or tests
 - **Do NOT create summary markdown files** (like `FEATURE_SUMMARY.md`, `SCREENS_IMPLEMENTATION.md`, etc.) for features or bug fixes
 - Keep documentation in existing files like README.md, CHANGELOG.md, or inline code comments
-- The app uses Room database only (no SQLDelight) with proper entity relationships and auto-migrations
+- The app uses Room database with proper entity relationships and auto-migrations in `:core:database` module
 
 ### GitHub Operations
 

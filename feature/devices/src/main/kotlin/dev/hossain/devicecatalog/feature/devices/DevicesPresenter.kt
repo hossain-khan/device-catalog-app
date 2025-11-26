@@ -71,19 +71,20 @@ class DevicesPresenter(
         // Performance: Use remember to select the right flow, then collect it
         // Add error handling for repository operations
         var errorMessage by remember { mutableStateOf<String?>(null) }
-        val devicesFlow = remember(debouncedSearchQuery) {
-            try {
-                if (debouncedSearchQuery.isBlank()) {
-                    deviceRepository.getAllDevices()
-                } else {
-                    deviceRepository.searchDevices(debouncedSearchQuery)
+        val devicesFlow =
+            remember(debouncedSearchQuery) {
+                try {
+                    if (debouncedSearchQuery.isBlank()) {
+                        deviceRepository.getAllDevices()
+                    } else {
+                        deviceRepository.searchDevices(debouncedSearchQuery)
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to get devices")
+                    errorMessage = "Failed to load devices: ${e.message}"
+                    kotlinx.coroutines.flow.flowOf(emptyList())
                 }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to get devices")
-                errorMessage = "Failed to load devices: ${e.message}"
-                kotlinx.coroutines.flow.flowOf(emptyList())
             }
-        }
         val allDevices by devicesFlow.collectAsState(initial = emptyList())
 
         // Apply filters to the devices
