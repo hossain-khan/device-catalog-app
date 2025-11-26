@@ -38,6 +38,14 @@ class QuizHubPresenter(
                                 )
                             }
 
+                            QuizHubScreen.QuizType.DREAM_PHONE -> {
+                                Timber.i("Dream Phone Finder selected - navigating to dream phone finder")
+                                navigator.goTo(
+                                    dev.hossain.devicecatalog.feature.dreamphone
+                                        .DreamPhoneScreen(),
+                                )
+                            }
+
                             else -> {
                                 Timber.i("Quiz ${event.quizType} is coming soon")
                             }

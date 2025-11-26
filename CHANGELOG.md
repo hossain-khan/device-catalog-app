@@ -60,6 +60,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Progress indicator showing current question and completion percentage
   - Navigation integration with device details screen from results
 
+### Changed
+- Dream Phone Finder is now accessible from Quiz Hub
+  - Updated `isAvailable` flag for Dream Phone Finder quiz type from `false` to `true`
+  - Added navigation handler in QuizHubPresenter to navigate to DreamPhoneScreen
+  - Users can now tap the "Dream Phone Finder" tile in Quiz Hub to start the survey
+
 ## [1.1.0] - 2025-11-26
 
 ### Added
