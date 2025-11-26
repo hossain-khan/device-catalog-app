@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Quiz Hub navigation item and screen
+  - Added "Quiz" navigation item positioned between "Devices" and "Statistics" with Psychology icon
+  - Created `:feature:quizhub` module following feature module architecture
+  - Implemented Quiz Hub screen using Circuit pattern (Screen/Presenter/UI)
+  - Added grid layout displaying quiz types as interactive tiles
+  - Implemented four quiz types: Codename Guess (available), Dream Phone Finder, Spec Master, Timeline Challenge (coming soon)
+  - Added "Coming Soon" badge for unavailable quizzes
+  - Added Material 3 elevated cards with proper theming for light/dark modes
+  - Added Quiz icon to DeviceCatalogIcons in design system
+
 ## [1.1.0] - 2025-11-26
 
 ### Added

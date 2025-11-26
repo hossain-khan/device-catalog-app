@@ -4,9 +4,11 @@ import android.os.Parcelable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.devicecatalog.feature.quizhub.QuizHubScreen
 import dev.hossain.devicecatalog.ui.about.AboutScreen
 import dev.hossain.devicecatalog.ui.devices.DevicesScreen
 import dev.hossain.devicecatalog.ui.stats.DeviceStatsScreen
@@ -27,6 +29,14 @@ sealed class NavigationDestination(
         title = "Devices",
         icon = Icons.AutoMirrored.Filled.List,
         screen = DevicesScreen,
+    )
+
+    @Parcelize
+    data object Quiz : NavigationDestination(
+        route = "quiz",
+        title = "Quiz",
+        icon = Icons.Default.Psychology,
+        screen = QuizHubScreen,
     )
 
     @Parcelize
@@ -51,6 +61,7 @@ sealed class NavigationDestination(
         val destinations =
             listOf(
                 NavigationDestination.Devices,
+                NavigationDestination.Quiz,
                 NavigationDestination.Stats,
                 NavigationDestination.About,
             )

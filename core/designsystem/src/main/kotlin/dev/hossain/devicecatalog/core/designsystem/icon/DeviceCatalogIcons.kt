@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -55,4 +56,5 @@ object DeviceCatalogIcons {
     // Feature icons
     val Person: ImageVector = Icons.Default.Person
     val Settings: ImageVector = Icons.Outlined.Settings
+    val Quiz: ImageVector = Icons.Default.Psychology
 }

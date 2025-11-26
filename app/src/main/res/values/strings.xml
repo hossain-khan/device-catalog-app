@@ -26,4 +26,12 @@
     <string name="dev_settings_title">Developer Settings</string>
     <string name="dev_settings_feature_flags_title">Feature Flags</string>
     <string name="dev_settings_performance_title">Performance Metrics</string>
+
+    <!-- Quiz Feature -->
+    <string name="quiz">Quiz</string>
+    <string name="quiz_hub">Quiz Hub</string>
+    <string name="quiz_hub_description">Test your device knowledge</string>
+    <string name="codename_guess">Codename Guess</string>
+    <string name="codename_guess_description">Match device codenames to models</string>
+    <string name="coming_soon">Coming Soon</string>
 </resources>

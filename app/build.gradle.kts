@@ -101,6 +101,7 @@ dependencies {
     implementation(project(":feature:devicedetails"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:quizhub"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
