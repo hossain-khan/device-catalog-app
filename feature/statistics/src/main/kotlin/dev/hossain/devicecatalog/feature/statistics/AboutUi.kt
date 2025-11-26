@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -16,7 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogOutlinedButton
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.feature.statistics.BuildConfig
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = AboutScreen::class, scope = AppScope::class)
@@ -57,6 +62,21 @@ fun AboutUi(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp),
             )
+
+            // Developer Settings button - only visible in debug builds
+            if (BuildConfig.DEBUG) {
+                DeviceCatalogOutlinedButton(
+                    onClick = { state.eventSink(AboutScreen.Event.OpenDeveloperSettings) },
+                    modifier = Modifier.padding(top = 24.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BugReport,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp),
+                    )
+                    Text("Developer Settings")
+                }
+            }
         }
     }
 }

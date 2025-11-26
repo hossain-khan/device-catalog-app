@@ -23,32 +23,23 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.core.common.FeatureFlags
 import dev.hossain.devicecatalog.core.common.PerformanceMonitor
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import dev.zacsweers.metro.AppScope
 
-/**
- * Developer Settings Screen showing feature flags and performance metrics.
- * This screen is intended for internal debugging and testing.
- */
+@CircuitInject(screen = DeveloperSettingsScreenCircuit::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeveloperSettingsScreen(
-    onBackClick: () -> Unit,
+fun DeveloperSettingsUi(
+    state: DeveloperSettingsScreenCircuit.State,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
-    var featureFlags by remember { mutableStateOf(FeatureFlags.getAllFlags(context)) }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,7 +57,7 @@ fun DeveloperSettingsScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) {
+                    IconButton(onClick = { state.eventSink(DeveloperSettingsScreenCircuit.Event.NavigateBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Navigate back",
@@ -94,13 +85,12 @@ fun DeveloperSettingsScreen(
                 )
             }
 
-            items(featureFlags.toList()) { (key, value) ->
+            items(state.featureFlags.toList()) { (key, value) ->
                 FeatureFlagItem(
                     name = FeatureFlags.formatFeatureFlagName(key),
                     enabled = value,
                     onToggle = { newValue ->
-                        FeatureFlags.setFlag(context, key, newValue)
-                        featureFlags = FeatureFlags.getAllFlags(context)
+                        state.eventSink(DeveloperSettingsScreenCircuit.Event.ToggleFeatureFlag(key, newValue))
                     },
                 )
             }
@@ -216,10 +206,14 @@ private fun MetricRow(
     showSystemUi = true,
 )
 @Composable
-private fun DeveloperSettingsScreenPreviewLight() {
+private fun DeveloperSettingsUiPreviewLight() {
     DeviceCatalogAppTheme(darkTheme = false, dynamicColor = false) {
-        DeveloperSettingsScreen(
-            onBackClick = {},
+        DeveloperSettingsUi(
+            state =
+                DeveloperSettingsScreenCircuit.State(
+                    featureFlags = mapOf("feature_advanced_filtering" to true, "feature_experimental" to false),
+                    eventSink = {},
+                ),
         )
     }
 }
@@ -230,10 +224,14 @@ private fun DeveloperSettingsScreenPreviewLight() {
     showSystemUi = true,
 )
 @Composable
-private fun DeveloperSettingsScreenPreviewDark() {
+private fun DeveloperSettingsUiPreviewDark() {
     DeviceCatalogAppTheme(darkTheme = true, dynamicColor = false) {
-        DeveloperSettingsScreen(
-            onBackClick = {},
+        DeveloperSettingsUi(
+            state =
+                DeveloperSettingsScreenCircuit.State(
+                    featureFlags = mapOf("feature_advanced_filtering" to true, "feature_experimental" to false),
+                    eventSink = {},
+                ),
         )
     }
 }
