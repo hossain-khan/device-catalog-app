@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Updated Copilot instructions to reflect multi-module architecture
+  - Added comprehensive project structure documentation with all core and feature modules
+  - Documented convention plugins usage and configuration
+  - Updated file path references to use new module locations (e.g., `core/database/src/main/kotlin/`)
+  - Added guidelines for working with multi-module architecture
+  - Updated code examples to reflect Circuit Screen/Presenter/UI pattern in feature modules
+  - Added Future Considerations section referencing Now in Android best practices from issue #72
+  - Updated Resources section with Now in Android learning journey links
+
 ### Added
 - Multi-module architecture following Now in Android patterns
   - Core modules: `:core:common`, `:core:data`, `:core:database`, `:core:designsystem`, `:core:model`, `:core:ui`
