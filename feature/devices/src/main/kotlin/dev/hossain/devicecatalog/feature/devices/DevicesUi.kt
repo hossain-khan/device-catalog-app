@@ -80,15 +80,6 @@ fun DevicesUi(
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutConfig = rememberDeviceListLayoutConfig()
 
-    // Get unique manufacturers for filter
-    val availableManufacturers =
-        remember(state.devices) {
-            state.devices
-                .map { it.androidDevice.manufacturer }
-                .distinct()
-                .sortedBy { it }
-        }
-
     // Handle error messages with retry action
     LaunchedEffect(state.errorMessage) {
         state.errorMessage?.let { message ->
@@ -108,7 +99,7 @@ fun DevicesUi(
     if (state.showFilterSheet) {
         FilterBottomSheet(
             currentFilters = state.activeFilters,
-            availableManufacturers = availableManufacturers,
+            availableManufacturers = state.availableManufacturers,
             onDismiss = { state.eventSink(DevicesScreen.Event.DismissFilterSheet) },
             onApplyFilters = { filters ->
                 state.eventSink(DevicesScreen.Event.ApplyFilters(filters))
@@ -622,6 +613,7 @@ private fun createPreviewState(
         searchQuery = searchQuery,
         searchResultCount = devices.size,
         activeFilters = activeFilters,
+        availableManufacturers = devices.map { it.androidDevice.manufacturer }.distinct().sorted(),
         showFilterSheet = false,
         eventSink = {},
     )
