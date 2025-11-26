@@ -29,6 +29,7 @@ data object DevicesScreen : Screen {
         val searchQuery: String = "",
         val searchResultCount: Int = 0,
         val activeFilters: FilterState = FilterState(),
+        val availableManufacturers: List<String> = emptyList(),
         val showFilterSheet: Boolean = false,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState

@@ -69,11 +69,19 @@ class DevicesPresenter(
 
         // Get devices based on search query and filters
         // Performance: Use remember to select the right flow, then collect it
+        // Add error handling for repository operations
+        var errorMessage by remember { mutableStateOf<String?>(null) }
         val devicesFlow = remember(debouncedSearchQuery) {
-            if (debouncedSearchQuery.isBlank()) {
-                deviceRepository.getAllDevices()
-            } else {
-                deviceRepository.searchDevices(debouncedSearchQuery)
+            try {
+                if (debouncedSearchQuery.isBlank()) {
+                    deviceRepository.getAllDevices()
+                } else {
+                    deviceRepository.searchDevices(debouncedSearchQuery)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get devices")
+                errorMessage = "Failed to load devices: ${e.message}"
+                kotlinx.coroutines.flow.flowOf(emptyList())
             }
         }
         val allDevices by devicesFlow.collectAsState(initial = emptyList())
@@ -83,6 +91,16 @@ class DevicesPresenter(
         val filteredDevices =
             remember(allDevices, activeFilters) {
                 applyFilters(allDevices, activeFilters)
+            }
+
+        // Calculate available manufacturers for filter UI
+        // Performance: Only recalculate when allDevices changes
+        val availableManufacturers =
+            remember(allDevices) {
+                allDevices
+                    .map { it.androidDevice.manufacturer }
+                    .distinct()
+                    .sorted()
             }
 
         // Get paged devices with search and filter
@@ -107,12 +125,10 @@ class DevicesPresenter(
             }
 
         // Performance: Use derivedStateOf for computed values that depend on state
-        // derivedStateOf is specifically designed for derived state and will only recompute when dependencies change
-        val isSearchActive by remember { derivedStateOf { searchQuery.isNotBlank() } }
-        val isNoSearchResults by remember {
-            derivedStateOf {
-                isSearchActive && filteredDevices.isEmpty() && !isRefreshing
-            }
+        // derivedStateOf already handles memoization, no need for remember wrapper
+        val isSearchActive by derivedStateOf { searchQuery.isNotBlank() }
+        val isNoSearchResults by derivedStateOf {
+            isSearchActive && filteredDevices.isEmpty() && !isRefreshing
         }
 
         return DevicesScreen.State(
@@ -122,10 +138,12 @@ class DevicesPresenter(
             isRefreshing = isRefreshing,
             isEmpty = allDevices.isEmpty() && !isRefreshing && !isSearchActive,
             isNoSearchResults = isNoSearchResults,
+            errorMessage = errorMessage,
             usePaging = usePaging,
             searchQuery = searchQuery,
             searchResultCount = filteredDevices.size,
             activeFilters = activeFilters,
+            availableManufacturers = availableManufacturers,
             showFilterSheet = showFilterSheet,
             eventSink = { event ->
                 when (event) {
@@ -148,7 +166,8 @@ class DevicesPresenter(
 
                     DevicesScreen.Event.RetryLoading -> {
                         Timber.d("Retrying device loading")
-                        // Trigger refresh to retry
+                        // Clear error and trigger refresh to retry
+                        errorMessage = null
                         isRefreshing = true
                     }
 
