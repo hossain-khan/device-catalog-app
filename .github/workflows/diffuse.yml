@@ -24,6 +24,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Setup keystore
+        run: |
+          # Use debug keystore for size comparison (consistent with local builds)
+          # The release workflow uses production keystore only for published releases
+          echo "ℹ️ Using debug keystore for consistent APK size comparison"
+          # Debug keystore is already configured in app/build.gradle.kts
+
       # Build PR APK
       - name: Build PR APK
         run: ./gradlew assembleRelease --parallel --daemon
