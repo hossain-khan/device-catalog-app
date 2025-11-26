@@ -1,15 +1,14 @@
 package dev.hossain.devicecatalog.ui.navigation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationDrawerItem
@@ -18,9 +17,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -115,26 +112,23 @@ fun AppNavigation(
 
         DeviceCatalogNavigationType.BOTTOM_NAVIGATION -> {
             // Compact screens (phones): Use bottom navigation
-            Scaffold(
-                modifier = modifier,
-                bottomBar = {
-                    AppBottomNavigation(
-                        selectedDestination = selectedDestination,
-                        onNavigationDestinationClicked = { destination ->
-                            selectedDestination = destination
-                            navigator.goTo(destination.screen)
-                        },
-                    )
-                },
-            ) { innerPadding ->
+            // Note: Screens provide their own Scaffold, so we don't wrap in another Scaffold here
+            Column(modifier = modifier.fillMaxSize()) {
                 NavigableCircuitContent(
                     navigator = navigator,
                     backStack = backStack,
-                    modifier = Modifier.padding(innerPadding),
+                    modifier = Modifier.weight(1f),
                     decoratorFactory =
                         remember(navigator) {
                             GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
                         },
+                )
+                AppBottomNavigation(
+                    selectedDestination = selectedDestination,
+                    onNavigationDestinationClicked = { destination ->
+                        selectedDestination = destination
+                        navigator.goTo(destination.screen)
+                    },
                 )
             }
         }
