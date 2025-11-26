@@ -11,6 +11,7 @@ import dev.hossain.devicecatalog.core.database.AndroidDeviceWithRelations
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.zacsweers.metro.Inject
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
@@ -246,6 +247,70 @@ class AndroidDeviceRepository
         }
 
         /**
+         * Get manufacturers with minimum device count for quiz eligibility.
+         * Only returns manufacturers that have enough devices with valid codename and model.
+         */
+        suspend fun getManufacturersWithMinDevices(minCount: Int = 5): List<ManufacturerQuizInfo> {
+            Timber.d("Getting manufacturers with at least $minCount devices")
+            return try {
+                val devices = deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
+                    devicesWithRelations.map { it.toModel() }
+                }.first()
+
+                // Filter devices with valid codename and model
+                val validDevices = devices.filter { device ->
+                    device.androidDevice.device.isNotBlank() && device.androidDevice.modelName.isNotBlank()
+                }
+
+                // Group by manufacturer and count
+                val manufacturerCounts = validDevices
+                    .groupingBy { it.androidDevice.manufacturer }
+                    .eachCount()
+                    .filter { it.value >= minCount }
+                    .map { (manufacturer, count) ->
+                        ManufacturerQuizInfo(
+                            manufacturer = manufacturer,
+                            deviceCount = count,
+                            isQuizAvailable = true
+                        )
+                    }
+                    .sortedByDescending { it.deviceCount }
+
+                Timber.i("Found ${manufacturerCounts.size} manufacturers with at least $minCount devices")
+                manufacturerCounts
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get manufacturers with min devices")
+                emptyList()
+            }
+        }
+
+        /**
+         * Get devices by manufacturer for quiz generation.
+         * Only returns devices with valid codename and model fields.
+         */
+        suspend fun getDevicesByManufacturer(manufacturer: String): List<DeviceInfo> {
+            Timber.d("Getting devices for manufacturer: $manufacturer")
+            return try {
+                val devices = deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
+                    devicesWithRelations
+                        .filter { it.device.manufacturer == manufacturer }
+                        .map { it.toModel() }
+                }.first()
+
+                // Filter devices with valid codename and model
+                val validDevices = devices.filter { device ->
+                    device.androidDevice.device.isNotBlank() && device.androidDevice.modelName.isNotBlank()
+                }
+
+                Timber.i("Found ${validDevices.size} valid devices for manufacturer: $manufacturer")
+                validDevices
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get devices for manufacturer: $manufacturer")
+                emptyList()
+            }
+        }
+
+        /**
          * Get device statistics including counts and breakdowns.
          */
         fun getDeviceStats(): Flow<DeviceStats> {
@@ -446,3 +511,12 @@ data class GpuCount(
      */
     fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
 }
+
+/**
+ * Data class for manufacturer quiz information.
+ */
+data class ManufacturerQuizInfo(
+    val manufacturer: String,
+    val deviceCount: Int,
+    val isQuizAvailable: Boolean,
+)
