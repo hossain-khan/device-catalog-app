@@ -7,35 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Navigation to Developer Settings screen from About screen (debug builds only)
-  - Added Circuit Screen/Presenter/UI pattern to DeveloperSettingsScreen
-  - Added Developer Settings button in About screen with bug report icon
-  - Button is only visible in debug builds using BuildConfig.DEBUG
-  - On release builds, the button is hidden completely
-
-### Fixed
-- Fixed lint errors in feature:devices module
-  - Wrapped `derivedStateOf` calls with `remember` in `DevicesPresenter.kt` to prevent state recreation on recomposition
-  - Suppressed `ConfigurationScreenWidthHeight` lint warning in `DeviceListLayoutConfig.kt` with justification (LocalWindowInfo not available in current Compose version)
-- Improved color contrast on stats screen following Material 3 guidelines
-  - Replaced hardcoded colors with Material 3 color scheme tokens for better theme support
-  - Fixed pie chart colors to use `primary`, `secondary`, `tertiary`, `error`, and `primaryContainer`
-  - Fixed bar chart colors to use theme-aware colors (primary, secondary, tertiary, error)
-  - Fixed page indicator colors to use `primary` and `onSurfaceVariant` with appropriate alpha
-  - Fixed line chart to use `primary` color from theme
-  - Fixed text color on bar charts to use `onSurface` for proper contrast
-  - All colors now adapt to light/dark themes and dynamic color (Android 12+)
-
-### Changed
-- Updated Copilot instructions to reflect multi-module architecture
-  - Added comprehensive project structure documentation with all core and feature modules
-  - Documented convention plugins usage and configuration
-  - Updated file path references to use new module locations (e.g., `core/database/src/main/kotlin/`)
-  - Added guidelines for working with multi-module architecture
-  - Updated code examples to reflect Circuit Screen/Presenter/UI pattern in feature modules
-  - Added Future Considerations section referencing Now in Android best practices from issue #72
-  - Updated Resources section with Now in Android learning journey links
+## [1.1.0] - 2025-11-26
 
 ### Added
 - Enhanced debugging logs for device search and paging flow
@@ -62,6 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DeviceCatalogLoadingWheel` and variants for loading states
   - `DeviceCatalogBackground` and gradient background components
   - Preview annotations for all design system components
+- Navigation to Developer Settings screen from About screen (debug builds only)
+  - Added Circuit Screen/Presenter/UI pattern to DeveloperSettingsScreen
+  - Added Developer Settings button in About screen with bug report icon
+  - Button is only visible in debug builds using BuildConfig.DEBUG
+  - On release builds, the button is hidden completely
 
 ### Changed
 - Refactored to multi-module architecture for improved build times and separation of concerns
@@ -77,6 +54,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored app module to use convention plugins, removing duplicated build configuration
 - Updated all app module files to use theme from `:core:designsystem` instead of local `ui.theme` package
 - Migrated theme tests from app module to `:core:designsystem` module
+- Updated Copilot instructions to reflect multi-module architecture
+  - Added comprehensive project structure documentation with all core and feature modules
+  - Documented convention plugins usage and configuration
+  - Updated file path references to use new module locations (e.g., `core/database/src/main/kotlin/`)
+  - Added guidelines for working with multi-module architecture
+  - Updated code examples to reflect Circuit Screen/Presenter/UI pattern in feature modules
+  - Added Future Considerations section referencing Now in Android best practices from issue #72
+  - Updated Resources section with Now in Android learning journey links
 
 ### Fixed
 - Removed redundant Scaffold from bottom navigation layout to prevent double-scaffold issues
@@ -89,6 +74,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Solution: Disabled `isNoSearchResults` check when using paging mode
   - Added empty state handling to `PaginatedDeviceList` using paging library's LoadState
   - Search results now display correctly in both paging and non-paging modes
+- Fixed lint errors in feature:devices module
+  - Wrapped `derivedStateOf` calls with `remember` in `DevicesPresenter.kt` to prevent state recreation on recomposition
+  - Suppressed `ConfigurationScreenWidthHeight` lint warning in `DeviceListLayoutConfig.kt` with justification (LocalWindowInfo not available in current Compose version)
+- Improved color contrast on stats screen following Material 3 guidelines
+  - Replaced hardcoded colors with Material 3 color scheme tokens for better theme support
+  - Fixed pie chart colors to use `primary`, `secondary`, `tertiary`, `error`, and `primaryContainer`
+  - Fixed bar chart colors to use theme-aware colors (primary, secondary, tertiary, error)
+  - Fixed page indicator colors to use `primary` and `onSurfaceVariant` with appropriate alpha
+  - Fixed line chart to use `primary` color from theme
+  - Fixed text color on bar charts to use `onSurface` for proper contrast
+  - All colors now adapt to light/dark themes and dynamic color (Android 12+)
 
 ### Removed
 - Duplicate theme files from app module (`ui.theme` package)
