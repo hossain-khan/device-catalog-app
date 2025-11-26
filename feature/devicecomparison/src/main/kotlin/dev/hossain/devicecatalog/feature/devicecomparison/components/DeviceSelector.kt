@@ -37,6 +37,12 @@ import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 
 /**
+ * Maximum number of devices to display in the selector list.
+ * Limits initial display for better performance while allowing search to filter further.
+ */
+private const val MAX_DEVICES_TO_DISPLAY = 50
+
+/**
  * A card component for adding a new device to the comparison.
  */
 @Composable
@@ -219,7 +225,7 @@ fun DeviceSelectorBottomSheet(
                         )
                     }
                 } else {
-                    items(availableDevices.take(50)) { device ->
+                    items(availableDevices.take(MAX_DEVICES_TO_DISPLAY)) { device ->
                         DeviceSelectorItem(
                             device = device,
                             onClick = { onDeviceSelected(device) },

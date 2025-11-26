@@ -19,6 +19,8 @@ import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import timber.log.Timber
 
+private const val MAX_DEVICES_FOR_COMPARISON = 4
+
 @AssistedInject
 class DeviceComparisonPresenter(
     @Assisted private val screen: DeviceComparisonScreen,
@@ -81,7 +83,7 @@ class DeviceComparisonPresenter(
             eventSink = { event ->
                 when (event) {
                     is DeviceComparisonScreen.Event.AddDevice -> {
-                        if (selectedDevices.size < 4) {
+                        if (selectedDevices.size < MAX_DEVICES_FOR_COMPARISON) {
                             Timber.d("Adding device: ${event.device.androidDevice.modelName}")
                             selectedDevices = selectedDevices + event.device
                             showDeviceSelector = false
@@ -240,15 +242,32 @@ class DeviceComparisonPresenter(
 
     /**
      * Finds indices with the highest RAM values.
+     * Properly handles unit conversion (MB to GB) for accurate comparison.
      */
     private fun findBestRamIndices(ramValues: List<String>): List<Int> {
-        val ramNumbers =
+        val ramInMb =
             ramValues.map { ram ->
-                val numericPart = ram.replace(Regex("[^0-9]"), "")
-                numericPart.toIntOrNull() ?: 0
+                parseRamToMb(ram)
             }
-        val maxRam = ramNumbers.maxOrNull() ?: return emptyList()
-        return ramNumbers.indices.filter { ramNumbers[it] == maxRam }
+        val maxRam = ramInMb.maxOrNull() ?: return emptyList()
+        if (maxRam == 0) return emptyList()
+        return ramInMb.indices.filter { ramInMb[it] == maxRam }
+    }
+
+    /**
+     * Parses a RAM string to megabytes for comparison.
+     * Handles formats like "12 GB", "1024 MB", "8GB", etc.
+     */
+    private fun parseRamToMb(ram: String): Int {
+        val cleanedRam = ram.uppercase().trim()
+        val numericPart = cleanedRam.replace(Regex("[^0-9.]"), "")
+        val value = numericPart.toDoubleOrNull() ?: return 0
+
+        return when {
+            cleanedRam.contains("GB") -> (value * 1024).toInt()
+            cleanedRam.contains("MB") -> value.toInt()
+            else -> value.toInt() // Assume MB if no unit specified
+        }
     }
 
     /**
