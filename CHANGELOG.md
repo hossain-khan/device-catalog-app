@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-11-26
+
 ### Fixed
 - Fixed lint errors in feature:devices module
   - Wrapped `derivedStateOf` calls with `remember` in `DevicesPresenter.kt` to prevent state recreation on recomposition
