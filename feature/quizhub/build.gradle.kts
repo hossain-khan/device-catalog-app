@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
+    implementation(project(":feature:phonequiz"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

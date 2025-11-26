@@ -21,6 +21,9 @@ dependencies {
     ksp(libs.circuit.codegen)
 
     implementation(libs.timber)
+
+    // Testing
+    testImplementation(libs.junit)
 }
 
 ksp {
