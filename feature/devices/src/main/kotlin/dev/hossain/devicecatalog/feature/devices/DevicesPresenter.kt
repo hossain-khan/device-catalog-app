@@ -87,8 +87,9 @@ class DevicesPresenter(
 
         // Get paged devices with search and filter
         // Performance: Use remember to avoid recreating flow on each recomposition
+        // Must depend on both debouncedSearchQuery AND activeFilters to update when either changes
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
-            remember(debouncedSearchQuery) {
+            remember(debouncedSearchQuery, activeFilters) {
                 val flow =
                     if (debouncedSearchQuery.isBlank()) {
                         deviceRepository.getPagedDevices()
