@@ -176,7 +176,9 @@ fun DevicesUi(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    // TODO - I don't know WTF is wrong here with the extra pading
+                    // Using hack for now until this can be figured out.
+                    .padding(top = innerPadding.calculateTopPadding() - 65.dp),
         ) {
             // Search bar
             DeviceSearchBar(
