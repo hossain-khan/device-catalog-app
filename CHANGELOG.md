@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- APK Size Analysis workflow using Diffuse for pull requests
+  - Automatic comparison of APK sizes between PR builds and latest release
+  - PR comments with detailed analysis of size changes (DEX, resources, assets)
+  - Artifact upload for manual APK inspection
+  - Uses [Diffuse](https://github.com/JakeWharton/diffuse) via [diffuse-action](https://github.com/usefulness/diffuse-action)
 - Brand Challenge Quiz feature (`:feature:brandchallenge`)
   - Interactive quiz game testing knowledge of brand ownership and manufacturer relationships
   - Three quiz question types: "Which manufacturer makes [brand]?", "Is [brand] made by [manufacturer]?" (True/False), "Which brand does NOT belong to [manufacturer]?"
