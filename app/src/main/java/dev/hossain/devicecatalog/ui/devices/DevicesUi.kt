@@ -231,14 +231,23 @@ fun DevicesUi(
                 },
                 modifier = Modifier.fillMaxSize(),
             ) {
+                // Log which UI path is taken
+                Timber.tag("DevicesUi:Display").d(
+                    "UI State: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, " +
+                        "isNoSearchResults=${state.isNoSearchResults}, isEmpty=${state.isEmpty}, " +
+                        "usePaging=${state.usePaging}, searchQuery='${state.searchQuery}'",
+                )
+
                 when {
                     // Show loading state for initial load
                     state.isLoading && !state.isRefreshing -> {
+                        Timber.tag("DevicesUi:Display").d("Showing loading state")
                         LoadingContent(layoutConfig)
                     }
 
                     // Show empty state for no search results
                     state.isNoSearchResults -> {
+                        Timber.tag("DevicesUi:Display").d("Showing no search results state")
                         EmptyDeviceState(
                             message = "No devices found for \"${state.searchQuery}\"",
                             onActionClick = {
@@ -250,6 +259,7 @@ fun DevicesUi(
 
                     // Show empty state when no devices and not loading
                     state.isEmpty && !state.isLoading && !state.isRefreshing -> {
+                        Timber.tag("DevicesUi:Display").d("Showing empty state")
                         EmptyDeviceState(
                             onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
                         )
@@ -257,6 +267,7 @@ fun DevicesUi(
 
                     // Show paged content when using paging
                     state.usePaging -> {
+                        Timber.tag("DevicesUi:Display").d("Showing paged device list")
                         PaginatedDeviceList(
                             state = state,
                             layoutConfig = layoutConfig,
@@ -265,6 +276,7 @@ fun DevicesUi(
 
                     // Show regular list when not using paging
                     else -> {
+                        Timber.tag("DevicesUi:Display").d("Showing regular device list with ${state.devices.size} devices")
                         RegularDeviceList(
                             state = state,
                             layoutConfig = layoutConfig,
@@ -314,7 +326,38 @@ private fun PaginatedDeviceList(
 ) {
     val lazyPagingItems = state.pagedDevices.collectAsLazyPagingItems()
 
-    Timber.d("PaginatedDeviceList: itemCount=${lazyPagingItems.itemCount}, loadState=${lazyPagingItems.loadState}")
+    Timber.tag("DevicesUi:Paging").d(
+        "PaginatedDeviceList: itemCount=${lazyPagingItems.itemCount}, " +
+            "loadState.refresh=${lazyPagingItems.loadState.refresh}, " +
+            "loadState.append=${lazyPagingItems.loadState.append}, " +
+            "searchQuery='${state.searchQuery}'",
+    )
+
+    // Check if we have no items after loading is complete
+    val isEmptyAfterLoad =
+        lazyPagingItems.itemCount == 0 &&
+            lazyPagingItems.loadState.refresh is LoadState.NotLoading
+
+    Timber.tag("DevicesUi:Paging").d("isEmptyAfterLoad=$isEmptyAfterLoad")
+
+    // Show empty state when no items after loading
+    if (isEmptyAfterLoad) {
+        Timber.tag("DevicesUi:Paging").d("Showing empty state for search query: '${state.searchQuery}'")
+        if (state.searchQuery.isNotBlank()) {
+            EmptyDeviceState(
+                message = "No devices found for \"${state.searchQuery}\"",
+                onActionClick = {
+                    state.eventSink(DevicesScreen.Event.ClearSearch)
+                },
+                actionLabel = "Clear Search",
+            )
+        } else {
+            EmptyDeviceState(
+                onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
+            )
+        }
+        return
+    }
 
     when {
         layoutConfig.columns == 1 -> {

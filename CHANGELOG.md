@@ -18,6 +18,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated Resources section with Now in Android learning journey links
 
 ### Added
+- Enhanced debugging logs for device search and paging flow
+  - Added tagged Timber logs in `DevicesPresenter` to track search query changes, debouncing, and state calculations
+  - Added tagged Timber logs in `DevicesUi` to track UI state transitions and paging behavior
+  - Log tags: `DevicesPresenter:Search`, `DevicesPresenter:Query`, `DevicesPresenter:Filter`, `DevicesPresenter:Paging`, `DevicesPresenter:State`, `DevicesUi:Display`, `DevicesUi:Paging`
+  - Helps diagnose search and filter issues in development
 - Multi-module architecture following Now in Android patterns
   - Core modules: `:core:common`, `:core:data`, `:core:database`, `:core:designsystem`, `:core:model`, `:core:ui`
   - Feature modules: `:feature:devices`, `:feature:devicedetails`, `:feature:statistics`, `:feature:settings`
@@ -58,6 +63,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Screens already provide their own Scaffold with TopAppBar
   - Navigation layer now only provides navigation chrome (bottom bar, rail, drawer)
   - Improves layout consistency and prevents padding/inset conflicts
+- Fixed search results not displaying in device list when using paging mode
+  - Issue: `isNoSearchResults` was checking `filteredDevices` which is only used in non-paging mode
+  - When paging is enabled, results come from `pagedDevices` flow, making `filteredDevices` always empty
+  - Solution: Disabled `isNoSearchResults` check when using paging mode
+  - Added empty state handling to `PaginatedDeviceList` using paging library's LoadState
+  - Search results now display correctly in both paging and non-paging modes
 
 ### Removed
 - Duplicate theme files from app module (`ui.theme` package)
