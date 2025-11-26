@@ -12,16 +12,16 @@ class NavigationDestinationTest {
     fun `verify all navigation destinations are defined`() {
         val destinations = NavigationDestination.destinations
 
-        assertEquals("Should have 3 navigation destinations", 3, destinations.size)
+        assertEquals("Should have 4 navigation destinations", 4, destinations.size)
 
         // Verify each destination exists
         assertTrue(
-            "Home destination should exist",
-            destinations.any { it is NavigationDestination.Stats },
-        )
-        assertTrue(
             "Devices destination should exist",
             destinations.any { it is NavigationDestination.Devices },
+        )
+        assertTrue(
+            "Quiz destination should exist",
+            destinations.any { it is NavigationDestination.Quiz },
         )
         assertTrue(
             "Stats destination should exist",
@@ -35,13 +35,17 @@ class NavigationDestinationTest {
 
     @Test
     fun `verify destination properties are correctly set`() {
-        val home = NavigationDestination.Stats
-        assertEquals("Stats route should be 'stats'", "stats", home.route)
-        assertEquals("Stats title should be 'Stats'", "Stats", home.title)
+        val stats = NavigationDestination.Stats
+        assertEquals("Stats route should be 'stats'", "stats", stats.route)
+        assertEquals("Stats title should be 'Stats'", "Stats", stats.title)
 
         val devices = NavigationDestination.Devices
         assertEquals("Devices route should be 'devices'", "devices", devices.route)
         assertEquals("Devices title should be 'Devices'", "Devices", devices.title)
+
+        val quiz = NavigationDestination.Quiz
+        assertEquals("Quiz route should be 'quiz'", "quiz", quiz.route)
+        assertEquals("Quiz title should be 'Quiz'", "Quiz", quiz.title)
 
         val about = NavigationDestination.About
         assertEquals("About route should be 'about'", "about", about.route)
