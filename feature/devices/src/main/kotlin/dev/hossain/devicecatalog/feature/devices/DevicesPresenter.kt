@@ -68,14 +68,15 @@ class DevicesPresenter(
         }
 
         // Get devices based on search query and filters
-        // Performance: Use collectAsState with remember to avoid unnecessary recompositions
-        val allDevices by remember(debouncedSearchQuery) {
+        // Performance: Use remember to select the right flow, then collect it
+        val devicesFlow = remember(debouncedSearchQuery) {
             if (debouncedSearchQuery.isBlank()) {
                 deviceRepository.getAllDevices()
             } else {
                 deviceRepository.searchDevices(debouncedSearchQuery)
             }
-        }.collectAsState(initial = emptyList())
+        }
+        val allDevices by devicesFlow.collectAsState(initial = emptyList())
 
         // Apply filters to the devices
         // Performance: Use remember with explicit keys to only recalculate when dependencies change
@@ -86,8 +87,9 @@ class DevicesPresenter(
 
         // Get paged devices with search and filter
         // Performance: Use remember to avoid recreating flow on each recomposition
+        // Must depend on both debouncedSearchQuery AND activeFilters to update when either changes
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
-            remember(debouncedSearchQuery) {
+            remember(debouncedSearchQuery, activeFilters) {
                 val flow =
                     if (debouncedSearchQuery.isBlank()) {
                         deviceRepository.getPagedDevices()
