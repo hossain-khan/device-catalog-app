@@ -5,17 +5,19 @@ plugins {
 }
 
 android {
-    namespace = "dev.hossain.devicecatalog.feature.quizhub"
+    namespace = "dev.hossain.devicecatalog.feature.devicecomparison"
 }
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
+    implementation(project(":core:database"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
-    implementation(project(":feature:phonequiz"))
-    implementation(project(":feature:brandchallenge"))
-    implementation(project(":feature:devicecomparison"))
-    implementation(project(":feature:dreamphone"))
+    implementation(project(":core:ui"))
+
+    // Cross-feature navigation (comparison navigates to devicedetails)
+    implementation(project(":feature:devicedetails"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -28,6 +29,7 @@ data object QuizHubScreen : Screen {
         CODENAME_GUESS,
         BRAND_CHALLENGE,
         DREAM_PHONE,
+        DEVICE_COMPARE,
         SPEC_MASTER,
         TIMELINE_CHALLENGE,
     }
@@ -65,6 +67,13 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             title = "Dream Phone Finder",
             description = "Find your perfect device",
             icon = Icons.Default.Psychology,
+            isAvailable = true,
+        ),
+        QuizHubScreen.QuizTypeInfo(
+            type = QuizHubScreen.QuizType.DEVICE_COMPARE,
+            title = "Device Compare",
+            description = "Compare 2-4 devices side by side",
+            icon = DeviceCatalogIcons.Compare,
             isAvailable = true,
         ),
         QuizHubScreen.QuizTypeInfo(

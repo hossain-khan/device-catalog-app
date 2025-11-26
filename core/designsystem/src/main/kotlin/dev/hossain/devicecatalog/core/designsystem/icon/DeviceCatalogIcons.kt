@@ -2,6 +2,7 @@ package dev.hossain.devicecatalog.core.designsystem.icon
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Clear
@@ -16,7 +17,6 @@ import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -55,6 +55,7 @@ object DeviceCatalogIcons {
     val KeyboardArrowUp: ImageVector = Icons.Default.KeyboardArrowUp
 
     // Feature icons
+    val Compare: ImageVector = Icons.AutoMirrored.Filled.CompareArrows
     val Person: ImageVector = Icons.Default.Person
     val Psychology: ImageVector = Icons.Default.Psychology
     val Settings: ImageVector = Icons.Outlined.Settings
