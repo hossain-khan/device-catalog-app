@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - On release builds, the button is hidden completely
 
 ### Fixed
+- Fixed lint errors in feature:devices module
+  - Wrapped `derivedStateOf` calls with `remember` in `DevicesPresenter.kt` to prevent state recreation on recomposition
+  - Suppressed `ConfigurationScreenWidthHeight` lint warning in `DeviceListLayoutConfig.kt` with justification (LocalWindowInfo not available in current Compose version)
 - Improved color contrast on stats screen following Material 3 guidelines
   - Replaced hardcoded colors with Material 3 color scheme tokens for better theme support
   - Fixed pie chart colors to use `primary`, `secondary`, `tertiary`, `error`, and `primaryContainer`

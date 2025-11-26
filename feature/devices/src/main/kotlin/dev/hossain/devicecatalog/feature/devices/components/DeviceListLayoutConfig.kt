@@ -22,7 +22,11 @@ data class DeviceListLayoutConfig(
  * Creates the appropriate layout configuration based on window size.
  * - Phone (< 600dp): Single column list
  * - Tablet (600dp+): Two-column grid
+ *
+ * Note: Uses Configuration.screenWidthDp instead of LocalWindowInfo.containerSize
+ * because LocalWindowInfo is not available in the current Compose version.
  */
+@Suppress("ConfigurationScreenWidthHeight")
 @Composable
 fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
     val configuration = LocalConfiguration.current

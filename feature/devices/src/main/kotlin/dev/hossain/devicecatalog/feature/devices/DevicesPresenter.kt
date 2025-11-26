@@ -126,10 +126,11 @@ class DevicesPresenter(
             }
 
         // Performance: Use derivedStateOf for computed values that depend on state
-        // derivedStateOf already handles memoization, no need for remember wrapper
-        val isSearchActive by derivedStateOf { searchQuery.isNotBlank() }
-        val isNoSearchResults by derivedStateOf {
-            isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+        val isSearchActive by remember { derivedStateOf { searchQuery.isNotBlank() } }
+        val isNoSearchResults by remember {
+            derivedStateOf {
+                isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+            }
         }
 
         return DevicesScreen.State(
