@@ -81,14 +81,14 @@ jobs:
       - name: Rename APK and AAB
         run: |
           mkdir -p artifact
-          cp app/build/outputs/apk/release/app-release.apk artifact/app-v${{ steps.version.outputs.VERSION }}.apk
-          cp app/build/outputs/bundle/release/app-release.aab artifact/app-v${{ steps.version.outputs.VERSION }}.aab
+          cp app/build/outputs/apk/release/app-release.apk artifact/android-catalog-${{ steps.version.outputs.VERSION }}.apk
+          cp app/build/outputs/bundle/release/app-release.aab artifact/android-catalog-${{ steps.version.outputs.VERSION }}.aab
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-apk
-          path: artifact/app-v${{ steps.version.outputs.VERSION }}.apk
+          name: android-catalog-apk
+          path: artifact/android-catalog-${{ steps.version.outputs.VERSION }}.apk
           # Use maximum allowed retention period
           # https://github.com/actions/upload-artifact?tab=readme-ov-file#retention-period
           retention-days: 90
@@ -96,8 +96,8 @@ jobs:
       - name: Upload Release AAB
         uses: actions/upload-artifact@v4
         with:
-          name: app-aab
-          path: artifact/app-v${{ steps.version.outputs.VERSION }}.aab
+          name: android-catalog-aab
+          path: artifact/android-catalog-${{ steps.version.outputs.VERSION }}.aab
           retention-days: 90
 
       # If this is running due to a GitHub release, attach the APK and AAB to the release
@@ -121,8 +121,8 @@ jobs:
           echo "Found release ID: $RELEASE_ID"
           
           # Upload APK to the release
-          APK_FILE="artifact/app-v${{ steps.version.outputs.VERSION }}.apk"
-          APK_NAME="app-v${{ steps.version.outputs.VERSION }}.apk"
+          APK_FILE="artifact/android-catalog-${{ steps.version.outputs.VERSION }}.apk"
+          APK_NAME="android-catalog-${{ steps.version.outputs.VERSION }}.apk"
           
           echo "Uploading $APK_NAME to release..."
           
@@ -146,8 +146,8 @@ jobs:
           fi
           
           # Upload AAB to the release
-          AAB_FILE="artifact/app-v${{ steps.version.outputs.VERSION }}.aab"
-          AAB_NAME="app-v${{ steps.version.outputs.VERSION }}.aab"
+          AAB_FILE="artifact/android-catalog-${{ steps.version.outputs.VERSION }}.aab"
+          AAB_NAME="android-catalog-${{ steps.version.outputs.VERSION }}.aab"
           
           echo "Uploading $AAB_NAME to release..."
           
