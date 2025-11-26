@@ -15,7 +15,6 @@ import androidx.paging.map
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.ui.devicedetails.DeviceDetailsScreen
@@ -28,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 @AssistedInject
@@ -50,11 +50,13 @@ class DevicesPresenter(
         // Performance: Use LaunchedEffect with snapshotFlow for debouncing to reduce recompositions
         LaunchedEffect(Unit) {
             snapshotFlow { searchQuery }
-                .debounce(300) // 300ms debounce for search
+                .onEach {
+                    Timber.tag("DevicesPresenter:Search").d("Search query changed: '$it'")
+                }.debounce(300) // 300ms debounce for search
                 .distinctUntilChanged()
                 .collect { query ->
                     debouncedSearchQuery = query
-                    Timber.d("Debounced search query: $query")
+                    Timber.tag("DevicesPresenter:Search").d("Debounced search query applied: '$query'")
                 }
         }
 
@@ -70,6 +72,7 @@ class DevicesPresenter(
         // Get devices based on search query and filters
         // Performance: Use collectAsState with remember to avoid unnecessary recompositions
         val allDevices by remember(debouncedSearchQuery) {
+            Timber.tag("DevicesPresenter:Query").d("Loading devices for query: '$debouncedSearchQuery'")
             if (debouncedSearchQuery.isBlank()) {
                 deviceRepository.getAllDevices()
             } else {
@@ -77,17 +80,28 @@ class DevicesPresenter(
             }
         }.collectAsState(initial = emptyList())
 
+        // Log when devices are loaded
+        LaunchedEffect(allDevices.size) {
+            Timber.tag("DevicesPresenter:Query").d("Loaded ${allDevices.size} devices for query: '$debouncedSearchQuery'")
+        }
+
         // Apply filters to the devices
         // Performance: Use remember with explicit keys to only recalculate when dependencies change
         val filteredDevices =
             remember(allDevices, activeFilters) {
-                applyFilters(allDevices, activeFilters)
+                val filtered = applyFilters(allDevices, activeFilters)
+                Timber.tag("DevicesPresenter:Filter").d(
+                    "Filtered ${allDevices.size} devices to ${filtered.size} " +
+                        "(hasFilters: ${activeFilters.hasActiveFilters()})",
+                )
+                filtered
             }
 
         // Get paged devices with search and filter
         // Performance: Use remember to avoid recreating flow on each recomposition
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
             remember(debouncedSearchQuery) {
+                Timber.tag("DevicesPresenter:Paging").d("Creating paged flow for query: '$debouncedSearchQuery'")
                 val flow =
                     if (debouncedSearchQuery.isBlank()) {
                         deviceRepository.getPagedDevices()
@@ -106,10 +120,19 @@ class DevicesPresenter(
 
         // Performance: Use derivedStateOf for computed values that depend on state
         // derivedStateOf is specifically designed for derived state and will only recompute when dependencies change
-        val isSearchActive by remember { derivedStateOf { searchQuery.isNotBlank() } }
+        // Use debouncedSearchQuery to avoid showing "No results" during debounce period
+        val isSearchActive by remember { derivedStateOf { debouncedSearchQuery.isNotBlank() } }
         val isNoSearchResults by remember {
             derivedStateOf {
-                isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+                // Only check for no results when NOT using paging mode
+                // When using paging, filteredDevices is not used, so it would always be empty
+                // The paging library will handle empty states through LazyPagingItems
+                val noResults = !usePaging && isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+                Timber.tag("DevicesPresenter:State").d(
+                    "State: usePaging=$usePaging, isSearchActive=$isSearchActive, " +
+                        "filteredDevices.size=${filteredDevices.size}, isNoSearchResults=$noResults",
+                )
+                noResults
             }
         }
 
