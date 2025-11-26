@@ -1,7 +1,6 @@
 package dev.hossain.devicecatalog.feature.quizhub
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Psychology
@@ -10,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -73,7 +73,7 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             type = QuizHubScreen.QuizType.DEVICE_COMPARE,
             title = "Device Compare",
             description = "Compare 2-4 devices side by side",
-            icon = Icons.AutoMirrored.Filled.CompareArrows,
+            icon = DeviceCatalogIcons.Compare,
             isAvailable = true,
         ),
         QuizHubScreen.QuizTypeInfo(

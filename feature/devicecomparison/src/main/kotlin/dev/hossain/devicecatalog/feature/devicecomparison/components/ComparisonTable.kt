@@ -79,6 +79,9 @@ private fun DeviceCardsRow(
     onDeviceClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // Calculate card width based on number of devices and max slots
+    val cardWidthFraction = 1f / maxDevices.coerceAtMost(selectedDevices.size + 1).toFloat()
+
     LazyRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -90,7 +93,7 @@ private fun DeviceCardsRow(
                 device = device,
                 onRemove = { onRemoveDevice(device.id) },
                 onClick = { onDeviceClick(device.id) },
-                modifier = Modifier.fillParentMaxWidth(1f / maxDevices.coerceAtMost(selectedDevices.size + 1).toFloat()),
+                modifier = Modifier.fillParentMaxWidth(cardWidthFraction),
             )
         }
 
@@ -99,7 +102,7 @@ private fun DeviceCardsRow(
             item {
                 AddDeviceCard(
                     onClick = onAddDevice,
-                    modifier = Modifier.fillParentMaxWidth(1f / maxDevices.coerceAtMost(selectedDevices.size + 1).toFloat()),
+                    modifier = Modifier.fillParentMaxWidth(cardWidthFraction),
                 )
             }
         }

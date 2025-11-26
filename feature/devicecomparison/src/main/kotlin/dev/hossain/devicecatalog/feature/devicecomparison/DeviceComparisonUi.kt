@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogButton
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.model.DeviceInfo
@@ -152,7 +151,7 @@ private fun EmptyComparisonState(
         Spacer(modifier = Modifier.weight(1f))
 
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.CompareArrows,
+            imageVector = DeviceCatalogIcons.Compare,
             contentDescription = null,
             modifier = Modifier.size(80.dp),
             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
@@ -177,10 +176,10 @@ private fun EmptyComparisonState(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogButton(
+        DeviceCatalogButton(
             onClick = onAddDevice,
         ) {
-            androidx.compose.material3.Text("Add First Device")
+            Text("Add First Device")
         }
 
         Spacer(modifier = Modifier.weight(1f))

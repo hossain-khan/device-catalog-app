@@ -75,7 +75,7 @@ class DeviceComparisonPresenter(
         return DeviceComparisonScreen.State(
             selectedDevices = selectedDevices,
             comparisonData = comparisonData,
-            maxDevices = 4,
+            maxDevices = MAX_DEVICES_FOR_COMPARISON,
             isLoading = isLoading,
             showDeviceSelector = showDeviceSelector,
             availableDevices = availableDevices,
@@ -260,13 +260,37 @@ class DeviceComparisonPresenter(
      */
     private fun parseRamToMb(ram: String): Int {
         val cleanedRam = ram.uppercase().trim()
-        val numericPart = cleanedRam.replace(Regex("[^0-9.]"), "")
-        val value = numericPart.toDoubleOrNull() ?: return 0
-
+        // Match first number (integer or decimal) and optional unit (GB/MB)
+        val regex = Regex("""(\d+(?:\.\d+)?)\s*(GB|MB)?""")
+        val match = regex.find(cleanedRam)
+        if (match == null) {
+            Timber.w("Failed to parse RAM string: '$ram'")
+            return 0
+        }
+        val value = match.groupValues[1].toDoubleOrNull()
+        val unit = match.groupValues[2]
+        if (value == null) {
+            Timber.w("Failed to parse RAM value from string: '$ram'")
+            return 0
+        }
         return when {
-            cleanedRam.contains("GB") -> (value * 1024).toInt()
-            cleanedRam.contains("MB") -> value.toInt()
-            else -> value.toInt() // Assume MB if no unit specified
+            unit == "GB" -> {
+                (value * 1024).toInt()
+            }
+
+            unit == "MB" -> {
+                value.toInt()
+            }
+
+            unit.isEmpty() -> {
+                value.toInt()
+            }
+
+            // Assume MB if no unit specified
+            else -> {
+                Timber.w("Unknown RAM unit in string: '$ram'")
+                value.toInt()
+            }
         }
     }
 
