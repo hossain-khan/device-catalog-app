@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Navigation to Developer Settings screen from About screen (debug builds only)
+  - Added Circuit Screen/Presenter/UI pattern to DeveloperSettingsScreen
+  - Added Developer Settings button in About screen with bug report icon
+  - Button is only visible in debug builds using BuildConfig.DEBUG
+  - On release builds, the button is hidden completely
+
 ### Fixed
 - Improved color contrast on stats screen following Material 3 guidelines
   - Replaced hardcoded colors with Material 3 color scheme tokens for better theme support
