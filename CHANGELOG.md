@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Phone Codename Quiz feature (`:feature:phonequiz`)
+  - Interactive quiz game to test Android device knowledge by matching device codenames to model names
+  - Manufacturer selection screen: grid of manufacturers with device counts, requiring minimum 5 devices
+  - Quiz screen: 5 multiple-choice questions with device codenames, 4 answer options per question
+  - Results screen: score display, accuracy percentage, motivational messages, review of all answers
+  - Quiz logic: question generation with randomized options, answer shuffling, scoring system
+  - Navigation flow: Quiz Hub → Manufacturer Selection → Quiz → Results
+  - Components: ManufacturerCard, QuestionCard, AnswerOption, AnswerReviewCard, ScoreCard
+  - Repository methods: `getManufacturersWithMinDevices()`, `getDevicesByManufacturer()`
+  - QuizService for question generation, scoring, and accuracy calculation
+  - Material 3 theming with proper color schemes for light/dark modes
+  - Visual feedback for answer correctness (checkmark/cross icons, color indicators)
+  - Circuit Screen/Presenter/UI pattern with Metro dependency injection
+  - Device details integration from results screen for learning more about devices
 - Quiz Hub navigation item and screen
   - Added "Quiz" navigation item positioned between "Devices" and "Statistics" with Psychology icon
   - Created `:feature:quizhub` module following feature module architecture

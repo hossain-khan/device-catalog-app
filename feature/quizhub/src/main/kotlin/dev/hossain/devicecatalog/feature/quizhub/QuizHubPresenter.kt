@@ -26,8 +26,8 @@ class QuizHubPresenter(
                         Timber.d("QuizHubPresenter: Quiz selected - ${event.quizType}")
                         when (event.quizType) {
                             QuizHubScreen.QuizType.CODENAME_GUESS -> {
-                                // TODO: Navigate to ManufacturerSelectionScreen when available
-                                Timber.i("Codename Guess quiz selected - navigation not yet implemented")
+                                Timber.i("Codename Guess quiz selected - navigating to manufacturer selection")
+                                navigator.goTo(dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen)
                             }
 
                             else -> {
