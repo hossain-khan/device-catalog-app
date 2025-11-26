@@ -302,13 +302,14 @@ private fun FormFactorDistributionContent(
     formFactors: List<FormFactorCount>,
     totalDevices: Int,
 ) {
+    // Use Material 3 color scheme for better contrast and theme support
     val chartColors =
         listOf(
-            Color(0xFF2196F3),
-            Color(0xFF4CAF50),
-            Color(0xFFFFC107),
-            Color(0xFFFF5722),
-            Color(0xFF9C27B0),
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary,
+            MaterialTheme.colorScheme.tertiary,
+            MaterialTheme.colorScheme.error,
+            MaterialTheme.colorScheme.primaryContainer,
         )
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -475,7 +476,7 @@ private fun AbiSupportContent(
                         label = abi.abi,
                         value = abi.count.toFloat(),
                         valueLabel = "${abi.count} (${String.format("%.1f", abi.percentage(totalDevices))}%)",
-                        color = Color(0xFF9C27B0),
+                        color = MaterialTheme.colorScheme.primary,
                     )
                 },
         )
@@ -498,7 +499,7 @@ private fun GpuDistributionContent(
                         label = gpu.gpu.take(15),
                         value = gpu.count.toFloat(),
                         valueLabel = "${gpu.count} (${String.format("%.1f", gpu.percentage(totalDevices))}%)",
-                        color = Color(0xFFFF5722),
+                        color = MaterialTheme.colorScheme.error,
                     )
                 },
         )

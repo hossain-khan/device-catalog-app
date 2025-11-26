@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Improved color contrast on stats screen following Material 3 guidelines
+  - Replaced hardcoded colors with Material 3 color scheme tokens for better theme support
+  - Fixed pie chart colors to use `primary`, `secondary`, `tertiary`, `error`, and `primaryContainer`
+  - Fixed bar chart colors to use theme-aware colors (primary, secondary, tertiary, error)
+  - Fixed page indicator colors to use `primary` and `onSurfaceVariant` with appropriate alpha
+  - Fixed line chart to use `primary` color from theme
+  - Fixed text color on bar charts to use `onSurface` for proper contrast
+  - All colors now adapt to light/dark themes and dynamic color (Android 12+)
+
 ### Changed
 - Updated Copilot instructions to reflect multi-module architecture
   - Added comprehensive project structure documentation with all core and feature modules

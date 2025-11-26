@@ -141,7 +141,7 @@ fun HorizontalBarChart(
                         text = bar.valueLabel ?: bar.value.toInt().toString(),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier =
                             Modifier
                                 .align(Alignment.CenterStart)
@@ -223,6 +223,7 @@ fun LineChart(
     modifier: Modifier = Modifier,
 ) {
     val animatable = remember { Animatable(0f) }
+    val lineColor = MaterialTheme.colorScheme.primary
 
     LaunchedEffect(data) {
         animatable.animateTo(
@@ -258,7 +259,7 @@ fun LineChart(
             val animatedY2 = y1 + (y2 - y1) * animatable.value
 
             drawLine(
-                color = Color(0xFF2196F3),
+                color = lineColor,
                 start = Offset(x1, y1),
                 end = Offset(animatedX2, animatedY2),
                 strokeWidth = 4f,
@@ -271,7 +272,7 @@ fun LineChart(
             val y = size.height - ((point.value - minValue) * scaleY)
 
             drawCircle(
-                color = Color(0xFF2196F3),
+                color = lineColor,
                 radius = 6f * animatable.value,
                 center = Offset(x, y),
             )
