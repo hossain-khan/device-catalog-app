@@ -509,7 +509,10 @@ val pagedDevices = repository.getPagedDevices()
 # 2. Run all tests (ensures nothing is broken)
 ./gradlew test
 
-# 3. Run debug build to ensure no build issues
+# 3. Run lint checks to catch code quality issues
+./gradlew lintDebug
+
+# 4. Run debug build to ensure no build issues
 ./gradlew assembleDebug
 ```
 
@@ -590,11 +593,28 @@ If any command fails, fix the issues before committing.
 ./gradlew formatKotlin
 # 4. Run tests
 ./gradlew test
-# 5. Commit with descriptive message
+# 5. Run lint checks
+./gradlew lintDebug
+# 6. Commit with descriptive message
 git commit -m "Add feature X
 
 - Updated CHANGELOG.md with new feature"
 ```
+
+### Git Tagging Convention
+
+When creating release tags, always use the version number **without** the `v` prefix:
+
+```bash
+# Correct
+git tag -a 1.1.0 -m "Release 1.1.0"
+git push origin 1.1.0
+
+# Incorrect - Do NOT use 'v' prefix
+git tag -a v1.1.0 -m "Release v1.1.0"  # ❌ Wrong
+```
+
+This maintains consistency with the project's versioning scheme and ensures compatibility with release automation tools.
 
 ### Common Gradle Tasks
 
