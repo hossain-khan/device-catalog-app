@@ -318,11 +318,15 @@ class DreamPhonePresenter(
 
         // Brand preference (15 points)
         if (answers.brandPreferences.isNotEmpty()) {
+            // If "Any" is selected, give full points
             val brandMatch =
-                answers.brandPreferences.any { brand ->
-                    androidDevice.manufacturer.equals(brand, ignoreCase = true)
-                }
-            if (brandMatch) score += 15f
+                "Any" in answers.brandPreferences ||
+                    answers.brandPreferences.any { brand ->
+                        androidDevice.manufacturer.equals(brand, ignoreCase = true)
+                    }
+            if (brandMatch) {
+                score += 15f
+            }
         } else {
             // No preference, give partial points
             score += 8f
@@ -419,7 +423,7 @@ class DreamPhonePresenter(
         }
 
         // Brand
-        if (answers.brandPreferences.isNotEmpty()) {
+        if (answers.brandPreferences.isNotEmpty() && "Any" !in answers.brandPreferences) {
             val brandMatch =
                 answers.brandPreferences.any { brand ->
                     androidDevice.manufacturer.equals(brand, ignoreCase = true)
