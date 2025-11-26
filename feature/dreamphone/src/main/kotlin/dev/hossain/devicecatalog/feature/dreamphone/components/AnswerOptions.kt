@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.feature.dreamphone.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,12 +31,13 @@ fun RadioOption(
         modifier =
             modifier
                 .fillMaxWidth()
+                .clickable(onClick = onSelect)
                 .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         RadioButton(
             selected = selected,
-            onClick = onSelect,
+            onClick = null, // Handled by Row click
         )
 
         Column(
@@ -71,12 +73,13 @@ fun CheckboxOption(
         modifier =
             modifier
                 .fillMaxWidth()
+                .clickable { onCheckedChange(!checked) }
                 .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
             checked = checked,
-            onCheckedChange = onCheckedChange,
+            onCheckedChange = null, // Handled by Row click
         )
 
         Column(
