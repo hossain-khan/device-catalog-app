@@ -99,6 +99,7 @@ dependencies {
     // Feature modules
     implementation(project(":feature:devices"))
     implementation(project(":feature:devicedetails"))
+    implementation(project(":feature:dreamphone"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:quizhub"))

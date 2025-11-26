@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
@@ -55,6 +56,7 @@ object DeviceCatalogIcons {
 
     // Feature icons
     val Person: ImageVector = Icons.Default.Person
+    val Psychology: ImageVector = Icons.Default.Psychology
     val Settings: ImageVector = Icons.Outlined.Settings
     val Quiz: ImageVector = Icons.Default.Psychology
 }

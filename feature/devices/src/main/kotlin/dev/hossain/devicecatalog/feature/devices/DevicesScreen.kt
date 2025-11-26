@@ -60,6 +60,8 @@ data object DevicesScreen : Screen {
         ) : Event()
 
         data object ClearFilters : Event()
+
+        data object OpenDreamPhoneSurvey : Event()
     }
 
     /**

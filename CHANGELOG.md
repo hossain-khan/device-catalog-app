@@ -17,6 +17,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added "Coming Soon" badge for unavailable quizzes
   - Added Material 3 elevated cards with proper theming for light/dark modes
   - Added Quiz icon to DeviceCatalogIcons in design system
+- Dream phone survey feature (`:feature:dreamphone`) inspired by Jetsurvey Compose sample
+  - 8-question guided wizard to help users discover their ideal Android device
+  - Survey questions cover: primary use case, budget range, form factor, performance priority, camera importance, battery life, screen preferences, and brand preferences
+  - Intelligent matching algorithm that scores devices based on user preferences (0-100 scale)
+  - Material 3 components throughout: `Card`, `RadioButton`, `Checkbox`, `Slider`, `LinearProgressIndicator`
+  - Results screen showing top 10 matching devices with match percentage and reasons
+  - Added Psychology icon to `DeviceCatalogIcons` for dream phone feature
+  - Icon button in device list top app bar to access the survey wizard
+  - Circuit Screen/Presenter/UI pattern with Metro dependency injection
+  - Smooth animations between questions and results using `AnimatedContent`
+  - Progress indicator showing current question and completion percentage
+  - Navigation integration with device details screen from results
 
 ## [1.1.0] - 2025-11-26
 
