@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":feature:phonequiz"))
     implementation(project(":feature:brandchallenge"))
+    implementation(project(":feature:dreamphone"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

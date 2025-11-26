@@ -65,7 +65,7 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             title = "Dream Phone Finder",
             description = "Find your perfect device",
             icon = Icons.Default.Psychology,
-            isAvailable = false,
+            isAvailable = true,
         ),
         QuizHubScreen.QuizTypeInfo(
             type = QuizHubScreen.QuizType.SPEC_MASTER,
