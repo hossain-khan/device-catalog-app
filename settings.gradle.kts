@@ -37,5 +37,6 @@ include(":core:ui")
 // Feature modules
 include(":feature:devices")
 include(":feature:devicedetails")
+include(":feature:dreamphone")
 include(":feature:statistics")
 include(":feature:settings")

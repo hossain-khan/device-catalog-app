@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.hossain.devicecatalog.feature.devices"
+    namespace = "dev.hossain.devicecatalog.feature.dreamphone"
 }
 
 dependencies {
@@ -16,16 +16,12 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
 
-    // Cross-feature navigation (devices navigates to devicedetails and dreamphone)
+    // Cross-feature navigation (dreamphone navigates to devicedetails)
     implementation(project(":feature:devicedetails"))
-    implementation(project(":feature:dreamphone"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)
     ksp(libs.circuit.codegen)
-
-    implementation(libs.androidx.paging.runtime)
-    implementation(libs.androidx.paging.compose)
 
     implementation(libs.timber)
 }
