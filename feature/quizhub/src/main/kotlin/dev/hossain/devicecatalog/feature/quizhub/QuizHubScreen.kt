@@ -26,6 +26,7 @@ data object QuizHubScreen : Screen {
 
     enum class QuizType {
         CODENAME_GUESS,
+        BRAND_CHALLENGE,
         DREAM_PHONE,
         SPEC_MASTER,
         TIMELINE_CHALLENGE,
@@ -50,6 +51,13 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             title = "Codename Guess",
             description = "Match device codenames to models",
             icon = Icons.Default.Code,
+            isAvailable = true,
+        ),
+        QuizHubScreen.QuizTypeInfo(
+            type = QuizHubScreen.QuizType.BRAND_CHALLENGE,
+            title = "Brand Challenge",
+            description = "Test your brand ownership knowledge",
+            icon = Icons.Default.Psychology,
             isAvailable = true,
         ),
         QuizHubScreen.QuizTypeInfo(

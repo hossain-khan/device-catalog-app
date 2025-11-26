@@ -5,15 +5,14 @@ plugins {
 }
 
 android {
-    namespace = "dev.hossain.devicecatalog.feature.quizhub"
+    namespace = "dev.hossain.devicecatalog.feature.brandchallenge"
 }
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
-    implementation(project(":feature:phonequiz"))
-    implementation(project(":feature:brandchallenge"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

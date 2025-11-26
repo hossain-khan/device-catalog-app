@@ -30,6 +30,14 @@ class QuizHubPresenter(
                                 navigator.goTo(dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen)
                             }
 
+                            QuizHubScreen.QuizType.BRAND_CHALLENGE -> {
+                                Timber.i("Brand Challenge quiz selected - navigating to brand challenge")
+                                navigator.goTo(
+                                    dev.hossain.devicecatalog.feature.brandchallenge
+                                        .BrandChallengeScreen(),
+                                )
+                            }
+
                             else -> {
                                 Timber.i("Quiz ${event.quizType} is coming soon")
                             }

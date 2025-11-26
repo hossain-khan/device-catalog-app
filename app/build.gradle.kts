@@ -104,6 +104,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:quizhub"))
     implementation(project(":feature:phonequiz"))
+    implementation(project(":feature:brandchallenge"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
