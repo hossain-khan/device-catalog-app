@@ -19,6 +19,7 @@ import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.feature.devicedetails.DeviceDetailsScreen
+import dev.hossain.devicecatalog.feature.dreamphone.DreamPhoneScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -207,6 +208,13 @@ class DevicesPresenter(
                     DevicesScreen.Event.ClearFilters -> {
                         Timber.d("Clearing filters")
                         activeFilters = DevicesScreen.FilterState()
+                    }
+
+                    DevicesScreen.Event.OpenDreamPhoneSurvey -> {
+                        Timber.d("Opening dream phone survey")
+                        navigator.goTo(
+                            DreamPhoneScreen(step = 0),
+                        )
                     }
                 }
             },
