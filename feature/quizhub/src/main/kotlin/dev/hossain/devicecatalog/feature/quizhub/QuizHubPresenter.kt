@@ -46,6 +46,14 @@ class QuizHubPresenter(
                                 )
                             }
 
+                            QuizHubScreen.QuizType.DEVICE_COMPARE -> {
+                                Timber.i("Device Compare selected - navigating to device comparison")
+                                navigator.goTo(
+                                    dev.hossain.devicecatalog.feature.devicecomparison
+                                        .DeviceComparisonScreen(),
+                                )
+                            }
+
                             else -> {
                                 Timber.i("Quiz ${event.quizType} is coming soon")
                             }

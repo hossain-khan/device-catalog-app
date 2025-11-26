@@ -1,6 +1,7 @@
 package dev.hossain.devicecatalog.feature.quizhub
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Psychology
@@ -28,6 +29,7 @@ data object QuizHubScreen : Screen {
         CODENAME_GUESS,
         BRAND_CHALLENGE,
         DREAM_PHONE,
+        DEVICE_COMPARE,
         SPEC_MASTER,
         TIMELINE_CHALLENGE,
     }
@@ -65,6 +67,13 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             title = "Dream Phone Finder",
             description = "Find your perfect device",
             icon = Icons.Default.Psychology,
+            isAvailable = true,
+        ),
+        QuizHubScreen.QuizTypeInfo(
+            type = QuizHubScreen.QuizType.DEVICE_COMPARE,
+            title = "Device Compare",
+            description = "Compare 2-4 devices side by side",
+            icon = Icons.AutoMirrored.Filled.CompareArrows,
             isAvailable = true,
         ),
         QuizHubScreen.QuizTypeInfo(

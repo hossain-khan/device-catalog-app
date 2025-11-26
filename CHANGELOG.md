@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Device Comparison Tool feature (`:feature:devicecomparison`)
+  - Interactive tool to compare 2-4 Android devices side by side
+  - Device selection via search with bottom sheet UI
+  - Side-by-side comparison table with grouped specifications (Basic Info, Hardware, Display, Platform)
+  - Visual highlighting of best values (highest RAM, screen density, SDK version) with star indicators
+  - Color-coded cells: `primaryContainer` for highlighted best values, `surfaceVariant` for regular values
+  - SelectedDeviceCard and AddDeviceCard components for device carousel
+  - ComparisonTable, SpecRow, and DeviceSelector components for comparison display
+  - Navigation to device details from comparison cards
+  - Circuit Screen/Presenter/UI pattern with Metro dependency injection
+  - Added Compare icon to DeviceCatalogIcons in design system
+  - Added to Quiz Hub as available tool tile
 - APK Size Analysis workflow using Diffuse for pull requests
   - Automatic comparison of APK sizes between PR builds and latest release
   - PR comments with detailed analysis of size changes (DEX, resources, assets)
