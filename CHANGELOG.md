@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Brand Challenge Quiz feature (`:feature:brandchallenge`)
+  - Interactive quiz game testing knowledge of brand ownership and manufacturer relationships
+  - Three quiz question types: "Which manufacturer makes [brand]?", "Is [brand] made by [manufacturer]?" (True/False), "Which brand does NOT belong to [manufacturer]?"
+  - 5 mixed questions with randomized types for variety
+  - Material 3 UI with color-coded answer feedback (correct/incorrect indicators)
+  - Quiz completion screen with score, accuracy percentage, and motivational messages
+  - Repository methods: `getDistinctBrandManufacturerPairs()`, `getBrandsByManufacturer()`, `getManufacturerForBrand()`
+  - BrandChallengeService for question generation, scoring, and accuracy calculation
+  - Circuit Screen/Presenter/UI pattern with Metro dependency injection
+  - Added to Quiz Hub as available quiz type
+  - Retry functionality to generate new quiz questions
 - Phone Codename Quiz feature (`:feature:phonequiz`)
   - Interactive quiz game to test Android device knowledge by matching device codenames to model names
   - Manufacturer selection screen: grid of manufacturers with device counts, requiring minimum 5 devices

@@ -311,6 +311,95 @@ class AndroidDeviceRepository
         }
 
         /**
+         * Get distinct brand and manufacturer pairs for brand challenge quiz.
+         * Returns pairs where brand and manufacturer are different (e.g., Pixel/Google, Galaxy/Samsung).
+         */
+        suspend fun getDistinctBrandManufacturerPairs(): List<BrandManufacturerPair> {
+            Timber.d("Getting distinct brand/manufacturer pairs")
+            return try {
+                val devices = deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
+                    devicesWithRelations.map { it.toModel() }
+                }.first()
+
+                // Create map of brand to manufacturers
+                val brandManufacturerMap = devices
+                    .filter { it.androidDevice.brand.isNotBlank() && it.androidDevice.manufacturer.isNotBlank() }
+                    .groupBy { it.androidDevice.brand }
+                    .mapValues { (_, devices) ->
+                        devices.map { it.androidDevice.manufacturer }.distinct()
+                    }
+
+                // Convert to list of pairs
+                val pairs = brandManufacturerMap.flatMap { (brand, manufacturers) ->
+                    manufacturers.map { manufacturer ->
+                        BrandManufacturerPair(brand = brand, manufacturer = manufacturer)
+                    }
+                }.distinct()
+
+                Timber.i("Found ${pairs.size} distinct brand/manufacturer pairs")
+                pairs
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get distinct brand/manufacturer pairs")
+                emptyList()
+            }
+        }
+
+        /**
+         * Get all brands associated with a specific manufacturer.
+         * Used for generating quiz questions.
+         */
+        suspend fun getBrandsByManufacturer(manufacturer: String): List<String> {
+            Timber.d("Getting brands for manufacturer: $manufacturer")
+            return try {
+                val devices = deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
+                    devicesWithRelations
+                        .filter { it.device.manufacturer == manufacturer }
+                        .map { it.toModel() }
+                }.first()
+
+                val brands = devices
+                    .map { it.androidDevice.brand }
+                    .filter { it.isNotBlank() }
+                    .distinct()
+
+                Timber.i("Found ${brands.size} brands for manufacturer: $manufacturer")
+                brands
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get brands for manufacturer: $manufacturer")
+                emptyList()
+            }
+        }
+
+        /**
+         * Get the manufacturer for a specific brand.
+         * Note: A brand may be associated with multiple manufacturers in rare cases.
+         * Returns the most common manufacturer for the brand.
+         */
+        suspend fun getManufacturerForBrand(brand: String): String? {
+            Timber.d("Getting manufacturer for brand: $brand")
+            return try {
+                val devices = deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
+                    devicesWithRelations
+                        .filter { it.device.brand == brand }
+                        .map { it.toModel() }
+                }.first()
+
+                // Get the most common manufacturer for this brand
+                val manufacturer = devices
+                    .groupingBy { it.androidDevice.manufacturer }
+                    .eachCount()
+                    .maxByOrNull { it.value }
+                    ?.key
+
+                Timber.i("Manufacturer for brand $brand: $manufacturer")
+                manufacturer
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get manufacturer for brand: $brand")
+                null
+            }
+        }
+
+        /**
          * Get device statistics including counts and breakdowns.
          */
         fun getDeviceStats(): Flow<DeviceStats> {
@@ -519,4 +608,13 @@ data class ManufacturerQuizInfo(
     val manufacturer: String,
     val deviceCount: Int,
     val isQuizAvailable: Boolean,
+)
+
+/**
+ * Data class for brand and manufacturer pairing.
+ * Used for brand challenge quiz questions.
+ */
+data class BrandManufacturerPair(
+    val brand: String,
+    val manufacturer: String,
 )
