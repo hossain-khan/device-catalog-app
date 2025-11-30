@@ -493,6 +493,42 @@ class AndroidDeviceRepository
                 )
             }
         }
+
+        /**
+         * Get processor distribution for stats explorer.
+         */
+        fun getProcessorDistribution(): Flow<List<ProcessorCount>> {
+            Timber.d("Getting processor distribution")
+            return getAllDevices().map { devices ->
+                devices
+                    .filter { it.androidDevice.processorName.isNotBlank() }
+                    .groupingBy { it.androidDevice.processorName }
+                    .eachCount()
+                    .toList()
+                    .sortedByDescending { it.second }
+                    .take(15)
+                    .map { ProcessorCount(it.first, it.second) }
+            }
+        }
+
+        /**
+         * Get OpenGL version distribution for stats explorer.
+         */
+        fun getOpenGlDistribution(): Flow<List<OpenGlCount>> {
+            Timber.d("Getting OpenGL version distribution")
+            return getAllDevices().map { devices ->
+                val openGlVersions = mutableMapOf<String, Int>()
+                devices.forEach { device ->
+                    device.androidDevice.openGlEsVersions.forEach { version ->
+                        openGlVersions[version] = openGlVersions.getOrDefault(version, 0) + 1
+                    }
+                }
+                openGlVersions
+                    .toList()
+                    .sortedByDescending { it.second }
+                    .map { OpenGlCount(it.first, it.second) }
+            }
+        }
     }
 
 /**
@@ -618,3 +654,29 @@ data class BrandManufacturerPair(
     val brand: String,
     val manufacturer: String,
 )
+
+/**
+ * Data class for processor distribution statistics.
+ */
+data class ProcessorCount(
+    val processor: String,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}
+
+/**
+ * Data class for OpenGL version distribution statistics.
+ */
+data class OpenGlCount(
+    val version: String,
+    val count: Int,
+) {
+    /**
+     * Calculate percentage of total devices.
+     */
+    fun percentage(totalDevices: Int): Float = if (totalDevices > 0) (count.toFloat() / totalDevices) * 100f else 0f
+}

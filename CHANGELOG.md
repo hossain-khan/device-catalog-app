@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Device Statistics Explorer feature (`:feature:statsexplorer`)
+  - Interactive data visualization for device statistics with multiple chart types
+  - Six stat categories: RAM Distribution, Processors, Form Factors, Manufacturers, SDK Versions, OpenGL Versions
+  - Animated charts: horizontal bar charts, donut charts, line/area charts, stacked bar charts
+  - Auto-generated insights and trends for each category
+  - Category selector with swipeable cards showing item counts
+  - Distribution details with percentage breakdowns
+  - Pull-to-refresh support for data updates
+  - Repository methods: `getProcessorDistribution()`, `getOpenGlDistribution()`
+  - Data classes: `ProcessorCount`, `OpenGlCount` for distribution statistics
+  - Circuit Screen/Presenter/UI pattern with Metro dependency injection
+  - Material 3 UI with theme-aware colors and animations
+  - Navigate to Stats Explorer from Device Statistics screen via Explore icon
 - GitHub Codespaces dev container support for Android development
   - Added `.devcontainer/devcontainer.json` with Java 21 base image and Android SDK environment
   - Added `.devcontainer/post-create.sh` script for automatic Android SDK setup
