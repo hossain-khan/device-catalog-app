@@ -97,12 +97,7 @@ fun StatCard(
                 text = value,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color =
-                    if (isSelected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
+                color = MaterialTheme.colorScheme.primary,
             )
 
             Text(
@@ -135,11 +130,17 @@ fun StatCategoryRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         categories.forEach { category ->
+            val isSelected = category == selectedCategory
             StatCard(
                 category = category,
-                value = statCounts[category]?.toString() ?: "...",
-                subtitle = "items",
-                isSelected = category == selectedCategory,
+                value =
+                    if (isSelected) {
+                        statCounts[category]?.toString() ?: "..."
+                    } else {
+                        "→"
+                    },
+                subtitle = if (isSelected) "items" else "tap to view",
+                isSelected = isSelected,
                 onClick = { onCategorySelected(category) },
                 modifier = Modifier.width(120.dp),
             )
