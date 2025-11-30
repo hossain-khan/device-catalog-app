@@ -52,11 +52,21 @@ fi
 
 # Set proper permissions for Gradle wrapper
 echo "🔧 Setting Gradle wrapper permissions..."
-chmod +x ./gradlew
+if [ -f ./gradlew ]; then
+    chmod +x ./gradlew
+else
+    echo "⚠️ gradlew not found. Make sure you're in the project root directory."
+fi
 
 # Install Gradle dependencies (helps with IDE indexing)
 echo "📚 Downloading Gradle dependencies..."
-./gradlew --version
+if [ -f ./gradlew ]; then
+    if ! ./gradlew --version; then
+        echo "⚠️ Gradle version check failed. You may need to run './gradlew --version' manually."
+    fi
+else
+    echo "⚠️ Skipping Gradle setup - gradlew not found."
+fi
 
 echo "✅ Android development environment setup complete!"
 echo "📱 You can now build the project with: ./gradlew build"
