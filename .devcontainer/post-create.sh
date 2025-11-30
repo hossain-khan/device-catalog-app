@@ -4,6 +4,11 @@ set -e
 
 echo "🚀 Setting up Android development environment..."
 
+# Configuration - Update these versions as needed
+CMDLINE_TOOLS_VERSION="11076708"
+ANDROID_PLATFORM_VERSION="36"
+BUILD_TOOLS_VERSION="36.0.0"
+
 # Define Android SDK paths
 export ANDROID_HOME="/usr/local/lib/android/sdk"
 export ANDROID_SDK_ROOT="${ANDROID_HOME}"
@@ -11,8 +16,8 @@ export PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/pl
 
 # Install Android SDK Command Line Tools if not present
 if [ ! -d "${ANDROID_HOME}/cmdline-tools" ]; then
-    echo "📥 Downloading Android SDK Command Line Tools..."
-    CMDLINE_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip"
+    echo "📥 Downloading Android SDK Command Line Tools (version ${CMDLINE_TOOLS_VERSION})..."
+    CMDLINE_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip"
     sudo mkdir -p "${ANDROID_HOME}/cmdline-tools"
     cd /tmp
     wget -q "${CMDLINE_TOOLS_URL}" -O commandlinetools.zip
@@ -27,17 +32,23 @@ if [ ! -d "${ANDROID_HOME}/cmdline-tools" ]; then
 fi
 
 # Accept Android SDK licenses
+# Note: License acceptance may output warnings that are safe to ignore
 echo "📝 Accepting Android SDK licenses..."
-yes | sdkmanager --licenses || true
+if ! yes | sdkmanager --licenses > /dev/null 2>&1; then
+    echo "⚠️ Some licenses may not have been accepted. Run 'yes | sdkmanager --licenses' manually if needed."
+fi
 
 # Install required Android SDK components
-# This project uses compileSdk = 36, so we install platform 36 and build tools
-echo "📦 Installing Android SDK components..."
-sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" || true
+echo "📦 Installing Android SDK components (Platform ${ANDROID_PLATFORM_VERSION}, Build Tools ${BUILD_TOOLS_VERSION})..."
+if ! sdkmanager "platform-tools" "platforms;android-${ANDROID_PLATFORM_VERSION}" "build-tools;${BUILD_TOOLS_VERSION}"; then
+    echo "⚠️ SDK component installation had issues. Some components may need manual installation."
+fi
 
 # Update SDK components
 echo "🔄 Updating SDK components..."
-sdkmanager --update || true
+if ! sdkmanager --update; then
+    echo "⚠️ SDK update had issues. Run 'sdkmanager --update' manually if needed."
+fi
 
 # Set proper permissions for Gradle wrapper
 echo "🔧 Setting Gradle wrapper permissions..."

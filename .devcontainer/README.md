@@ -67,6 +67,8 @@ The `post-create.sh` script automatically:
 
 The container is configured with `--privileged` mode to allow ADB access to connected devices. Your local `.android` directory is mounted to preserve ADB keys and settings.
 
+**Note**: The `.android` directory mount only works if you have an `.android` directory in your home folder on the host machine. This is typically created automatically when you use ADB for the first time.
+
 ## Troubleshooting
 
 ### SDK License Issues

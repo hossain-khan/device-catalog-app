@@ -43,7 +43,11 @@
   },
 
   "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.android,target=/root/.android,type=bind,consistency=cached"
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.android",
+      "target": "/home/vscode/.android",
+      "type": "bind"
+    }
   ],
 
   "runArgs": [
