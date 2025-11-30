@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- GitHub Codespaces dev container support for Android development
+  - Added `.devcontainer/devcontainer.json` with Java 21 base image and Android SDK environment
+  - Added `.devcontainer/post-create.sh` script for automatic Android SDK setup
+  - Added `.devcontainer/README.md` documentation for dev container usage
+  - Pre-installed VS Code extensions: Kotlin, Gradle, Java, GitHub Copilot, IntelliJ IDEA Keybindings
+  - Configured Android SDK Platform 36 and Build Tools 36.0.0 matching project requirements
 - Device Comparison Tool feature (`:feature:devicecomparison`)
   - Interactive tool to compare 2-4 Android devices side by side
   - Device selection via search with bottom sheet UI
