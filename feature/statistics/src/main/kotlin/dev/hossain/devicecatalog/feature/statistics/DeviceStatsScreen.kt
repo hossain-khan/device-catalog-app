@@ -16,5 +16,7 @@ data object DeviceStatsScreen : Screen {
 
     sealed class Event : CircuitUiEvent {
         data object RefreshStats : Event()
+
+        data object OpenStatsExplorer : Event()
     }
 }

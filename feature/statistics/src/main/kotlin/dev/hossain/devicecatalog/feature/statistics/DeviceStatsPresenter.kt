@@ -9,6 +9,7 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.core.common.ExampleAppVersionService
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.data.DeviceStats
+import dev.hossain.devicecatalog.feature.statsexplorer.StatsExplorerScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -41,6 +42,11 @@ class DeviceStatsPresenter
                     is DeviceStatsScreen.Event.RefreshStats -> {
                         Timber.d("Stats refresh requested")
                         // Stats will automatically refresh via the Flow
+                    }
+
+                    is DeviceStatsScreen.Event.OpenStatsExplorer -> {
+                        Timber.d("Opening Stats Explorer")
+                        navigator.goTo(StatsExplorerScreen())
                     }
                 }
             }

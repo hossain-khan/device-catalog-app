@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.hossain.devicecatalog.feature.statistics"
+    namespace = "dev.hossain.devicecatalog.feature.statsexplorer"
 
     buildFeatures {
         buildConfig = true
@@ -18,8 +18,6 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
-    implementation(project(":feature:settings"))
-    implementation(project(":feature:statsexplorer"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

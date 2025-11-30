@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
@@ -66,6 +67,16 @@ fun DeviceStatsUi(
         topBar = {
             TopAppBar(
                 title = { Text("Device Statistics") },
+                actions = {
+                    IconButton(
+                        onClick = { state.eventSink(DeviceStatsScreen.Event.OpenStatsExplorer) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Explore,
+                            contentDescription = "Open Stats Explorer",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
