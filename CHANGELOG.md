@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Metro DI multi-module support with `:core:di` module
+  - Created `:core:di` module for centralized dependency injection infrastructure
+  - Added `ActivityKey` MapKey annotation for type-safe Activity injection across modules
+  - Added `WorkerKey` MapKey annotation for WorkManager integration with Metro DI
+  - Added `UiMultibindings` interface using `@ContributesTo` pattern for automatic discovery
+  - Updated all module imports to use `core:di` for DI infrastructure
+  - Added comprehensive Metro DI best practices documentation in Copilot instructions
+  - Documented multi-module DI patterns following [CatchUp](https://github.com/ZacSweers/CatchUp) best practices
+  - Added module README with usage examples and references
 - Device Statistics Explorer feature (`:feature:statsexplorer`)
   - Interactive data visualization for device statistics with multiple chart types
   - Six stat categories: RAM Distribution, Processors, Form Factors, Manufacturers, SDK Versions, OpenGL Versions

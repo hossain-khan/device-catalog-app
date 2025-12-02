@@ -93,6 +93,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:database"))
     implementation(project(":core:designsystem"))
+    implementation(project(":core:di"))
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
 

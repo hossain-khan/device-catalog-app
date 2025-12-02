@@ -3,9 +3,9 @@ package dev.hossain.devicecatalog.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import dev.hossain.devicecatalog.core.di.WorkerKey
 import dev.hossain.devicecatalog.di.AppWorkerFactory
 import dev.hossain.devicecatalog.di.AppWorkerFactory.WorkerInstanceFactory
-import dev.hossain.devicecatalog.di.WorkerKey
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
