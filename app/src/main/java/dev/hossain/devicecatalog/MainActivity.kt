@@ -14,10 +14,10 @@ import com.slack.circuit.foundation.Circuit
 import com.slack.circuit.foundation.CircuitCompositionLocals
 import com.slack.circuit.overlay.ContentWithOverlays
 import com.slack.circuit.sharedelements.SharedElementTransitionLayout
+import dev.hossain.devicecatalog.core.common.PerformanceMonitor
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.di.ActivityKey
 import dev.hossain.devicecatalog.ui.navigation.AppNavigation
-import dev.hossain.devicecatalog.util.PerformanceMonitor
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.Inject
