@@ -170,8 +170,63 @@ Statistics and about screens
 
 #### `:feature:settings`
 Developer settings and preferences
-- `DeveloperSettingsScreen.kt` - Settings screen
+- `DeveloperSettingsScreenCircuit.kt` - Circuit screen definition
+- `DeveloperSettingsPresenter.kt` - Business logic
+- `DeveloperSettingsUi.kt` - Composable UI
 - **Location**: `feature/settings/src/main/kotlin/dev/hossain/devicecatalog/feature/settings/`
+
+#### `:feature:quizhub`
+Quiz hub screen with available quizzes
+- `QuizHubScreen.kt` - Circuit screen definition
+- `QuizHubPresenter.kt` - Business logic
+- `QuizHubUi.kt` - Composable UI
+- `components/` - Feature-specific UI components (QuizTile, ComingSoonBadge)
+- **Location**: `feature/quizhub/src/main/kotlin/dev/hossain/devicecatalog/feature/quizhub/`
+
+#### `:feature:phonequiz`
+Interactive phone quiz feature with manufacturer selection
+- `selection/` - Manufacturer selection screen
+  - `ManufacturerSelectionScreen.kt`, `ManufacturerSelectionPresenter.kt`, `ManufacturerSelectionUi.kt`
+- `quiz/` - Quiz screen
+  - `QuizScreen.kt`, `QuizPresenter.kt`, `QuizUi.kt`
+- `results/` - Quiz results screen
+  - `QuizResultsScreen.kt`, `QuizResultsPresenter.kt`, `QuizResultsUi.kt`
+- `QuizService.kt` - Quiz business logic service
+- `QuizModels.kt` - Data models for quiz
+- `components/` - Feature-specific UI components
+- **Location**: `feature/phonequiz/src/main/kotlin/dev/hossain/devicecatalog/feature/phonequiz/`
+
+#### `:feature:brandchallenge`
+Brand recognition challenge feature
+- `BrandChallengeScreen.kt` - Circuit screen definition
+- `BrandChallengePresenter.kt` - Business logic
+- `BrandChallengeUi.kt` - Composable UI
+- `BrandChallengeService.kt` - Challenge business logic
+- `BrandChallengeModels.kt` - Data models
+- **Location**: `feature/brandchallenge/src/main/kotlin/dev/hossain/devicecatalog/feature/brandchallenge/`
+
+#### `:feature:statsexplorer`
+Advanced statistics exploration feature
+- `StatsExplorerScreen.kt` - Circuit screen definition
+- `StatsExplorerPresenter.kt` - Business logic
+- `StatsExplorerUi.kt` - Composable UI
+- `components/` - Feature-specific components (ChartView, StatCard, InsightCard)
+- **Location**: `feature/statsexplorer/src/main/kotlin/dev/hossain/devicecatalog/feature/statsexplorer/`
+
+#### `:feature:devicecomparison`
+Side-by-side device comparison feature
+- `DeviceComparisonScreen.kt` - Circuit screen definition
+- `DeviceComparisonPresenter.kt` - Business logic
+- `DeviceComparisonUi.kt` - Composable UI
+- `components/` - Feature-specific components (ComparisonTable, DeviceSelector, SpecRow)
+- **Location**: `feature/devicecomparison/src/main/kotlin/dev/hossain/devicecatalog/feature/devicecomparison/`
+
+#### `:feature:dreamphone`
+Dream phone builder/configurator feature
+- `DreamPhoneScreen.kt` - Circuit screen definition
+- `DreamPhonePresenter.kt` - Business logic
+- `DreamPhoneUi.kt` - Composable UI
+- **Location**: `feature/dreamphone/src/main/kotlin/dev/hossain/devicecatalog/feature/dreamphone/`
 
 ### Build Logic (`:build-logic`)
 Gradle convention plugins for consistent configuration:
