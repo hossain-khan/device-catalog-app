@@ -130,6 +130,15 @@ Shared utilities and common code
 - `PerformanceMonitor.kt` - Performance monitoring utilities
 - **Location**: `core/common/src/main/kotlin/dev/hossain/devicecatalog/core/common/`
 
+#### `:core:di`
+Dependency injection infrastructure for multi-module setup
+- `ActivityKey.kt` - MapKey for type-safe Activity injection
+- `WorkerKey.kt` - MapKey for WorkManager integration
+- `UiMultibindings.kt` - Multibinding interface for UI components
+- Centralizes DI annotations and utilities used across modules
+- **Location**: `core/di/src/main/kotlin/dev/hossain/devicecatalog/core/di/`
+- **Best Practice**: Use `@ContributesTo` interfaces for multibindings, similar to [CatchUp](https://github.com/ZacSweers/CatchUp)
+
 #### `:core:ui`
 Common UI components and utilities (currently being populated)
 - **Location**: `core/ui/src/main/kotlin/dev/hossain/devicecatalog/core/ui/`
@@ -174,9 +183,10 @@ Gradle convention plugins for consistent configuration:
 - **Location**: `build-logic/convention/src/main/kotlin/`
 
 ### Module Dependencies
-- Feature modules depend on: `core:common`, `core:data`, `core:database`, `core:designsystem`, `core:model`
+- Feature modules depend on: `core:common`, `core:data`, `core:database`, `core:designsystem`, `core:di`, `core:model`
 - Core modules have minimal dependencies between each other
 - App module depends on all core and feature modules
+- `core:di` provides DI infrastructure used by app and can be used by any module needing DI annotations
 
 ## Development Guidelines
 
@@ -199,6 +209,103 @@ Gradle convention plugins for consistent configuration:
 2. **Use relationship queries** instead of manual joins
 3. **Log operations** with Timber for debugging
 4. **Handle foreign key constraints** properly
+
+### Metro Dependency Injection Best Practices
+
+The app uses [Metro](https://zacsweers.github.io/metro/), a compile-time dependency injection framework, following best practices from [CatchUp](https://github.com/ZacSweers/CatchUp).
+
+#### Core DI Setup
+
+1. **`:core:di` Module**: Centralized DI infrastructure
+   - `ActivityKey` and `WorkerKey`: MapKey annotations for type-safe multibinding
+   - `UiMultibindings`: Interface for UI component multibindings
+   - Import from `dev.hossain.devicecatalog.core.di.*` in all modules
+
+2. **Constructor Injection** (Preferred):
+   ```kotlin
+   @Inject
+   class AndroidDeviceRepository(
+       private val deviceDao: AndroidDeviceDao,
+   )
+   ```
+
+3. **Assisted Injection** (for Circuit Presenters):
+   ```kotlin
+   @AssistedInject
+   class DevicesPresenter(
+       @Assisted private val navigator: Navigator,
+       private val deviceRepository: AndroidDeviceRepository,
+   ) : Presenter<DevicesScreen.State>
+   ```
+
+4. **Circuit Integration** (for screens):
+   ```kotlin
+   @CircuitInject(DevicesScreen::class, AppScope::class)
+   class DevicesPresenter(...)
+   
+   @CircuitInject(DevicesScreen::class, AppScope::class)
+   @Composable
+   fun DevicesUi(state: DevicesScreen.State, modifier: Modifier = Modifier)
+   ```
+
+#### Multi-Module DI Patterns
+
+1. **@ContributesTo Pattern**: Use for multibindings in shared modules
+   ```kotlin
+   @ContributesTo(AppScope::class)
+   interface DataMultibindings {
+       @Multibinds
+       fun repositories(): Set<Repository>
+   }
+   ```
+
+2. **Activity Contribution**:
+   ```kotlin
+   @ActivityKey(MainActivity::class)
+   @ContributesIntoMap(AppScope::class, binding = binding<Activity>())
+   @Inject
+   class MainActivity(private val circuit: Circuit) : ComponentActivity()
+   ```
+
+3. **Worker Contribution**:
+   ```kotlin
+   @WorkerKey(DeviceSyncWorker::class)
+   @ContributesIntoMap(AppScope::class, binding = binding<WorkerInstanceFactory<*>>())
+   @AssistedFactory
+   abstract class Factory : WorkerInstanceFactory<DeviceSyncWorker>
+   ```
+
+4. **BindingContainer** (for app module):
+   ```kotlin
+   @BindingContainer
+   @ContributesTo(AppScope::class)
+   object DatabaseBindings {
+       @Provides
+       @SingleIn(AppScope::class)
+       fun provideDatabase(context: Context): AppDatabase = ...
+   }
+   ```
+
+#### Key Metro Annotations
+
+- `@Inject`: Constructor injection for regular classes
+- `@AssistedInject`: Inject with some runtime parameters
+- `@Assisted`: Mark runtime parameters in assisted injection
+- `@CircuitInject`: Circuit-specific injection (generates Factory)
+- `@ContributesTo(scope)`: Contribute bindings to a scope automatically
+- `@ContributesIntoMap(scope, binding)`: Contribute to a multibinding map
+- `@Multibinds`: Declare an empty multibinding
+- `@SingleIn(scope)`: Scope a binding to a lifecycle
+- `@Provides`: Provide a dependency (in interfaces or objects)
+- `@BindingContainer`: Mark a class/object as a binding container
+
+#### DI Guidelines
+
+1. **No @Module or @Component**: Metro uses `@DependencyGraph` and auto-discovery
+2. **Prefer Constructor Injection**: Simpler and more testable
+3. **Use @SingleIn wisely**: Only for true singletons (Database, WorkManager, etc.)
+4. **Multibindings in core modules**: Define interfaces with `@ContributesTo` in shared modules
+5. **Feature Independence**: Feature modules contribute independently without knowing about each other
 
 ### Adding New Features
 
@@ -673,6 +780,8 @@ This maintains consistency with the project's versioning scheme and ensures comp
 - [Circuit Testing Guide](https://slackhq.github.io/circuit/testing/)
 - [Timber Logging](https://github.com/JakeWharton/timber)
 - [Metro Dependency Injection](https://zacsweers.github.io/metro/)
+- [Metro Multi-Module Setup](https://zacsweers.github.io/metro/multibindings/)
+- [CatchUp App](https://github.com/ZacSweers/CatchUp) - Reference implementation for Metro multi-module DI
 - [Compose Documentation](https://developer.android.com/jetpack/compose)
 - [Material 3 Design System](https://m3.material.io/)
 - [Material 3 Compose Components](https://developer.android.com/jetpack/compose/designsystems/material3)
@@ -693,6 +802,8 @@ This maintains consistency with the project's versioning scheme and ensures comp
   - Only create a new section header if it doesn't already exist in `[Unreleased]`
 - Use [Semantic Versioning](https://semver.org/) for version numbers (MAJOR.MINOR.PATCH)
 - Use Metro DI with constructor injection (via `@Inject` constructor parameters)
+- **Import DI infrastructure from `:core:di`** module (`ActivityKey`, `WorkerKey`, etc.)
+- Use `@ContributesTo` pattern for multibindings in shared modules
 - Write comprehensive unit tests for new features using JUnit assertions
 - Follow the **multi-module architecture**: Create feature modules under `feature/`, use core modules for shared code
 - Use **convention plugins** from `build-logic` for consistent build configuration

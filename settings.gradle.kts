@@ -31,6 +31,7 @@ include(":core:common")
 include(":core:data")
 include(":core:database")
 include(":core:designsystem")
+include(":core:di")
 include(":core:model")
 include(":core:ui")
 
