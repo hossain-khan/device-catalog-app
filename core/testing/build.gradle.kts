@@ -18,7 +18,7 @@ dependencies {
     api(libs.androidx.paging.runtime)
     
     // Kotlin Coroutines Test
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    api(libs.kotlinx.coroutines.test)
     
     // Room Testing
     api(libs.androidx.room.testing)
