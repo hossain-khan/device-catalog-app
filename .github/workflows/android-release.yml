@@ -53,36 +53,79 @@ jobs:
 
       - name: Setup keystore
         run: |
+          echo "🔐 Checking keystore configuration..."
+          
           # Only decode and use production keystore if secrets are configured
           if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "✅ Using production keystore from secrets"
+            echo "✅ Production keystore found in secrets"
+            echo "✅ Decoding and setting up production keystore"
             echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore/app-release.keystore
             echo "KEYSTORE_FILE=keystore/app-release.keystore" >> $GITHUB_ENV
             echo "KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
             echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> $GITHUB_ENV
+            echo "✅ Production signing configuration applied"
           else
-            echo "⚠️ Production keystore not configured, falling back to debug keystore"
+            echo "⚠️  WARNING: Production keystore not configured in GitHub secrets!"
+            echo "⚠️  KEYSTORE_BASE64 secret is missing"
+            echo "⚠️  Falling back to debug keystore for signing"
+            echo ""
+            echo "ℹ️  To configure production release signing:"
+            echo "   1. Go to repository Settings > Secrets and variables > Actions"
+            echo "   2. Add the following secrets:"
+            echo "      - KEYSTORE_BASE64: Base64-encoded keystore file"
+            echo "      - KEYSTORE_PASSWORD: Keystore password"
+            echo "      - KEY_ALIAS: Key alias"
+            echo "   3. See: https://github.com/${{ github.repository }}/tree/main/keystore"
+            echo ""
             # Don't set KEYSTORE_FILE - let build.gradle.kts fall back to debug keystore
             # The build.gradle.kts checks System.getenv("KEYSTORE_FILE") and uses debug keystore when null
           fi
 
       - name: Ensure gradlew is executable
         run: chmod +x gradlew
+        
       - name: Build Release APK and AAB
-        run: ./gradlew assembleRelease bundleRelease --parallel --daemon
+        run: |
+          echo "🏗️  Starting release build process..."
+          echo "📦 Building APK and AAB in parallel..."
+          ./gradlew assembleRelease bundleRelease --parallel --daemon
+          echo "✅ Build completed successfully"
+          
+      - name: Verify build outputs
+        run: |
+          echo "🔍 Verifying build outputs..."
+          if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then
+            APK_SIZE=$(du -h app/build/outputs/apk/release/app-release.apk | cut -f1)
+            echo "✅ APK found: $APK_SIZE"
+          else
+            echo "❌ APK not found!"
+            exit 1
+          fi
+          
+          if [ -f "app/build/outputs/bundle/release/app-release.aab" ]; then
+            AAB_SIZE=$(du -h app/build/outputs/bundle/release/app-release.aab | cut -f1)
+            echo "✅ AAB found: $AAB_SIZE"
+          else
+            echo "❌ AAB not found!"
+            exit 1
+          fi
 
       - name: Extract version name
         id: version
         run: |
+          echo "🔍 Extracting version information from build.gradle.kts..."
           VERSION_NAME=$(grep -o 'versionName = "[^"]*"' app/build.gradle.kts | cut -d'"' -f2)
           echo "VERSION=$VERSION_NAME" >> $GITHUB_OUTPUT
-          echo "App version name extracted: $VERSION_NAME"
+          echo "✅ App version: $VERSION_NAME"
 
       - name: Rename APK and AAB
         run: |
+          echo "📝 Renaming build artifacts with version ${{ steps.version.outputs.VERSION }}..."
           mkdir -p artifact
           cp app/build/outputs/apk/release/app-release.apk artifact/android-catalog-${{ steps.version.outputs.VERSION }}.apk
           cp app/build/outputs/bundle/release/app-release.aab artifact/android-catalog-${{ steps.version.outputs.VERSION }}.aab
+          echo "✅ Artifacts renamed successfully"
+          ls -lh artifact/
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v4
@@ -100,15 +143,24 @@ jobs:
           path: artifact/android-catalog-${{ steps.version.outputs.VERSION }}.aab
           retention-days: 90
 
+      - name: Log artifact upload summary
+        run: |
+          echo "📦 Build artifacts uploaded successfully:"
+          echo "   - APK: android-catalog-${{ steps.version.outputs.VERSION }}.apk (90 day retention)"
+          echo "   - AAB: android-catalog-${{ steps.version.outputs.VERSION }}.aab (90 day retention)"
+          echo ""
+          echo "ℹ️  Download artifacts from the Actions tab of this workflow run"
+
       # If this is running due to a GitHub release, attach the APK and AAB to the release
       - name: Attach APK and AAB to GitHub Release
         if: github.event_name == 'release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Attaching APK and AAB to GitHub release..."
+          echo "🎉 Attaching APK and AAB to GitHub release ${{ github.ref_name }}..."
           
           # Get release information
+          echo "🔍 Fetching release information..."
           RELEASE_ID=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
             "https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }}" | \
             jq -r .id)
@@ -118,13 +170,13 @@ jobs:
             exit 1
           fi
           
-          echo "Found release ID: $RELEASE_ID"
+          echo "✅ Found release ID: $RELEASE_ID"
           
           # Upload APK to the release
           APK_FILE="artifact/android-catalog-${{ steps.version.outputs.VERSION }}.apk"
           APK_NAME="android-catalog-${{ steps.version.outputs.VERSION }}.apk"
           
-          echo "Uploading $APK_NAME to release..."
+          echo "📤 Uploading $APK_NAME to release..."
           
           UPLOAD_RESPONSE=$(curl -s -w "%{http_code}" -o upload_response.json \
             -X POST \
@@ -138,7 +190,7 @@ jobs:
           if [ "$HTTP_CODE" = "201" ]; then
             echo "✅ Successfully attached APK to GitHub release"
             DOWNLOAD_URL=$(jq -r .browser_download_url upload_response.json)
-            echo "APK download URL: $DOWNLOAD_URL"
+            echo "📥 APK download URL: $DOWNLOAD_URL"
           else
             echo "❌ Failed to upload APK (HTTP $HTTP_CODE)"
             cat upload_response.json
@@ -149,7 +201,7 @@ jobs:
           AAB_FILE="artifact/android-catalog-${{ steps.version.outputs.VERSION }}.aab"
           AAB_NAME="android-catalog-${{ steps.version.outputs.VERSION }}.aab"
           
-          echo "Uploading $AAB_NAME to release..."
+          echo "📤 Uploading $AAB_NAME to release..."
           
           UPLOAD_RESPONSE=$(curl -s -w "%{http_code}" -o upload_response_aab.json \
             -X POST \
@@ -163,7 +215,7 @@ jobs:
           if [ "$HTTP_CODE" = "201" ]; then
             echo "✅ Successfully attached AAB to GitHub release"
             DOWNLOAD_URL=$(jq -r .browser_download_url upload_response_aab.json)
-            echo "AAB download URL: $DOWNLOAD_URL"
+            echo "📥 AAB download URL: $DOWNLOAD_URL"
           else
             echo "❌ Failed to upload AAB (HTTP $HTTP_CODE)"
             cat upload_response_aab.json
