@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Device Catalog"
+rootProject.name = "Android Catalog"
 
 // Main application module
 include(":app")
