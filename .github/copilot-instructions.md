@@ -763,6 +763,59 @@ git commit -m "Add feature X
 - Updated CHANGELOG.md with new feature"
 ```
 
+### Release Workflow
+
+**REQUIRED**: When creating a new release, always follow this workflow:
+
+```bash
+# 1. Create a release branch from main
+git checkout -b release/X.Y.Z
+
+# 2. Update CHANGELOG.md
+#    - Move [Unreleased] changes to new version section with date
+#    - Update version links at bottom of file
+#    - Keep empty [Unreleased] section for future changes
+
+# 3. Update version in app/build.gradle.kts
+#    - Increment versionCode
+#    - Update versionName to match release version
+
+# 4. Run pre-commit checks
+./gradlew formatKotlin
+./gradlew test
+./gradlew lintDebug
+./gradlew assembleDebug
+
+# 5. Commit release changes on release branch
+git add CHANGELOG.md app/build.gradle.kts
+git commit -m "Release X.Y.Z
+
+- Updated CHANGELOG.md for version X.Y.Z
+- Bumped version to X.Y.Z (versionCode: N)"
+
+# 6. Create and push release tag (without 'v' prefix)
+git tag -a X.Y.Z -m "Release X.Y.Z"
+git push origin release/X.Y.Z
+git push origin X.Y.Z
+
+# 7. Merge release branch to main via Pull Request
+#    - Create PR from release/X.Y.Z to main
+#    - Review and merge the release PR
+#    - Delete release branch after merge
+
+# 8. Create GitHub Release
+#    - Use the tag X.Y.Z
+#    - Copy changelog entries as release notes
+#    - Attach APK/AAB artifacts if needed
+```
+
+**Why use a release branch?**
+- Keeps main branch stable during release preparation
+- Allows for last-minute fixes on the release branch without blocking main
+- Provides clear separation between development and release preparation
+- Enables easy rollback if issues are found during release testing
+- Follows gitflow-style branching model for releases
+
 ### Git Tagging Convention
 
 When creating release tags, always use the version number **without** the `v` prefix:

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-12-07
+
 ### Added
 - Metro DI multi-module support with `:core:di` module
   - Created `:core:di` module for centralized dependency injection infrastructure
@@ -293,5 +295,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.2.0...HEAD
+[1.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.1.0...1.2.0
+[1.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/hossain-khan/device-catalog-app/releases/tag/1.0.0
