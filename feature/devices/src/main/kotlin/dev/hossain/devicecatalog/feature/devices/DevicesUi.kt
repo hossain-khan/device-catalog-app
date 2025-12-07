@@ -242,6 +242,9 @@ fun DevicesUi(
 
                     // Show empty state for no search results
                     state.isNoSearchResults -> {
+                        Timber.tag("DevicesUi:Display").d(
+                            "Showing no search results state for query: '${state.searchQuery}'",
+                        )
                         EmptyDeviceState(
                             message = "No devices found for \"${state.searchQuery}\"",
                             onActionClick = {
@@ -253,6 +256,7 @@ fun DevicesUi(
 
                     // Show empty state when no devices and not loading
                     state.isEmpty && !state.isLoading && !state.isRefreshing -> {
+                        Timber.tag("DevicesUi:Display").d("Showing empty state")
                         EmptyDeviceState(
                             onActionClick = { state.eventSink(DevicesScreen.Event.RetryLoading) },
                         )
@@ -260,6 +264,10 @@ fun DevicesUi(
 
                     // Show paged content when using paging
                     state.usePaging -> {
+                        Timber.tag("DevicesUi:Display").d(
+                            "Showing paginated list (searchQuery='${state.searchQuery}', " +
+                                "searchResultCount=${state.searchResultCount})",
+                        )
                         PaginatedDeviceList(
                             state = state,
                             layoutConfig = layoutConfig,
@@ -268,6 +276,10 @@ fun DevicesUi(
 
                     // Show regular list when not using paging
                     else -> {
+                        Timber.tag("DevicesUi:Display").d(
+                            "Showing regular list (devices.size=${state.devices.size}, " +
+                                "searchQuery='${state.searchQuery}', searchResultCount=${state.searchResultCount})",
+                        )
                         RegularDeviceList(
                             state = state,
                             layoutConfig = layoutConfig,
@@ -317,7 +329,19 @@ private fun PaginatedDeviceList(
 ) {
     val lazyPagingItems = state.pagedDevices.collectAsLazyPagingItems()
 
-    Timber.d("PaginatedDeviceList: itemCount=${lazyPagingItems.itemCount}, loadState=${lazyPagingItems.loadState}")
+    Timber.tag("DevicesUi:Paging").d(
+        "PaginatedDeviceList recomposed: itemCount=${lazyPagingItems.itemCount}, " +
+            "loadState=${lazyPagingItems.loadState}, " +
+            "searchQuery='${state.searchQuery}', " +
+            "hasFilters=${state.activeFilters.hasActiveFilters()}",
+    )
+
+    // Log when items change
+    LaunchedEffect(lazyPagingItems.itemCount) {
+        Timber.tag("DevicesUi:Paging").d(
+            "Item count changed to: ${lazyPagingItems.itemCount}",
+        )
+    }
 
     when {
         layoutConfig.columns == 1 -> {
