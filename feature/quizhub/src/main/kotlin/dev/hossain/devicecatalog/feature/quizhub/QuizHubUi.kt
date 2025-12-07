@@ -57,3 +57,47 @@ fun QuizHubUi(
         }
     }
 }
+
+// ==================== Previews ====================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Light Theme",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun QuizHubUiPreviewLight() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = false,
+        dynamicColor = false,
+    ) {
+        QuizHubUi(
+            state = createPreviewState(),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Dark Theme",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun QuizHubUiPreviewDark() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        QuizHubUi(
+            state = createPreviewState(),
+        )
+    }
+}
+
+private fun createPreviewState(): QuizHubScreen.State =
+    QuizHubScreen.State(
+        quizTypes = getAvailableQuizzes(),
+        eventSink = {},
+    )

@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Code
+import androidx.compose.material.icons.filled.Memory
+import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -109,5 +114,107 @@ fun QuizTile(
                 )
             }
         }
+    }
+}
+
+// ==================== Previews ====================
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Available Quiz - Light",
+    showBackground = true,
+)
+@Composable
+private fun QuizTilePreviewAvailableLight() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = false,
+        dynamicColor = false,
+    ) {
+        QuizTile(
+            quizInfo =
+                QuizHubScreen.QuizTypeInfo(
+                    type = QuizHubScreen.QuizType.CODENAME_GUESS,
+                    title = "Codename Guess",
+                    description = "Match device codenames to models",
+                    icon = Icons.Default.Code,
+                    isAvailable = true,
+                ),
+            onQuizSelected = {},
+            modifier = Modifier.size(180.dp),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Available Quiz - Dark",
+    showBackground = true,
+)
+@Composable
+private fun QuizTilePreviewAvailableDark() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        QuizTile(
+            quizInfo =
+                QuizHubScreen.QuizTypeInfo(
+                    type = QuizHubScreen.QuizType.BRAND_CHALLENGE,
+                    title = "Brand Challenge",
+                    description = "Test your brand ownership knowledge",
+                    icon = Icons.Default.Psychology,
+                    isAvailable = true,
+                ),
+            onQuizSelected = {},
+            modifier = Modifier.size(180.dp),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Coming Soon Quiz - Light",
+    showBackground = true,
+)
+@Composable
+private fun QuizTilePreviewComingSoonLight() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = false,
+        dynamicColor = false,
+    ) {
+        QuizTile(
+            quizInfo =
+                QuizHubScreen.QuizTypeInfo(
+                    type = QuizHubScreen.QuizType.SPEC_MASTER,
+                    title = "Spec Master",
+                    description = "Guess specs from images",
+                    icon = Icons.Default.Memory,
+                    isAvailable = false,
+                ),
+            onQuizSelected = {},
+            modifier = Modifier.size(180.dp),
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Coming Soon Quiz - Dark",
+    showBackground = true,
+)
+@Composable
+private fun QuizTilePreviewComingSoonDark() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        QuizTile(
+            quizInfo =
+                QuizHubScreen.QuizTypeInfo(
+                    type = QuizHubScreen.QuizType.TIMELINE_CHALLENGE,
+                    title = "Timeline Challenge",
+                    description = "Order devices by release date",
+                    icon = Icons.Default.Timeline,
+                    isAvailable = false,
+                ),
+            onQuizSelected = {},
+            modifier = Modifier.size(180.dp),
+        )
     }
 }
