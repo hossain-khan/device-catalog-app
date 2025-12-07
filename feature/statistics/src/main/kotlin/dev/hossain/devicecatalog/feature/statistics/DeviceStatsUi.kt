@@ -131,7 +131,7 @@ private fun DeviceStatsContent(
                     ),
                     MetricCardData(
                         title = "Manufacturers",
-                        value = stats.topManufacturers.size.toString(),
+                        value = stats.totalManufacturers.toString(),
                         subtitle = "Unique device manufacturers",
                     ),
                     MetricCardData(
