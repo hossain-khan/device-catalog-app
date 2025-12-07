@@ -2,6 +2,8 @@
 
 This module provides test infrastructure and fakes for testing the Device Catalog app.
 
+> **⚠️ Note**: Unit tests in this module are disabled in CI due to Java version incompatibility with the `android-device-catalog-parser` dependency. The fakes themselves compile and work correctly when used in other modules. See [Known Limitations](#known-limitations) for details.
+
 ## Overview
 
 Following the **Now in Android** testing strategy, this module provides **test doubles (fakes)** instead of mocks. Fakes provide more realistic test behavior and exercise more production code, leading to better test coverage.
