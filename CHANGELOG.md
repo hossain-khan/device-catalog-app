@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Enhanced Material You theme with comprehensive color schemes
+  - Replaced simple blue-based colors with full Material 3 color system
+  - Added complete light/dark theme with all Material 3 color tokens (56+ colors per theme)
+  - Changed seed color from blue to green for tech/nature balance aesthetic
+  - Includes surface variants, containers, and inverse colors for better Material You support
+  - Maintains dynamic color support on Android 12+ for wallpaper-based theming
+  - Improved color harmony and contrast across all UI components
+
 ### Fixed
 - Fixed search filtering not displaying results in paging mode
   - Issue: Search showed result count in title (e.g., "Search Result (43)") but displayed "no results" message

@@ -2,40 +2,53 @@ package dev.hossain.devicecatalog.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 /**
- * Test to verify the blue color scheme implementation for technical authority.
+ * Test to verify the Material You color scheme implementation with green seed color.
  */
 class ColorThemeTest {
     @Test
-    fun `verify blue seed colors are configured`() {
-        // Test that blue colors are properly defined
-        assertEquals("Blue40 should be Google Blue", Color(0xFF4285F4), Blue40)
-        assertEquals("BlueGrey40 should be proper grey", Color(0xFF5F6368), BlueGrey40)
-        assertEquals("Teal40 should be proper teal", Color(0xFF26A69A), Teal40)
+    fun `verify primary colors are configured`() {
+        // Test that primary colors are properly defined for light theme
+        assertEquals("primaryLight should be green", Color(0xFF4C662B), primaryLight)
+        assertEquals("onPrimaryLight should be white", Color(0xFFFFFFFF), onPrimaryLight)
+        assertEquals("primaryContainerLight", Color(0xFFCDEDA3), primaryContainerLight)
+        assertEquals("onPrimaryContainerLight", Color(0xFF354E16), onPrimaryContainerLight)
 
-        // Test light theme colors
-        assertEquals("Blue80 should be light blue", Color(0xFFB3C5F7), Blue80)
-        assertEquals("BlueGrey80 should be light grey", Color(0xFFBFC6DC), BlueGrey80)
-        assertEquals("Teal80 should be light teal", Color(0xFFB0F2F2), Teal80)
+        // Test primary colors for dark theme
+        assertEquals("primaryDark", Color(0xFFB1D18A), primaryDark)
+        assertEquals("onPrimaryDark", Color(0xFF1F3701), onPrimaryDark)
+        assertEquals("primaryContainerDark", Color(0xFF354E16), primaryContainerDark)
+        assertEquals("onPrimaryContainerDark", Color(0xFFCDEDA3), onPrimaryContainerDark)
     }
 
     @Test
-    fun `verify colors follow Material 3 conventions`() {
-        // Dark theme colors should have higher color values (80 variants)
-        assertTrue(
-            "Blue80 should have higher red component than Blue40",
-            Blue80.red > Blue40.red,
-        )
-        assertTrue(
-            "BlueGrey80 should have higher green component than BlueGrey40",
-            BlueGrey80.green > BlueGrey40.green,
-        )
-        assertTrue(
-            "Teal80 should have higher blue component than Teal40",
-            Teal80.blue > Teal40.blue,
-        )
+    fun `verify secondary colors are configured`() {
+        // Test secondary colors
+        assertEquals("secondaryLight should be green", Color(0xFF4C662B), secondaryLight)
+        assertEquals("secondaryDark", Color(0xFFB1D18A), secondaryDark)
+    }
+
+    @Test
+    fun `verify tertiary colors are configured`() {
+        // Test tertiary colors (teal/cyan)
+        assertEquals("tertiaryLight should be teal", Color(0xFF006A66), tertiaryLight)
+        assertEquals("tertiaryDark should be light teal", Color(0xFF80D5CF), tertiaryDark)
+    }
+
+    @Test
+    fun `verify surface colors are distinct`() {
+        // Ensure light and dark surface colors are different
+        assertNotEquals("surfaceLight and surfaceDark should differ", surfaceLight, surfaceDark)
+        assertNotEquals("backgroundLight and backgroundDark should differ", backgroundLight, backgroundDark)
+    }
+
+    @Test
+    fun `verify error colors are configured`() {
+        // Test error colors
+        assertEquals("errorLight", Color(0xFFBA1A1A), errorLight)
+        assertEquals("errorDark", Color(0xFFFFB4AB), errorDark)
     }
 }
