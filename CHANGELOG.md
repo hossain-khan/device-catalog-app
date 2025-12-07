@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Enhanced Material You theme with comprehensive color schemes
+  - Replaced simple blue-based colors with full Material 3 color system
+  - Added complete light/dark theme with all Material 3 color tokens (56+ colors per theme)
+  - Changed seed color from blue to green for tech/nature balance aesthetic
+  - Includes surface variants, containers, and inverse colors for better Material You support
+  - **Disabled dynamic color** to ensure consistent vibrant chart colors across all devices
+  - Improved color harmony and contrast across all UI components
+- Upgraded Stats Explorer charts with vibrant theme-aware colors
+  - Added 8 vibrant chart colors optimized for data visualization
+  - Separate color palettes for light and dark themes with excellent contrast
+  - Chart colors designed for clear differentiation and readability
+  - All charts (bar, donut, line, stacked) now use consistent vibrant colors
+  - Improved text contrast on chart elements and legends
+  - Theme-aware color selection ensures visibility in both light and dark modes
+
 ### Fixed
 - Fixed search filtering not displaying results in paging mode
   - Issue: Search showed result count in title (e.g., "Search Result (43)") but displayed "no results" message

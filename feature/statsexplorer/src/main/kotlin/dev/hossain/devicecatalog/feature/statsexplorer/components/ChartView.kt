@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.hossain.devicecatalog.core.designsystem.theme.chartColors
 import dev.hossain.devicecatalog.feature.statsexplorer.StatCategory
 
 /**
@@ -39,11 +40,13 @@ fun ChartView(
     distribution: Map<String, Int>,
     modifier: Modifier = Modifier,
 ) {
+    val chartColors = MaterialTheme.chartColors
+
     when (category) {
         StatCategory.RAM -> {
             HorizontalBarChartView(
                 data = distribution,
-                barColor = MaterialTheme.colorScheme.primary,
+                barColor = chartColors[0],
                 modifier = modifier,
             )
         }
@@ -51,7 +54,7 @@ fun ChartView(
         StatCategory.PROCESSORS -> {
             HorizontalBarChartView(
                 data = distribution,
-                barColor = MaterialTheme.colorScheme.secondary,
+                barColor = chartColors[1],
                 modifier = modifier,
             )
         }
@@ -59,6 +62,7 @@ fun ChartView(
         StatCategory.FORM_FACTORS -> {
             DonutChartView(
                 data = distribution,
+                chartColors = chartColors,
                 modifier = modifier,
             )
         }
@@ -66,7 +70,7 @@ fun ChartView(
         StatCategory.MANUFACTURERS -> {
             HorizontalBarChartView(
                 data = distribution,
-                barColor = MaterialTheme.colorScheme.tertiary,
+                barColor = chartColors[2],
                 modifier = modifier,
             )
         }
@@ -74,6 +78,7 @@ fun ChartView(
         StatCategory.SDK_VERSIONS -> {
             LineAreaChartView(
                 data = distribution,
+                lineColor = chartColors[3],
                 modifier = modifier,
             )
         }
@@ -81,6 +86,7 @@ fun ChartView(
         StatCategory.OPENGL -> {
             StackedBarChartView(
                 data = distribution,
+                colors = chartColors,
                 modifier = modifier,
             )
         }
@@ -159,17 +165,10 @@ fun HorizontalBarChartView(
 @Composable
 fun DonutChartView(
     data: Map<String, Int>,
+    chartColors: List<Color>,
     modifier: Modifier = Modifier,
 ) {
     val animatable = remember { Animatable(0f) }
-    val chartColors =
-        listOf(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.tertiary,
-            MaterialTheme.colorScheme.error,
-            MaterialTheme.colorScheme.primaryContainer,
-        )
 
     LaunchedEffect(data) {
         animatable.snapTo(0f)
@@ -233,7 +232,7 @@ fun DonutChartView(
                         text = value.toString(),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = chartColors[0],
                     )
                 }
             }
@@ -247,11 +246,11 @@ fun DonutChartView(
 @Composable
 fun LineAreaChartView(
     data: Map<String, Int>,
+    lineColor: Color,
     modifier: Modifier = Modifier,
 ) {
     val animatable = remember { Animatable(0f) }
-    val lineColor = MaterialTheme.colorScheme.primary
-    val areaColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+    val areaColor = lineColor.copy(alpha = 0.2f)
 
     LaunchedEffect(data) {
         animatable.snapTo(0f)
@@ -332,17 +331,10 @@ fun LineAreaChartView(
 @Composable
 fun StackedBarChartView(
     data: Map<String, Int>,
+    colors: List<Color>,
     modifier: Modifier = Modifier,
 ) {
     val animatable = remember { Animatable(0f) }
-    val colors =
-        listOf(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.tertiary,
-            MaterialTheme.colorScheme.error,
-            MaterialTheme.colorScheme.primaryContainer,
-        )
 
     LaunchedEffect(data) {
         animatable.snapTo(0f)
@@ -394,7 +386,7 @@ fun StackedBarChartView(
                         text = value.toString(),
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                        color = colors[index % colors.size],
                         modifier = Modifier.width(50.dp),
                     )
                 }

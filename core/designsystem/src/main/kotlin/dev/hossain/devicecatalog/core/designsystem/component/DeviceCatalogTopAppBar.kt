@@ -77,7 +77,7 @@ fun DeviceCatalogTopAppBar(
 private fun DeviceCatalogTopAppBarPreview() {
     DeviceCatalogAppTheme {
         DeviceCatalogTopAppBar(
-            title = "Device Catalog",
+            title = "Android Catalog",
         )
     }
 }
