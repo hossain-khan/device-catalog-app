@@ -411,11 +411,14 @@ class AndroidDeviceRepository
                 val formFactors = devices.groupingBy { it.androidDevice.formFactor }.eachCount()
                 val totalFormFactors = formFactors.size
 
-                // Get top 10 manufacturers by device count
-                val topManufacturers =
+                // Get total unique manufacturers and top 10 by device count
+                val manufacturerCounts =
                     devices
                         .groupingBy { it.androidDevice.manufacturer }
                         .eachCount()
+                val totalManufacturers = manufacturerCounts.size
+                val topManufacturers =
+                    manufacturerCounts
                         .toList()
                         .sortedByDescending { it.second }
                         .take(10)
@@ -483,7 +486,11 @@ class AndroidDeviceRepository
                 DeviceStats(
                     totalDevices = totalDevices,
                     totalFormFactors = totalFormFactors,
-                    formFactorBreakdown = formFactors.map { FormFactorCount(it.key, it.value) },
+                    totalManufacturers = totalManufacturers,
+                    formFactorBreakdown =
+                        formFactors
+                            .map { FormFactorCount(it.key, it.value) }
+                            .sortedByDescending { it.count },
                     topManufacturers = topManufacturers,
                     ramDistribution = ramDistribution,
                     sdkVersionDistribution = sdkVersionDistribution,
@@ -537,6 +544,7 @@ class AndroidDeviceRepository
 data class DeviceStats(
     val totalDevices: Int,
     val totalFormFactors: Int,
+    val totalManufacturers: Int,
     val formFactorBreakdown: List<FormFactorCount>,
     val topManufacturers: List<ManufacturerCount>,
     val ramDistribution: List<RamCount>,

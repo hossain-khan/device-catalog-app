@@ -131,7 +131,7 @@ private fun DeviceStatsContent(
                     ),
                     MetricCardData(
                         title = "Manufacturers",
-                        value = stats.topManufacturers.size.toString(),
+                        value = stats.totalManufacturers.toString(),
                         subtitle = "Unique device manufacturers",
                     ),
                     MetricCardData(
@@ -313,14 +313,17 @@ private fun FormFactorDistributionContent(
     formFactors: List<FormFactorCount>,
     totalDevices: Int,
 ) {
-    // Use Material 3 color scheme for better contrast and theme support
+    // Use vibrant, distinct colors for better differentiation in pie chart
     val chartColors =
         listOf(
-            MaterialTheme.colorScheme.primary,
-            MaterialTheme.colorScheme.secondary,
-            MaterialTheme.colorScheme.tertiary,
-            MaterialTheme.colorScheme.error,
-            MaterialTheme.colorScheme.primaryContainer,
+            Color(0xFF2E7D32), // Vibrant Green
+            Color(0xFF0277BD), // Vibrant Blue
+            Color(0xFFD84315), // Vibrant Orange-Red
+            Color(0xFF7B1FA2), // Vibrant Purple
+            Color(0xFFEF6C00), // Vibrant Deep Orange
+            Color(0xFF00838F), // Vibrant Cyan
+            Color(0xFFC62828), // Vibrant Red
+            Color(0xFF5E35B1), // Vibrant Deep Purple
         )
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
