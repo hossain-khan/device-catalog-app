@@ -102,20 +102,22 @@ private val DarkColorScheme =
  * Device Catalog App Theme with Material You support.
  *
  * Provides comprehensive theming with:
- * - Dynamic color support on Android 12+ (adapts to wallpaper)
- * - Custom green-based color scheme for older Android versions
+ * - Custom green-based color scheme with vibrant chart colors
  * - Automatic light/dark theme switching
  * - Full Material 3 color token support
  *
+ * Note: Dynamic color is disabled to ensure consistent vibrant chart colors
+ * and custom theme appearance across all Android versions.
+ *
  * @param darkTheme Whether to use dark theme. Defaults to system preference.
- * @param dynamicColor Whether to use dynamic theming on Android 12+. Defaults to true.
+ * @param dynamicColor Whether to use dynamic theming on Android 12+. Defaults to false (disabled).
  * @param content The content to theme.
  */
 @Composable
 fun DeviceCatalogAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    // Dynamic color is disabled to use custom vibrant colors
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =
