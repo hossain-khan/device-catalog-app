@@ -487,7 +487,10 @@ class AndroidDeviceRepository
                     totalDevices = totalDevices,
                     totalFormFactors = totalFormFactors,
                     totalManufacturers = totalManufacturers,
-                    formFactorBreakdown = formFactors.map { FormFactorCount(it.key, it.value) },
+                    formFactorBreakdown =
+                        formFactors
+                            .map { FormFactorCount(it.key, it.value) }
+                            .sortedByDescending { it.count },
                     topManufacturers = topManufacturers,
                     ramDistribution = ramDistribution,
                     sdkVersionDistribution = sdkVersionDistribution,
