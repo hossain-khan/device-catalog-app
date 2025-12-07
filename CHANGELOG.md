@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Migrated DeviceSearchBar from deprecated SearchBar API to new inputField-based API
+  - Updated to use `SearchBar` with `inputField` parameter instead of deprecated constructor
+  - Uses `SearchBarDefaults.InputField` for proper Material 3 search bar implementation
+  - Maintains all existing functionality: search query, clear button, icons, semantics
+  - Removes deprecation warning: "Use overload which takes inputField as a parameter"
+
 ## [1.2.0] - 2025-12-07
 
 ### Added

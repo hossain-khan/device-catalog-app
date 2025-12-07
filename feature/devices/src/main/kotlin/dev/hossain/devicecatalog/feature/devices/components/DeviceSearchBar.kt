@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.feature.devices.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -11,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,40 +38,46 @@ fun DeviceSearchBar(
     modifier: Modifier = Modifier,
 ) {
     SearchBar(
-        query = query,
-        onQueryChange = onQueryChange,
-        onSearch = { /* No-op, search happens on query change */ },
-        active = false,
-        onActiveChange = { /* No-op, we don't use active state */ },
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .semantics {
-                    contentDescription = "Search devices by name, manufacturer, or brand"
+        inputField = {
+            SearchBarDefaults.InputField(
+                query = query,
+                onQueryChange = onQueryChange,
+                onSearch = { /* No-op, search happens on query change */ },
+                expanded = false,
+                onExpandedChange = { /* No-op, we don't use expanded state */ },
+                modifier =
+                    Modifier.semantics {
+                        contentDescription = "Search devices by name, manufacturer, or brand"
+                    },
+                placeholder = {
+                    Text(text = "Search devices...")
                 },
-        placeholder = {
-            Text(text = "Search devices...")
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search icon",
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search icon",
+                    )
+                },
+                trailingIcon = {
+                    AnimatedVisibility(
+                        visible = query.isNotEmpty(),
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                    ) {
+                        IconButton(onClick = onClearQuery) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear search",
+                            )
+                        }
+                    }
+                },
             )
         },
-        trailingIcon = {
-            AnimatedVisibility(
-                visible = query.isNotEmpty(),
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                IconButton(onClick = onClearQuery) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear search",
-                    )
-                }
-            }
-        },
+        expanded = false,
+        onExpandedChange = { /* No-op, we don't use expanded state */ },
+        modifier = modifier.fillMaxWidth(),
+        windowInsets = WindowInsets(0, 0, 0, 0),
     ) {
         // Empty content - we don't show suggestions yet
         // This is where search history and suggestions would go
