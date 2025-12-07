@@ -33,6 +33,7 @@ include(":core:database")
 include(":core:designsystem")
 include(":core:di")
 include(":core:model")
+include(":core:testing")
 include(":core:ui")
 
 // Feature modules
