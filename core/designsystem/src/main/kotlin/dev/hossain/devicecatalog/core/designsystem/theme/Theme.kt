@@ -8,6 +8,8 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 /**
@@ -134,3 +136,42 @@ fun DeviceCatalogAppTheme(
         content = content,
     )
 }
+
+/**
+ * Provides a list of vibrant chart colors that work well in both light and dark themes.
+ * These colors are optimized for data visualization with:
+ * - High contrast against backgrounds
+ * - Distinct hues for easy differentiation
+ * - Good readability for text overlays
+ *
+ * Use for charts, graphs, and data visualizations in the stats screen.
+ */
+val MaterialTheme.chartColors: List<Color>
+    @Composable
+    @ReadOnlyComposable
+    get() {
+        val darkTheme = isSystemInDarkTheme()
+        return if (darkTheme) {
+            listOf(
+                chartVibrant1Dark,
+                chartVibrant2Dark,
+                chartVibrant3Dark,
+                chartVibrant4Dark,
+                chartVibrant5Dark,
+                chartVibrant6Dark,
+                chartVibrant7Dark,
+                chartVibrant8Dark,
+            )
+        } else {
+            listOf(
+                chartVibrant1Light,
+                chartVibrant2Light,
+                chartVibrant3Light,
+                chartVibrant4Light,
+                chartVibrant5Light,
+                chartVibrant6Light,
+                chartVibrant7Light,
+                chartVibrant8Light,
+            )
+        }
+    }

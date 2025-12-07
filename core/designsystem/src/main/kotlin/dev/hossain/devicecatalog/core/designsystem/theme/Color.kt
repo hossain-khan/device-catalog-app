@@ -75,3 +75,27 @@ val surfaceContainerLowDark = Color(0xFF1A1C16)
 val surfaceContainerDark = Color(0xFF1E201A)
 val surfaceContainerHighDark = Color(0xFF282B24)
 val surfaceContainerHighestDark = Color(0xFF33362E)
+
+// Vibrant chart colors for data visualization
+// These colors are designed to work well in both light and dark themes
+// with excellent contrast for graphs, charts, and text overlays
+
+// Light theme chart colors - vibrant and saturated for clear visibility
+val chartVibrant1Light = Color(0xFF2E7D32) // Green - high contrast
+val chartVibrant2Light = Color(0xFF0277BD) // Blue - clear and bright
+val chartVibrant3Light = Color(0xFFD84315) // Orange-Red - warm accent
+val chartVibrant4Light = Color(0xFF7B1FA2) // Purple - distinct hue
+val chartVibrant5Light = Color(0xFF00838F) // Cyan - cool accent
+val chartVibrant6Light = Color(0xFFC62828) // Red - attention grabbing
+val chartVibrant7Light = Color(0xFFEF6C00) // Deep Orange - energetic
+val chartVibrant8Light = Color(0xFF5E35B1) // Deep Purple - rich tone
+
+// Dark theme chart colors - luminous and vibrant for dark backgrounds
+val chartVibrant1Dark = Color(0xFF66BB6A) // Light Green - glows on dark
+val chartVibrant2Dark = Color(0xFF42A5F5) // Light Blue - bright and clear
+val chartVibrant3Dark = Color(0xFFFF7043) // Light Orange-Red - warm glow
+val chartVibrant4Dark = Color(0xFFAB47BC) // Light Purple - luminous
+val chartVibrant5Dark = Color(0xFF26C6DA) // Light Cyan - bright accent
+val chartVibrant6Dark = Color(0xFFEF5350) // Light Red - vivid
+val chartVibrant7Dark = Color(0xFFFFA726) // Light Orange - vibrant
+val chartVibrant8Dark = Color(0xFF7E57C2) // Light Deep Purple - rich glow

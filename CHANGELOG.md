@@ -15,6 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Includes surface variants, containers, and inverse colors for better Material You support
   - Maintains dynamic color support on Android 12+ for wallpaper-based theming
   - Improved color harmony and contrast across all UI components
+- Upgraded Stats Explorer charts with vibrant theme-aware colors
+  - Added 8 vibrant chart colors optimized for data visualization
+  - Separate color palettes for light and dark themes with excellent contrast
+  - Chart colors designed for clear differentiation and readability
+  - All charts (bar, donut, line, stacked) now use consistent vibrant colors
+  - Improved text contrast on chart elements and legends
+  - Theme-aware color selection ensures visibility in both light and dark modes
 
 ### Fixed
 - Fixed search filtering not displaying results in paging mode
