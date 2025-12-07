@@ -26,6 +26,9 @@ dependencies {
     ksp(libs.circuit.codegen)
 
     implementation(libs.timber)
+    
+    // Testing
+    testImplementation(project(":core:testing"))
 }
 
 ksp {
