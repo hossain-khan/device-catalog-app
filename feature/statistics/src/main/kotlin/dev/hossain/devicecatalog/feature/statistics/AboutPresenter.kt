@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.devicecatalog.core.common.ExampleAppVersionService
 import dev.hossain.devicecatalog.feature.settings.DeveloperSettingsScreenCircuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -13,11 +14,12 @@ import dev.zacsweers.metro.AssistedInject
 @AssistedInject
 class AboutPresenter(
     @Assisted private val navigator: Navigator,
+    private val appVersionService: ExampleAppVersionService,
 ) : Presenter<AboutScreen.State> {
     @Composable
     override fun present(): AboutScreen.State =
         AboutScreen.State(
-            appVersion = "1.0.0",
+            appVersion = appVersionService.getApplicationVersion(),
             eventSink = { event ->
                 when (event) {
                     AboutScreen.Event.OpenSourceInfo -> {
