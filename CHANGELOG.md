@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Fixed search filtering not displaying results in paging mode
+  - Issue: Search showed result count in title (e.g., "Search Result (43)") but displayed "no results" message
+  - Root cause: `isNoSearchResults` was checking `filteredDevices` which is only populated in non-paging mode
+  - Solution: Only check `isNoSearchResults` when `usePaging=false`, as paging mode uses `pagedDevices` flow
+  - Added comprehensive Timber logging throughout search/filter flow for debugging
 - Migrated DeviceSearchBar from deprecated SearchBar API to new inputField-based API
   - Updated to use `SearchBar` with `inputField` parameter instead of deprecated constructor
   - Uses `SearchBarDefaults.InputField` for proper Material 3 search bar implementation

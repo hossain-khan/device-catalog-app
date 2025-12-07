@@ -92,7 +92,12 @@ class DevicesPresenter(
         // Performance: Use remember with explicit keys to only recalculate when dependencies change
         val filteredDevices =
             remember(allDevices, activeFilters) {
-                applyFilters(allDevices, activeFilters)
+                val filtered = applyFilters(allDevices, activeFilters)
+                Timber.tag("DevicesPresenter:Filter").d(
+                    "Filtered devices: total=${allDevices.size}, filtered=${filtered.size}, " +
+                        "hasFilters=${activeFilters.hasActiveFilters()}, query='$debouncedSearchQuery'",
+                )
+                filtered
             }
 
         // Calculate available manufacturers for filter UI
@@ -110,6 +115,9 @@ class DevicesPresenter(
         // Must depend on both debouncedSearchQuery AND activeFilters to update when either changes
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
             remember(debouncedSearchQuery, activeFilters) {
+                Timber.tag("DevicesPresenter:Paging").d(
+                    "Creating paged flow: query='$debouncedSearchQuery', hasFilters=${activeFilters.hasActiveFilters()}",
+                )
                 val flow =
                     if (debouncedSearchQuery.isBlank()) {
                         deviceRepository.getPagedDevices()
@@ -121,18 +129,37 @@ class DevicesPresenter(
                     pagingData
                         .map { it.toModel() }
                         .filter { deviceInfo ->
-                            matchesFilters(deviceInfo, activeFilters)
+                            val matches = matchesFilters(deviceInfo, activeFilters)
+                            if (!matches) {
+                                Timber.tag("DevicesPresenter:Paging").v(
+                                    "Filtered out: ${deviceInfo.androidDevice.manufacturer} ${deviceInfo.androidDevice.modelName}",
+                                )
+                            }
+                            matches
                         }
                 }
             }
 
         // Performance: Use derivedStateOf for computed values that depend on state
         val isSearchActive by remember { derivedStateOf { searchQuery.isNotBlank() } }
+        // Note: isNoSearchResults should NOT be used when usePaging=true
+        // because filteredDevices is empty in paging mode (data comes from pagedDevices)
         val isNoSearchResults by remember {
             derivedStateOf {
-                isSearchActive && filteredDevices.isEmpty() && !isRefreshing
+                val noResults = isSearchActive && !usePaging && filteredDevices.isEmpty() && !isRefreshing
+                Timber.tag("DevicesPresenter:State").d(
+                    "isNoSearchResults=$noResults (isSearchActive=$isSearchActive, " +
+                        "usePaging=$usePaging, filteredDevices.size=${filteredDevices.size}, isRefreshing=$isRefreshing)",
+                )
+                noResults
             }
         }
+
+        Timber.tag("DevicesPresenter:State").d(
+            "State snapshot: usePaging=$usePaging, searchQuery='$searchQuery', " +
+                "debouncedQuery='$debouncedSearchQuery', filteredDevices=${filteredDevices.size}, " +
+                "searchResultCount=${filteredDevices.size}",
+        )
 
         return DevicesScreen.State(
             devices = filteredDevices,
@@ -180,12 +207,14 @@ class DevicesPresenter(
                     }
 
                     is DevicesScreen.Event.OnSearchQueryChanged -> {
-                        Timber.d("Search query changed: ${event.query}")
+                        Timber.tag("DevicesPresenter:Search").d(
+                            "Search query changed: '${event.query}' (previous: '$searchQuery')",
+                        )
                         searchQuery = event.query
                     }
 
                     DevicesScreen.Event.ClearSearch -> {
-                        Timber.d("Clearing search")
+                        Timber.tag("DevicesPresenter:Search").d("Clearing search (was: '$searchQuery')")
                         searchQuery = ""
                     }
 
