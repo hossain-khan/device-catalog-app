@@ -237,9 +237,11 @@ class FakeAndroidDeviceRepository(
             val formFactors = devices.groupingBy { it.androidDevice.formFactor }.eachCount()
             val totalFormFactors = formFactors.size
             
-            val topManufacturers = devices
+            val manufacturerCounts = devices
                 .groupingBy { it.androidDevice.manufacturer }
                 .eachCount()
+            val totalManufacturers = manufacturerCounts.size
+            val topManufacturers = manufacturerCounts
                 .toList()
                 .sortedByDescending { it.second }
                 .take(10)
@@ -292,7 +294,11 @@ class FakeAndroidDeviceRepository(
             DeviceStats(
                 totalDevices = totalDevices,
                 totalFormFactors = totalFormFactors,
-                formFactorBreakdown = formFactors.map { FormFactorCount(it.key, it.value) },
+                totalManufacturers = totalManufacturers,
+                formFactorBreakdown =
+                    formFactors
+                        .map { FormFactorCount(it.key, it.value) }
+                        .sortedByDescending { it.count },
                 topManufacturers = topManufacturers,
                 ramDistribution = ramDistribution,
                 sdkVersionDistribution = sdkVersionDistribution,
