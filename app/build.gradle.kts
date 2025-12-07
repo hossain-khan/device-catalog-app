@@ -39,7 +39,24 @@ android {
         create("release") {
             // For CI/CD: Use keystore from environment variables (GitHub Actions)
             // For local builds: Fall back to debug keystore
-            val keystoreFile = System.getenv("KEYSTORE_FILE")?.let { rootProject.file(it) }
+            val keystoreEnvFile = System.getenv("KEYSTORE_FILE")
+            val isProductionKeystoreConfigured = keystoreEnvFile != null &&
+                System.getenv("KEYSTORE_PASSWORD") != null &&
+                System.getenv("KEY_ALIAS") != null
+            
+            if (isProductionKeystoreConfigured) {
+                println("✅ Release build: Using production keystore from environment variables")
+            } else {
+                println("⚠️  WARNING: Release build using DEBUG keystore!")
+                println("⚠️  Production keystore not configured via environment variables:")
+                if (keystoreEnvFile == null) println("   - KEYSTORE_FILE is not set")
+                if (System.getenv("KEYSTORE_PASSWORD") == null) println("   - KEYSTORE_PASSWORD is not set")
+                if (System.getenv("KEY_ALIAS") == null) println("   - KEY_ALIAS is not set")
+                println("ℹ️  For production releases, configure these environment variables")
+                println("   See: https://github.com/hossain-khan/device-catalog-app/tree/main/keystore")
+            }
+            
+            val keystoreFile = keystoreEnvFile?.let { rootProject.file(it) }
                 ?: file("../keystore/debug.keystore")
             val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: "android"
             val keyAliasValue = System.getenv("KEY_ALIAS") ?: "androiddebugkey"
