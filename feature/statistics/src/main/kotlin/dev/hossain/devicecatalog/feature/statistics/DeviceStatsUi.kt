@@ -40,9 +40,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.core.data.AbiCount
 import dev.hossain.devicecatalog.core.data.DeviceStats
 import dev.hossain.devicecatalog.core.data.FormFactorCount
+import dev.hossain.devicecatalog.core.data.GpuCount
 import dev.hossain.devicecatalog.core.data.ManufacturerCount
+import dev.hossain.devicecatalog.core.data.RamCount
+import dev.hossain.devicecatalog.core.data.ScreenDensityCount
+import dev.hossain.devicecatalog.core.data.SdkVersionCount
 import dev.hossain.devicecatalog.feature.statistics.components.BarChartData
 import dev.hossain.devicecatalog.feature.statistics.components.ChartLegend
 import dev.hossain.devicecatalog.feature.statistics.components.HorizontalBarChart
@@ -519,3 +524,145 @@ private fun GpuDistributionContent(
         )
     }
 }
+
+// ==================== Previews ====================
+
+@OptIn(ExperimentalMaterial3Api::class)
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Light Theme",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceStatsUiPreviewLight() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = false,
+        dynamicColor = false,
+    ) {
+        DeviceStatsUi(
+            state = createPreviewState(),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Dark Theme",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceStatsUiPreviewDark() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = true,
+        dynamicColor = false,
+    ) {
+        DeviceStatsUi(
+            state = createPreviewState(),
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@androidx.compose.ui.tooling.preview.Preview(
+    name = "Loading State",
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+private fun DeviceStatsUiPreviewLoading() {
+    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+        darkTheme = false,
+        dynamicColor = false,
+    ) {
+        DeviceStatsUi(
+            state = createPreviewLoadingState(),
+        )
+    }
+}
+
+private fun createPreviewState(): DeviceStatsScreen.State =
+    DeviceStatsScreen.State(
+        stats = createPreviewDeviceStats(),
+        isLoading = false,
+        eventSink = {},
+    )
+
+private fun createPreviewLoadingState(): DeviceStatsScreen.State =
+    DeviceStatsScreen.State(
+        stats = null,
+        isLoading = true,
+        eventSink = {},
+    )
+
+private fun createPreviewDeviceStats(): DeviceStats =
+    DeviceStats(
+        totalDevices = 2500,
+        totalFormFactors = 3,
+        totalManufacturers = 150,
+        formFactorBreakdown =
+            listOf(
+                FormFactorCount(dev.hossain.android.catalogparser.models.FormFactor.PHONE, 2000),
+                FormFactorCount(dev.hossain.android.catalogparser.models.FormFactor.TABLET, 400),
+                FormFactorCount(dev.hossain.android.catalogparser.models.FormFactor.TV, 100),
+            ),
+        topManufacturers =
+            listOf(
+                ManufacturerCount("Samsung", 500),
+                ManufacturerCount("Google", 350),
+                ManufacturerCount("OnePlus", 280),
+                ManufacturerCount("Xiaomi", 250),
+                ManufacturerCount("Motorola", 200),
+                ManufacturerCount("LG", 180),
+                ManufacturerCount("Sony", 150),
+                ManufacturerCount("HTC", 120),
+                ManufacturerCount("ASUS", 100),
+                ManufacturerCount("Nokia", 80),
+            ),
+        ramDistribution =
+            listOf(
+                RamCount("4GB", 800),
+                RamCount("6GB", 650),
+                RamCount("8GB", 550),
+                RamCount("12GB", 350),
+                RamCount("16GB", 150),
+            ),
+        sdkVersionDistribution =
+            listOf(
+                SdkVersionCount(34, 450),
+                SdkVersionCount(33, 420),
+                SdkVersionCount(32, 380),
+                SdkVersionCount(31, 350),
+                SdkVersionCount(30, 320),
+                SdkVersionCount(29, 280),
+                SdkVersionCount(28, 200),
+                SdkVersionCount(27, 100),
+            ),
+        screenDensityDistribution =
+            listOf(
+                ScreenDensityCount(480, 900),
+                ScreenDensityCount(420, 700),
+                ScreenDensityCount(320, 500),
+                ScreenDensityCount(560, 400),
+            ),
+        abiDistribution =
+            listOf(
+                AbiCount("arm64-v8a", 1800),
+                AbiCount("armeabi-v7a", 500),
+                AbiCount("x86_64", 150),
+                AbiCount("x86", 50),
+            ),
+        gpuDistribution =
+            listOf(
+                GpuCount("Adreno 730", 400),
+                GpuCount("Mali-G78", 350),
+                GpuCount("Adreno 650", 300),
+                GpuCount("Mali-G77", 280),
+                GpuCount("Adreno 640", 250),
+                GpuCount("Mali-G76", 220),
+                GpuCount("Adreno 630", 200),
+                GpuCount("Mali-G72", 180),
+                GpuCount("Adreno 620", 150),
+                GpuCount("Mali-G71", 120),
+            ),
+    )
