@@ -48,14 +48,19 @@ Android Device Catalog is a mobile app that brings the official Android Device C
 
 ## 🚀 Get Started
 
-Download Android Device Catalog from the Google Play Store and start exploring the fascinating world of Android devices today!
+*The app is currently in development. Once released, you'll be able to download it from the Google Play Store.*
+
+Meanwhile, you can:
+- ⭐ Star the repository to stay updated
+- 👀 Watch for release announcements
+- 🛠️ Check out the source code and contribute
 
 *Note: This app is for informational purposes and provides data from the official Android Device Catalog.*
 
 ---
 
 ## 🔗 Related Resources
-- 📋 [Device Catalog Data Parser](https://github.com/hossain-khan/android-device-catalog-parser) - The data processing tool behind the scenes
+- 📋 [Device Catalog Data Parser](https://github.com/hossain-khan/android-device-catalog-parser) - The data-processing tool behind-the-scenes
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
