@@ -3,9 +3,9 @@ package dev.hossain.devicecatalog.core.common
 import android.content.Context
 import dev.zacsweers.metro.Inject
 
-// Example service class that does not need DI module or binding
+// Service class to retrieve application version information
 @Inject
-class ExampleAppVersionService
+class AppVersionService
     constructor(
         context: Context,
     ) {

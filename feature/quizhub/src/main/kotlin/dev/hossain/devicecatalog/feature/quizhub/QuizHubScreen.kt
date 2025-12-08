@@ -74,7 +74,7 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             title = "Device Compare",
             description = "Compare 2-4 devices side by side",
             icon = DeviceCatalogIcons.Compare,
-            isAvailable = true,
+            isAvailable = false,
         ),
         QuizHubScreen.QuizTypeInfo(
             type = QuizHubScreen.QuizType.SPEC_MASTER,
