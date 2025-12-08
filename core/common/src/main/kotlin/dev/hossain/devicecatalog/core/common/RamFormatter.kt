@@ -10,6 +10,12 @@ import kotlin.math.roundToInt
  */
 object RamFormatter {
     /**
+     * Regex pattern for detecting range format (e.g., "1024-2048MB").
+     * Allows optional spaces around the dash.
+     */
+    private val RANGE_PATTERN = Regex("""(\d+)\s*-\s*(\d+)MB""", RegexOption.IGNORE_CASE)
+
+    /**
      * Formats a RAM string from MB to GB format.
      *
      * Examples:
@@ -37,8 +43,9 @@ object RamFormatter {
 
         // Handle range format (e.g., "1024-2048MB") - only match ranges with positive numbers
         // Allows optional spaces around the dash
-        if (ramString.matches(Regex("\\d+\\s*-\\s*\\d+MB", RegexOption.IGNORE_CASE))) {
-            return formatRamRange(ramString)
+        val rangeMatch = RANGE_PATTERN.matchEntire(ramString)
+        if (rangeMatch != null) {
+            return formatRamRange(rangeMatch)
         }
 
         // Extract numeric value from strings like "1996MB"
@@ -55,35 +62,24 @@ object RamFormatter {
     }
 
     /**
-     * Formats a RAM range string from MB to GB format.
+     * Formats a RAM range string from MB to GB format using regex match groups.
      *
      * Examples:
      * - "1024-2048MB" -> "1-2GB"
      * - "512-1024MB" -> "1-1GB"
      * - "0-3038MB" -> "0-3GB"
      *
-     * @param rangeString The RAM range string (e.g., "1024-2048MB")
-     * @return The formatted RAM range in GB format, or the original string if parsing fails
+     * @param matchResult The regex match result containing range boundaries
+     * @return The formatted RAM range in GB format
      */
-    private fun formatRamRange(rangeString: String): String {
-        val parts = rangeString.split("-")
-        if (parts.size != 2) {
-            return rangeString
-        }
-
-        val start = parts[0].trim()
-        val endWithUnit = parts[1].trim()
-
+    private fun formatRamRange(matchResult: MatchResult): String {
+        val (startMb, endMb) = matchResult.destructured
         return try {
-            val startMb = start.toDouble()
-            val endMb = endWithUnit.replace("MB", "", ignoreCase = true).trim().toDouble()
-
-            val startGb = (startMb / 1024.0).roundToInt()
-            val endGb = (endMb / 1024.0).roundToInt()
-
+            val startGb = (startMb.toDouble() / 1024.0).roundToInt()
+            val endGb = (endMb.toDouble() / 1024.0).roundToInt()
             "${startGb}-${endGb}GB"
         } catch (e: NumberFormatException) {
-            rangeString
+            matchResult.value
         }
     }
 }
