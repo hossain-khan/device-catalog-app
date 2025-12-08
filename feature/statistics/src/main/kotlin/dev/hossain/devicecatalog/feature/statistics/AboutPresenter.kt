@@ -33,6 +33,7 @@ class AboutPresenter(
                     AboutScreen.Event.OpenSourceInfo -> {
                         scope.launch {
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/hossain-khan/device-catalog-app"))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             context.startActivity(intent)
                         }
                     }
