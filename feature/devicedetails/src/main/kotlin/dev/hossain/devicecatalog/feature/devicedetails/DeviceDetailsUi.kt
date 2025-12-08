@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
@@ -404,7 +405,7 @@ private fun TechnicalSpecsCard(
 ) {
     ExpandableInfoCard(title = "Technical Specifications", defaultExpanded = true) {
         if (device.ram.isNotBlank()) {
-            InfoRow(label = "RAM", value = device.ram, snackbarHostState = snackbarHostState)
+            InfoRow(label = "RAM", value = RamFormatter.formatRamToGb(device.ram), snackbarHostState = snackbarHostState)
         }
         if (device.processorName.isNotBlank()) {
             InfoRow(label = "Processor", value = device.processorName, snackbarHostState = snackbarHostState)
