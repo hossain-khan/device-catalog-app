@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 
 /**
@@ -129,7 +130,7 @@ fun SelectedDeviceCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = device.androidDevice.ram,
+                    text = RamFormatter.formatRamToGb(device.androidDevice.ram),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
                 )
@@ -262,7 +263,7 @@ private fun DeviceSelectorItem(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = device.androidDevice.ram,
+                    text = RamFormatter.formatRamToGb(device.androidDevice.ram),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

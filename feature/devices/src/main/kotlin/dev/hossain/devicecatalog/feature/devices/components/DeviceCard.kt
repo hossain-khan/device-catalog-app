@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 
@@ -145,7 +146,7 @@ fun DeviceCard(
                 ) {
                     if (device.ram.isNotBlank()) {
                         Text(
-                            text = "${device.ram} RAM",
+                            text = "${RamFormatter.formatRamToGb(device.ram)} RAM",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
