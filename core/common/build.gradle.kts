@@ -10,4 +10,7 @@ android {
 
 dependencies {
     implementation(libs.timber)
+
+    // Testing dependencies
+    testImplementation(libs.junit)
 }
