@@ -131,7 +131,7 @@ fun DevicesUi(
                             }
 
                             else -> {
-                                "Android Catalog"
+                                "Android Universe"
                             }
                         }
                     Text(text = title)
