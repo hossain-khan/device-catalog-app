@@ -58,7 +58,9 @@ fun AboutUi(
                 modifier = Modifier.padding(top = 8.dp),
             )
             Text(
-                text = "A comprehensive Android app for browsing, analyzing, and searching Android devices from the official Device Universe.",
+                text =
+                    "A comprehensive Android app for browsing, analyzing, and searching " +
+                        "Android devices from the official Device Universe.",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp),
