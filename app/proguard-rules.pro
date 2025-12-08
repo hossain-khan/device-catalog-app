@@ -42,9 +42,9 @@
     @javax.inject.Inject <fields>;
 }
 
-# Keep AssistedInject constructors
+# Keep AssistedInject constructors and Metro ContributesBinding
 -keepclasseswithmembernames class * {
-    @com.squareup.anvil.annotations.ContributesBinding <methods>;
+    @dev.zacsweers.metro.ContributesBinding <methods>;
 }
 
 # ================================================================================================
@@ -67,6 +67,8 @@
 # ================================================================================================
 # Kotlinx Serialization
 # ================================================================================================
+# Note: kotlinx.serialization.json is used for JSON parsing in the app.
+# These rules ensure serialization works correctly even if @Serializable isn't used yet.
 -keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.AnnotationsKt
 
@@ -146,18 +148,11 @@
 }
 
 # ================================================================================================
-# Retrofit / OkHttp (if used for network calls)
+# Kotlin Coroutines
 # ================================================================================================
-# Keep generic signature of Call, Response (R8 full mode strips signatures from non-kept items)
--keep,allowobfuscation,allowshrinking interface retrofit2.Call
--keep,allowobfuscation,allowshrinking class retrofit2.Response
-
 # With R8 full mode generic signatures are stripped for classes that are not kept
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
-# ================================================================================================
-# Kotlin Coroutines
-# ================================================================================================
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 -keepclassmembers class kotlinx.coroutines.** {
