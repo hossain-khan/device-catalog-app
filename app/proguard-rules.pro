@@ -5,17 +5,213 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# ================================================================================================
+# Android Device Universe - ProGuard Rules
+# ================================================================================================
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve line numbers for debugging stack traces in production
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# ================================================================================================
+# Room Database
+# ================================================================================================
+# Keep all Room entities and DAOs to ensure database operations work correctly
+-keep class dev.hossain.devicecatalog.core.database.** { *; }
+-keep interface dev.hossain.devicecatalog.core.database.** { *; }
+
+# Keep Room annotations
+-keep @androidx.room.Entity class * { *; }
+-keep @androidx.room.Dao class * { *; }
+-keep @androidx.room.Database class * { *; }
+
+# ================================================================================================
+# Metro Dependency Injection
+# ================================================================================================
+# Keep all classes and members annotated with Metro annotations
+-keep @dev.zacsweers.metro.annotations.* class * { *; }
+-keepclassmembers class * {
+    @dev.zacsweers.metro.annotations.* *;
+}
+
+# Keep Inject constructors and members
+-keepclasseswithmembernames class * {
+    @javax.inject.Inject <init>(...);
+}
+-keepclasseswithmembers class * {
+    @javax.inject.Inject <fields>;
+}
+
+# Keep AssistedInject constructors and Metro ContributesBinding
+-keepclasseswithmembernames class * {
+    @dev.zacsweers.metro.ContributesBinding <methods>;
+}
+
+# ================================================================================================
+# Circuit (Slack's Compose Architecture)
+# ================================================================================================
+# Keep all Circuit screens and UI states
+-keep class * implements com.slack.circuit.runtime.screen.Screen { *; }
+-keep class * implements com.slack.circuit.runtime.CircuitUiState { *; }
+-keep class * implements com.slack.circuit.runtime.CircuitUiEvent { *; }
+
+# Keep Circuit annotations
+-keep @com.slack.circuit.codegen.annotations.CircuitInject class * { *; }
+-keepclassmembers class * {
+    @com.slack.circuit.codegen.annotations.CircuitInject *;
+}
+
+# Keep Circuit presenters
+-keep class * implements com.slack.circuit.runtime.presenter.Presenter { *; }
+
+# ================================================================================================
+# Kotlinx Serialization
+# ================================================================================================
+# Note: kotlinx.serialization.json is used for JSON parsing in the app.
+# These rules ensure serialization works correctly even if @Serializable isn't used yet.
+-keepattributes *Annotation*, InnerClasses
+-dontnote kotlinx.serialization.AnnotationsKt
+
+# Keep Serializers
+-keep,includedescriptorclasses class dev.hossain.devicecatalog.**$$serializer { *; }
+
+# Keep Companion objects with serializers
+-keepclassmembers class dev.hossain.devicecatalog.** {
+    *** Companion;
+}
+
+# Keep classes with KSerializer
+-keepclasseswithmembers class dev.hossain.devicecatalog.** {
+    kotlinx.serialization.KSerializer serializer(...);
+}
+
+# Keep @Serializable classes
+-keep @kotlinx.serialization.Serializable class * { *; }
+
+# ================================================================================================
+# Parcelize
+# ================================================================================================
+# Keep Parcelable implementations
+-keep class * implements android.os.Parcelable {
+    public static final ** CREATOR;
+}
+
+-keepclassmembers class * implements android.os.Parcelable {
+    public <fields>;
+}
+
+# Keep classes annotated with @Parcelize
+-keep @kotlinx.parcelize.Parcelize class * { *; }
+
+# ================================================================================================
+# Timber Logging
+# ================================================================================================
+-keep class timber.log.** { *; }
+-dontwarn org.jetbrains.annotations.**
+
+# Remove debug and verbose logging in release builds for performance
+-assumenosideeffects class timber.log.Timber* {
+    public static *** d(...);
+    public static *** v(...);
+}
+
+# ================================================================================================
+# Jetpack Compose
+# ================================================================================================
+# Keep Compose runtime classes
+-keep class androidx.compose.runtime.** { *; }
+-keep class androidx.compose.ui.** { *; }
+
+# Keep Composable functions
+-keepclassmembers class * {
+    @androidx.compose.runtime.Composable *;
+}
+
+# ================================================================================================
+# Coil Image Loading
+# ================================================================================================
+-keep class coil.** { *; }
+-keep interface coil.** { *; }
+
+# ================================================================================================
+# AndroidX Core & Lifecycle
+# ================================================================================================
+-keep class androidx.lifecycle.** { *; }
+-keep class androidx.core.** { *; }
+
+# ================================================================================================
+# WorkManager
+# ================================================================================================
+-keep class * extends androidx.work.Worker
+-keep class * extends androidx.work.ListenableWorker {
+    public <init>(android.content.Context,androidx.work.WorkerParameters);
+}
+
+# ================================================================================================
+# Kotlin Coroutines
+# ================================================================================================
+# With R8 full mode generic signatures are stripped for classes that are not kept
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keepclassmembers class kotlinx.coroutines.** {
+    volatile <fields>;
+}
+
+# ================================================================================================
+# General Android & Kotlin
+# ================================================================================================
+# Keep native methods
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# Keep custom view constructors
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context, android.util.AttributeSet);
+    public <init>(android.content.Context, android.util.AttributeSet, int);
+}
+
+# Keep enums
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# ================================================================================================
+# Data Classes & Models
+# ================================================================================================
+# Keep data classes in model packages
+-keep class dev.hossain.devicecatalog.core.model.** { *; }
+
+# Keep data class copy() method
+-keepclassmembers class * {
+    public *** copy(...);
+}
+
+# ================================================================================================
+# Security - EncryptedSharedPreferences
+# ================================================================================================
+-keep class androidx.security.crypto.** { *; }
+-keep class com.google.crypto.tink.** { *; }
+
+# Suppress warnings for optional Tink dependencies that we don't use
+-dontwarn com.google.api.client.http.GenericUrl
+-dontwarn com.google.api.client.http.HttpHeaders
+-dontwarn com.google.api.client.http.HttpRequest
+-dontwarn com.google.api.client.http.HttpRequestFactory
+-dontwarn com.google.api.client.http.HttpResponse
+-dontwarn com.google.api.client.http.HttpTransport
+-dontwarn com.google.api.client.http.javanet.NetHttpTransport$Builder
+-dontwarn com.google.api.client.http.javanet.NetHttpTransport
+-dontwarn com.google.errorprone.annotations.CanIgnoreReturnValue
+-dontwarn com.google.errorprone.annotations.CheckReturnValue
+-dontwarn com.google.errorprone.annotations.Immutable
+-dontwarn com.google.errorprone.annotations.InlineMe
+-dontwarn com.google.errorprone.annotations.RestrictedApi
+-dontwarn org.joda.time.Instant
+
+# ================================================================================================
+# End of ProGuard Rules
+# ================================================================================================
