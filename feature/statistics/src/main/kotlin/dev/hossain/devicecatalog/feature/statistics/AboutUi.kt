@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +48,7 @@ fun AboutUi(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = "Device Catalog App",
+                text = "Android Device Universe",
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
             )
@@ -57,11 +58,24 @@ fun AboutUi(
                 modifier = Modifier.padding(top = 8.dp),
             )
             Text(
-                text = "An Android app showcasing device specifications with Circuit UDF architecture and Material 3 design.",
+                text = "A comprehensive Android app for browsing, analyzing, and searching Android devices from the official Device Catalog.",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp),
             )
+
+            // View Source Code button
+            DeviceCatalogOutlinedButton(
+                onClick = { state.eventSink(AboutScreen.Event.OpenSourceInfo) },
+                modifier = Modifier.padding(top = 24.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Code,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+                Text("View Source Code")
+            }
 
             // Developer Settings button - only visible in debug builds
             if (BuildConfig.DEBUG) {

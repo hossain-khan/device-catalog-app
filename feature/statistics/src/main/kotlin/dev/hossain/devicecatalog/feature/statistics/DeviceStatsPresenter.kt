@@ -6,7 +6,7 @@ import androidx.compose.runtime.produceState
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
-import dev.hossain.devicecatalog.core.common.ExampleAppVersionService
+import dev.hossain.devicecatalog.core.common.AppVersionService
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.data.DeviceStats
 import dev.hossain.devicecatalog.feature.statsexplorer.StatsExplorerScreen
@@ -21,7 +21,7 @@ class DeviceStatsPresenter
     constructor(
         @Assisted private val navigator: Navigator,
         private val deviceRepository: AndroidDeviceRepository,
-        private val appVersionService: ExampleAppVersionService,
+        private val appVersionService: AppVersionService,
     ) : Presenter<DeviceStatsScreen.State> {
         @Composable
         override fun present(): DeviceStatsScreen.State {
