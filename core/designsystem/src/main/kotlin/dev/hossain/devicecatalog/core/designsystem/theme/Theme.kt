@@ -99,7 +99,7 @@ private val DarkColorScheme =
     )
 
 /**
- * Device Catalog App Theme with Material You support.
+ * Device Universe App Theme with Material You support.
  *
  * Provides comprehensive theming with:
  * - Custom green-based color scheme with vibrant chart colors
