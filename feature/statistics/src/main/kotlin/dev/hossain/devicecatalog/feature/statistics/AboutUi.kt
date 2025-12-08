@@ -58,7 +58,7 @@ fun AboutUi(
                 modifier = Modifier.padding(top = 8.dp),
             )
             Text(
-                text = "An Android app showcasing device specifications with Circuit UDF architecture and Material 3 design.",
+                text = "A comprehensive Android app for browsing, analyzing, and searching Android devices from the official Device Catalog.",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp),
