@@ -100,14 +100,16 @@ class DevicesPresenter(
                 filtered
             }
 
-        // Calculate available manufacturers for filter UI
+        // Calculate available manufacturers for filter UI (sorted by device count, descending)
         // Performance: Only recalculate when allDevices changes
         val availableManufacturers =
             remember(allDevices) {
                 allDevices
-                    .map { it.androidDevice.manufacturer }
-                    .distinct()
-                    .sorted()
+                    .groupingBy { it.androidDevice.manufacturer }
+                    .eachCount()
+                    .toList()
+                    .sortedByDescending { it.second }
+                    .map { it.first }
             }
 
         // Get paged devices with search and filter
