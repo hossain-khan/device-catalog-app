@@ -139,4 +139,16 @@ class RamFormatterTest {
         // 12305 / 1024 = 12.02, rounds to 12
         assertEquals("12GB", RamFormatter.formatRamToGb("12305MB"))
     }
+
+    @Test
+    fun `formatRamToGb handles large range 10811-14992MB correctly`() {
+        // Real data from database: 10811 / 1024 = 10.56 -> 11GB, 14992 / 1024 = 14.64 -> 15GB
+        assertEquals("11-15GB", RamFormatter.formatRamToGb("10811-14992MB"))
+    }
+
+    @Test
+    fun `formatRamToGb handles range 1000-1996MB correctly`() {
+        // Real data from database: 1000 / 1024 = 0.98 -> 1GB, 1996 / 1024 = 1.95 -> 2GB
+        assertEquals("1-2GB", RamFormatter.formatRamToGb("1000-1996MB"))
+    }
 }

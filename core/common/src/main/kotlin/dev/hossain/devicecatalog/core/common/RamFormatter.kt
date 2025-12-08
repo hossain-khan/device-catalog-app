@@ -35,8 +35,9 @@ object RamFormatter {
             return ramString
         }
 
-        // Handle range format (e.g., "1024-2048MB")
-        if (ramString.contains("-")) {
+        // Handle range format (e.g., "1024-2048MB") - only match ranges with positive numbers
+        // Allows optional spaces around the dash
+        if (ramString.matches(Regex("\\d+\\s*-\\s*\\d+MB", RegexOption.IGNORE_CASE))) {
             return formatRamRange(ramString)
         }
 
