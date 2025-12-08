@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.feature.dreamphone.components.CheckboxOption
 import dev.hossain.devicecatalog.feature.dreamphone.components.ProgressHeader
@@ -641,7 +642,7 @@ private fun DeviceMatchCard(
 
             // Device specs
             Text(
-                text = "${match.device.androidDevice.ram} RAM • ${match.device.androidDevice.processorName}",
+                text = "${RamFormatter.formatRamToGb(match.device.androidDevice.ram)} RAM • ${match.device.androidDevice.processorName}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 modifier = Modifier.padding(top = 8.dp),

@@ -14,6 +14,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.AndroidDevice
+import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
@@ -132,7 +133,7 @@ private fun generateDeviceShareText(device: AndroidDevice): String =
         appendLine()
 
         if (device.ram.isNotBlank()) {
-            appendLine("💾 RAM: ${device.ram}")
+            appendLine("💾 RAM: ${RamFormatter.formatRamToGb(device.ram)}")
         }
         if (device.processorName.isNotBlank()) {
             appendLine("⚙️ Processor: ${device.processorName}")
