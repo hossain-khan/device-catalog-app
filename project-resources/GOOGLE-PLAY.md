@@ -1,6 +1,6 @@
 # Google Play Store Listing Details
 
-This document contains all the information required for the Google Play Store listing for Android Device Catalog app.
+This document contains all the information required for the Google Play Store listing for Android Device Universe app.
 
 Note: All descriptions are in plain text format as Google Play does not support rich text formatting.
 
@@ -9,7 +9,7 @@ Note: All descriptions are in plain text format as Google Play does not support 
 ## App Information
 
 ### App Name
-Android Device Catalog
+Android Device Universe
 
 ### Package Name
 dev.hossain.devicecatalog
@@ -32,9 +32,9 @@ Explore thousands of Android devices with detailed specs and market insights.
 
 Your comprehensive guide to exploring the world of Android devices! Browse, search, and discover detailed specifications of thousands of Android devices - from smartphones and tablets to wearables and more.
 
-WHAT IS ANDROID DEVICE CATALOG?
+WHAT IS ANDROID DEVICE UNIVERSE?
 
-Android Device Catalog is a mobile app that brings the official Android Device Catalog right to your fingertips. Whether you're a tech enthusiast researching your next phone, a developer checking device compatibility, or simply curious about Android's evolution, this app makes exploring device specifications effortless and enjoyable.
+Android Device Universe is a mobile app that brings the official Android Device Catalog right to your fingertips. Whether you're a tech enthusiast researching your next phone, a developer checking device compatibility, or simply curious about Android's evolution, this app makes exploring device specifications effortless and enjoyable.
 
 KEY FEATURES
 
@@ -68,7 +68,7 @@ Interactive Learning
 • Compare devices side-by-side to make informed decisions
 • Build your dream phone by exploring ideal specifications
 
-WHY CHOOSE ANDROID DEVICE CATALOG?
+WHY CHOOSE ANDROID DEVICE UNIVERSE?
 
 • Works Offline: Browse your device catalog even without an internet connection
 • Modern Design: Beautiful Material 3 interface that feels native to Android

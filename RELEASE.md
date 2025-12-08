@@ -1,6 +1,6 @@
 # GitHub Actions Release Setup Guide
 
-This guide walks you through setting up automated release builds and signing for your Android Device Catalog app.
+This guide walks you through setting up automated release builds and signing for your Android Device Universe app.
 
 > **Note:** The release workflow will work without secrets configured by using the debug keystore as a fallback. However, for production releases, you **must** configure the secrets to use a proper production keystore.
 

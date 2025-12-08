@@ -1,4 +1,4 @@
-# Copilot Instructions - Android Device Catalog App
+# Copilot Instructions - Android Device Universe App
 
 ## Project Overview
 

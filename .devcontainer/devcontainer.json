@@ -1,5 +1,5 @@
 {
-  "name": "Android Device Catalog",
+  "name": "Android Device Universe",
   "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
   
   "features": {

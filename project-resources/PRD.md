@@ -1,4 +1,4 @@
-# Android Device Catalog Browser
+# Android Device Universe Browser
 
 A comprehensive Android app for browsing, analyzing, and searching Android devices from the official Device Catalog, enabling developers and analysts to explore device specifications and market trends on mobile.
 
