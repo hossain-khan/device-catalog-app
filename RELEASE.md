@@ -225,6 +225,96 @@ If builds fail:
 
 ---
 
+## Step 7: Managing ProGuard/R8 Mapping Files
+
+> **CRITICAL:** The mapping file is essential for debugging crashes in production releases!
+
+### 7.1 Understanding the Mapping File
+
+When you build a release APK, R8 (ProGuard's successor) obfuscates your code by:
+- Renaming classes to single letters (e.g., `DeviceDetailsPresenter` → `a.b.c`)
+- Removing unused code
+- Optimizing bytecode
+
+The **mapping file** contains the translation between obfuscated and original names.
+
+### 7.2 Mapping File Location
+
+After building a release APK, find the mapping file here:
+```
+app/build/outputs/mapping/release/mapping.txt
+```
+
+### 7.3 Save Mapping Files for Each Release
+
+**For every release:**
+
+1. **Locate the mapping file** after building the release APK
+2. **Rename it** to include the version number:
+   ```bash
+   cp app/build/outputs/mapping/release/mapping.txt mapping-v1.2.0.txt
+   ```
+3. **Store it securely** in multiple locations:
+   - Private Google Drive folder
+   - Secure cloud storage
+   - Local backup drive
+4. **Upload to Google Play Console** (required):
+   - Go to: Release → App Bundle Explorer → Downloads → Upload mapping file
+   - Or automated via CI/CD workflow
+
+### 7.4 Why This Matters
+
+**Without the mapping file, you cannot:**
+- ❌ Understand crash reports from production users
+- ❌ Debug issues reported by users
+- ❌ Identify which code is causing problems
+
+**Example crash report without mapping file:**
+```
+at a.b.c.d(Unknown Source)
+at e.f.g.h(Unknown Source)
+```
+
+**Same crash report with mapping file:**
+```
+at dev.hossain.devicecatalog.feature.devices.DevicesPresenter.loadDevices(DevicesPresenter.kt:42)
+at dev.hossain.devicecatalog.core.data.AndroidDeviceRepository.getAllDevices(AndroidDeviceRepository.kt:23)
+```
+
+### 7.5 Automated Workflow Support
+
+The GitHub Actions release workflow automatically:
+- ✅ Generates the mapping file
+- ✅ Includes it in the workflow artifacts
+- ✅ Names it with the version number
+
+**To download from GitHub Actions:**
+1. Go to the completed release workflow run
+2. Scroll to "Artifacts"
+3. Download "mapping-file" artifact
+4. Store it securely as described in 7.3
+
+### 7.6 Testing ProGuard Rules
+
+If you encounter crashes after a release:
+
+1. **Build locally with R8 enabled:**
+   ```bash
+   ./gradlew assembleRelease
+   ```
+
+2. **Test the APK thoroughly:**
+   - Install: `adb install app/build/outputs/apk/release/app-release.apk`
+   - Test all features
+   - Check logcat for crashes
+
+3. **If crashes occur, add ProGuard rules:**
+   - Check `app/proguard-rules.pro`
+   - Add `-keep` rules for the affected classes
+   - Rebuild and test again
+
+---
+
 ## Additional Resources
 
 - [Android App Signing Documentation](https://developer.android.com/studio/publish/app-signing)
