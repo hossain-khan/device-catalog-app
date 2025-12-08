@@ -48,7 +48,7 @@ fun AboutUi(
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = "Device Catalog App",
+                text = "Android Device Universe",
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
             )
