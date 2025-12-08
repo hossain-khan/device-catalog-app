@@ -52,8 +52,7 @@ fun StatsExplorerUi(
             onRefresh = { state.eventSink(StatsExplorerScreen.Event.Refresh) },
             modifier = Modifier.padding(innerPadding),
         ) {
-            if (state.statData == null) {
-                // Show loading indicator when data is null (initial load or category change)
+            if (state.isLoading && state.statData == null) {
                 LoadingIndicator()
             } else {
                 StatsExplorerContent(
