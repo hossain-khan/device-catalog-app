@@ -1,6 +1,6 @@
 # Dev Container Configuration
 
-This directory contains the development container configuration for Android Device Catalog.
+This directory contains the development container configuration for Android Device Universe.
 
 ## Features
 
