@@ -33,8 +33,6 @@ class StatsExplorerPresenter
                 initialValue = null,
                 key1 = selectedCategory,
             ) {
-                // Reset to null immediately when category changes to clear old data
-                value = null
                 Timber.d("Loading stats for category: $selectedCategory")
                 try {
                     when (selectedCategory) {
