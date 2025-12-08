@@ -152,7 +152,7 @@ private fun AppNavigationDrawerContent(
 
         // App title/header
         Text(
-            text = "Android Catalog",
+            text = "Android Universe",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp),

@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Android Catalog"
+rootProject.name = "Android Universe"
 
 // Main application module
 include(":app")
