@@ -1,4 +1,8 @@
+[![Android CI](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml) [![Post Merge Check](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml) [![Android Release Build](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml)
+
 # 📱 Android Device Universe
+
+<img src="project-resources/app-icon/catalog-icon-vibrant.svg" width=250 height=250 align="right" alt="Android Device Universe App Icon">
 
 Your comprehensive guide to exploring the world of Android devices! Browse, search, and discover detailed specifications of thousands of Android devices - from smartphones and tablets to wearables and more.
 
