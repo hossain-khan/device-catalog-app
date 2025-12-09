@@ -1,8 +1,11 @@
 package dev.hossain.devicecatalog.core.common
 
 /**
- * Constants for SharedPreferences file names used throughout the app.
+ * Constants for DataStore preference file names used throughout the app.
  * Centralizes preference file names to ensure consistency and prevent typos.
+ *
+ * Note: The app uses DataStore Preferences API instead of SharedPreferences.
+ * @see androidx.datastore.preferences.preferencesDataStore
  */
 object PreferenceKeys {
     /**
@@ -16,7 +19,7 @@ object PreferenceKeys {
     const val FEATURE_FLAGS = "feature_flags"
 
     /**
-     * Secure preferences file name (used with EncryptedSharedPreferences)
+     * Secure preferences file name (reserved for future use with encrypted storage)
      */
     const val SECURE_PREFERENCES = "secure_preferences"
 

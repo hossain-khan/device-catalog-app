@@ -23,9 +23,11 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.common.FeatureFlags
 import dev.hossain.devicecatalog.core.common.PerformanceMonitor
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import kotlinx.coroutines.launch
 
 /**
  * Developer Settings Screen showing feature flags and performance metrics.
@@ -47,7 +50,13 @@ fun DeveloperSettingsScreen(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    var featureFlags by remember { mutableStateOf(FeatureFlags.getAllFlags(context)) }
+    val coroutineScope = rememberCoroutineScope()
+    var featureFlags by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+
+    // Load feature flags on initial composition
+    LaunchedEffect(Unit) {
+        featureFlags = FeatureFlags.getAllFlags(context)
+    }
 
     Scaffold(
         topBar = {
@@ -99,8 +108,10 @@ fun DeveloperSettingsScreen(
                     name = FeatureFlags.formatFeatureFlagName(key),
                     enabled = value,
                     onToggle = { newValue ->
-                        FeatureFlags.setFlag(context, key, newValue)
-                        featureFlags = FeatureFlags.getAllFlags(context)
+                        coroutineScope.launch {
+                            FeatureFlags.setFlag(context, key, newValue)
+                            featureFlags = FeatureFlags.getAllFlags(context)
+                        }
                     },
                 )
             }
