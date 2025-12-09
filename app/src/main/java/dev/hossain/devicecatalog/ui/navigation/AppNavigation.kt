@@ -30,9 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.slack.circuit.backstack.BackStack
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import com.slack.circuit.runtime.Navigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.devicecatalog.core.common.OnboardingManager
 import dev.hossain.devicecatalog.feature.onboarding.OnboardingScreen
@@ -71,8 +73,9 @@ fun AppNavigation(
     }
 
     // Track if onboarding screen is currently active
+    // Onboarding is shown on top of the stack, so we only need to check the last screen
     val isOnboardingActive = remember(backStack.lastOrNull()) {
-        backStack.any { it == OnboardingScreen }
+        backStack.lastOrNull() == OnboardingScreen
     }
 
     // Determine navigation type based on window size class
@@ -186,8 +189,8 @@ fun AppNavigation(
  */
 @Composable
 private fun FullScreenContent(
-    navigator: com.slack.circuit.runtime.Navigator,
-    backStack: com.slack.circuit.backstack.BackStack<*>,
+    navigator: Navigator,
+    backStack: BackStack<*>,
     modifier: Modifier = Modifier,
 ) {
     NavigableCircuitContent(
