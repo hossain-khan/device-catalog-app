@@ -18,7 +18,7 @@ dev.hossain.devicecatalog
 dev.hossain.devicecatalog
 
 ### Current Version
-1.2.0 (Version Code: 3)
+1.4.0 (Version Code: 5)
 
 ---
 
@@ -149,6 +149,14 @@ https://github.com/hossain-khan/device-catalog-app
 ---
 
 ## What's New (Release Notes Template)
+
+Version 1.4.0:
+• Enhanced Material You theme with vibrant colors and comprehensive color schemes
+• Improved statistics charts with better visibility and contrast in light and dark modes
+• Fixed search and filtering issues for more accurate results
+• Updated to latest Material 3 design components
+• Performance improvements and bug fixes
+• Better color harmony across all UI components
 
 Version 1.2.0:
 • Improved device browsing experience with smoother scrolling
@@ -489,4 +497,4 @@ Post-Launch:
 
 ---
 
-Last Updated: December 2024
+Last Updated: December 2024 (Version 1.4.0)
