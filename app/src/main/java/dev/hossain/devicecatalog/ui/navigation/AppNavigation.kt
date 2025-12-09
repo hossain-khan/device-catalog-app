@@ -71,7 +71,7 @@ fun AppNavigation(
     }
 
     // Track if onboarding screen is currently active
-    val isOnboardingActive = remember(backStack.size) {
+    val isOnboardingActive = remember(backStack.lastOrNull()) {
         backStack.any { it == OnboardingScreen }
     }
 
@@ -84,14 +84,10 @@ fun AppNavigation(
             // Expanded screens (large tablets, desktops): Use permanent navigation drawer
             // Hide navigation drawer during onboarding for full-screen experience
             if (isOnboardingActive) {
-                NavigableCircuitContent(
+                FullScreenContent(
                     navigator = navigator,
                     backStack = backStack,
-                    modifier = modifier.fillMaxSize(),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                        },
+                    modifier = modifier,
                 )
             } else {
                 PermanentNavigationDrawer(
@@ -123,14 +119,10 @@ fun AppNavigation(
             // Medium screens (small tablets, foldables): Use navigation rail
             // Hide navigation rail during onboarding for full-screen experience
             if (isOnboardingActive) {
-                NavigableCircuitContent(
+                FullScreenContent(
                     navigator = navigator,
                     backStack = backStack,
-                    modifier = modifier.fillMaxSize(),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                        },
+                    modifier = modifier,
                 )
             } else {
                 Row(modifier = modifier.fillMaxSize()) {
@@ -159,14 +151,10 @@ fun AppNavigation(
             // Hide bottom navigation during onboarding for full-screen experience
             // Note: Screens provide their own Scaffold, so we don't wrap in another Scaffold here
             if (isOnboardingActive) {
-                NavigableCircuitContent(
+                FullScreenContent(
                     navigator = navigator,
                     backStack = backStack,
-                    modifier = modifier.fillMaxSize(),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                        },
+                    modifier = modifier,
                 )
             } else {
                 Column(modifier = modifier.fillMaxSize()) {
@@ -190,6 +178,27 @@ fun AppNavigation(
             }
         }
     }
+}
+
+/**
+ * Full-screen content composable used when navigation UI should be hidden.
+ * Used during onboarding to provide a full-screen experience.
+ */
+@Composable
+private fun FullScreenContent(
+    navigator: com.slack.circuit.runtime.Navigator,
+    backStack: com.slack.circuit.backstack.BackStack<*>,
+    modifier: Modifier = Modifier,
+) {
+    NavigableCircuitContent(
+        navigator = navigator,
+        backStack = backStack,
+        modifier = modifier.fillMaxSize(),
+        decoratorFactory =
+            remember(navigator) {
+                GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+            },
+    )
 }
 
 /**
