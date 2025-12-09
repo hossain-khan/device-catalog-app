@@ -14,6 +14,14 @@ jobs:
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          path: base
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -24,38 +32,43 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Setup keystore
+      - name: Setup keystore for both builds
         run: |
-          # Use debug keystore for size comparison (consistent with local builds)
-          # The release workflow uses production keystore only for published releases
+          # Use debug keystore for both builds to ensure consistent comparison
+          # This ensures both APKs are built with identical build parameters
           echo "ℹ️ Using debug keystore for consistent APK size comparison"
-          # Debug keystore is already configured in app/build.gradle.kts
+          echo "ℹ️ Debug keystore is already configured in app/build.gradle.kts"
+          echo "ℹ️ When KEYSTORE_FILE env var is not set, build.gradle.kts falls back to debug keystore"
+
+      # Build base APK from main/base branch
+      - name: Build base APK
+        working-directory: base
+        run: |
+          echo "🏗️ Building base APK from ${{ github.base_ref }} branch..."
+          ./gradlew assembleRelease --parallel --daemon
+          echo "✅ Base APK build completed"
+
+      - name: Copy base APK
+        run: |
+          cp base/app/build/outputs/apk/release/app-release.apk base.apk
+          echo "📦 Base APK copied"
 
       # Build PR APK
       - name: Build PR APK
-        run: ./gradlew assembleRelease --parallel --daemon
+        working-directory: pr
+        run: |
+          echo "🏗️ Building PR APK from ${{ github.head_ref }} branch..."
+          ./gradlew assembleRelease --parallel --daemon
+          echo "✅ PR APK build completed"
 
       - name: List APK outputs
         run: |
-          echo "Listing APK outputs:"
-          find app/build/outputs/apk -name "*.apk"
-
-      # Download base APK from latest release
-      - name: Download base APK from latest release
-        run: |
-          # Get latest release info
-          LATEST_RELEASE=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases/latest)
-          
-          # Extract APK download URL
-          APK_URL=$(echo "$LATEST_RELEASE" | jq -r '.assets[] | select(.name | endswith(".apk")) | .browser_download_url')
-          
-          if [ -z "$APK_URL" ]; then
-            echo "Error: No APK found in latest release"
-            exit 1
-          fi
-          
-          echo "Downloading base APK from: $APK_URL"
-          curl -L -o base.apk "$APK_URL"
+          echo "📦 Build artifacts:"
+          echo "Base APK:"
+          ls -lh base.apk
+          echo ""
+          echo "PR APK:"
+          ls -lh pr/app/build/outputs/apk/release/app-release.apk
 
       # Run Diffuse comparison using the action
       - name: Run Diffuse
@@ -64,7 +77,7 @@ jobs:
         continue-on-error: true
         with:
           old-file-path: base.apk
-          new-file-path: app/build/outputs/apk/release/app-release.apk
+          new-file-path: pr/app/build/outputs/apk/release/app-release.apk
 
       # Post or update comment on PR
       - name: Find existing Diffuse comment
@@ -85,7 +98,9 @@ jobs:
           body: |
             ## 📊 APK Size Analysis
             
-            Comparing `${{ github.base_ref }}` (latest release) → `${{ github.head_ref }}` (this PR)
+            Comparing `${{ github.base_ref }}` (base branch) → `${{ github.head_ref }}` (this PR)
+            
+            Both APKs built with identical parameters for accurate comparison.
             
             ${{ steps.diffuse.outputs.diff-gh-comment || '⚠️ Diffuse analysis failed. Check the workflow logs for details.' }}
             
@@ -100,5 +115,5 @@ jobs:
           name: apks-comparison
           path: |
             base.apk
-            app/build/outputs/apk/release/app-release.apk
+            pr/app/build/outputs/apk/release/app-release.apk
           retention-days: 7
