@@ -28,11 +28,12 @@ class DeveloperSettingsPresenter(
     override fun present(): DeveloperSettingsScreenCircuit.State {
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
-        val featureFlags = FeatureFlags.getAllFlags(context)
+        var featureFlags by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
         var onboardingCompleted by remember { mutableStateOf(false) }
 
-        // Load initial onboarding state
+        // Load initial state
         LaunchedEffect(Unit) {
+            featureFlags = FeatureFlags.getAllFlags(context)
             onboardingCompleted = OnboardingManager.hasCompletedOnboarding(context)
         }
 
@@ -42,7 +43,11 @@ class DeveloperSettingsPresenter(
             eventSink = { event ->
                 when (event) {
                     is DeveloperSettingsScreenCircuit.Event.ToggleFeatureFlag -> {
-                        FeatureFlags.setFlag(context, event.key, event.value)
+                        coroutineScope.launch {
+                            FeatureFlags.setFlag(context, event.key, event.value)
+                            // Refresh feature flags to reflect the change
+                            featureFlags = FeatureFlags.getAllFlags(context)
+                        }
                     }
 
                     DeveloperSettingsScreenCircuit.Event.ResetOnboarding -> {
