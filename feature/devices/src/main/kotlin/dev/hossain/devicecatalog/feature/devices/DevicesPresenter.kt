@@ -76,9 +76,9 @@ class DevicesPresenter(
             remember(debouncedSearchQuery) {
                 try {
                     if (debouncedSearchQuery.isBlank()) {
-                        deviceRepository.getAllDevices()
+                        deviceRepository.getAllDevicesLatestFirst()
                     } else {
-                        deviceRepository.searchDevices(debouncedSearchQuery)
+                        deviceRepository.searchDevicesLatestFirst(debouncedSearchQuery)
                     }
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to get devices")
@@ -122,9 +122,9 @@ class DevicesPresenter(
                 )
                 val flow =
                     if (debouncedSearchQuery.isBlank()) {
-                        deviceRepository.getPagedDevices()
+                        deviceRepository.getPagedDevicesLatestFirst()
                     } else {
-                        deviceRepository.getPagedDevicesBySearch(debouncedSearchQuery)
+                        deviceRepository.getPagedDevicesBySearchLatestFirst(debouncedSearchQuery)
                     }
 
                 flow.map { pagingData ->

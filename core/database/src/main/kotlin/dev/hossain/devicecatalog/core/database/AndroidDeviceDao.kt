@@ -39,6 +39,24 @@ interface AndroidDeviceDao {
     @Query("SELECT * FROM device ORDER BY manufacturer ASC, model_name ASC")
     fun getAllDevicesWithRelations(): Flow<List<AndroidDeviceWithRelations>>
 
+    /**
+     * Get all devices sorted by latest SDK version first (descending order).
+     * This shows devices with the newest Android versions at the top.
+     */
+    @Transaction
+    @Query(
+        """
+        SELECT device.* FROM device 
+        LEFT JOIN (
+            SELECT device_id, MAX(sdk_version) as max_sdk 
+            FROM device_sdk 
+            GROUP BY device_id
+        ) sdk ON device._id = sdk.device_id
+        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        """,
+    )
+    fun getAllDevicesWithRelationsLatestFirst(): Flow<List<AndroidDeviceWithRelations>>
+
     @Transaction
     @Query("SELECT * FROM device WHERE _id = :deviceId")
     suspend fun getDeviceWithRelationsById(deviceId: Long): AndroidDeviceWithRelations?
@@ -74,6 +92,26 @@ interface AndroidDeviceDao {
     )
     fun searchDevicesWithRelations(search: String): Flow<List<AndroidDeviceWithRelations>>
 
+    /**
+     * Search devices sorted by latest SDK version first (descending order).
+     */
+    @Transaction
+    @Query(
+        """
+        SELECT device.* FROM device 
+        LEFT JOIN (
+            SELECT device_id, MAX(sdk_version) as max_sdk 
+            FROM device_sdk 
+            GROUP BY device_id
+        ) sdk ON device._id = sdk.device_id
+        WHERE manufacturer LIKE :search 
+           OR model_name LIKE :search
+           OR brand LIKE :search
+        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        """,
+    )
+    fun searchDevicesWithRelationsLatestFirst(search: String): Flow<List<AndroidDeviceWithRelations>>
+
     // ----------------------------------------------------------------
     // Paging queries with relationships
     // Performance: Uses indexes for sorting and searching
@@ -85,6 +123,25 @@ interface AndroidDeviceDao {
     @Transaction
     @Query("SELECT * FROM device ORDER BY manufacturer ASC, model_name ASC")
     fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations>
+
+    /**
+     * Get paged devices sorted by latest SDK version first (descending order).
+     * Orders by maximum SDK version (descending) to show latest devices first,
+     * then by manufacturer and model name for consistent sorting.
+     */
+    @Transaction
+    @Query(
+        """
+        SELECT device.* FROM device 
+        LEFT JOIN (
+            SELECT device_id, MAX(sdk_version) as max_sdk 
+            FROM device_sdk 
+            GROUP BY device_id
+        ) sdk ON device._id = sdk.device_id
+        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        """,
+    )
+    fun getPagedDevicesWithRelationsLatestFirst(): PagingSource<Int, AndroidDeviceWithRelations>
 
     /**
      * Get paged devices by search query with optimized LIKE queries on indexed columns.
@@ -101,6 +158,27 @@ interface AndroidDeviceDao {
         """,
     )
     fun getPagedDevicesWithRelationsBySearch(search: String): PagingSource<Int, AndroidDeviceWithRelations>
+
+    /**
+     * Get paged devices by search query sorted by latest SDK version first.
+     * Orders by maximum SDK version (descending) to show latest devices first.
+     */
+    @Transaction
+    @Query(
+        """
+        SELECT device.* FROM device 
+        LEFT JOIN (
+            SELECT device_id, MAX(sdk_version) as max_sdk 
+            FROM device_sdk 
+            GROUP BY device_id
+        ) sdk ON device._id = sdk.device_id
+        WHERE manufacturer LIKE :search 
+           OR model_name LIKE :search
+           OR brand LIKE :search
+        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        """,
+    )
+    fun getPagedDevicesWithRelationsBySearchLatestFirst(search: String): PagingSource<Int, AndroidDeviceWithRelations>
 
     // ----------------------------------------------------------------
     // Bulk insert operations with transactions

@@ -114,6 +114,7 @@ fun DeviceDetailsUi(
                 actions = {
                     // Show share button only when device is loaded
                     // Disabled for now, since there is already FAB for sharing
+
                     /*if (state.device != null) {
                         IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
                             Icon(
