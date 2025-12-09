@@ -70,6 +70,11 @@ fun AppNavigation(
         }
     }
 
+    // Track if onboarding screen is currently active
+    val isOnboardingActive = remember(backStack.size) {
+        backStack.any { it == OnboardingScreen }
+    }
+
     // Determine navigation type based on window size class
     val navigationType = windowSizeClass.toNavigationType()
     Timber.d("Navigation type: $navigationType for window size: ${windowSizeClass.widthSizeClass}")
@@ -77,72 +82,111 @@ fun AppNavigation(
     when (navigationType) {
         DeviceCatalogNavigationType.PERMANENT_NAVIGATION_DRAWER -> {
             // Expanded screens (large tablets, desktops): Use permanent navigation drawer
-            PermanentNavigationDrawer(
-                modifier = modifier,
-                drawerContent = {
-                    AppNavigationDrawerContent(
+            // Hide navigation drawer during onboarding for full-screen experience
+            if (isOnboardingActive) {
+                NavigableCircuitContent(
+                    navigator = navigator,
+                    backStack = backStack,
+                    modifier = modifier.fillMaxSize(),
+                    decoratorFactory =
+                        remember(navigator) {
+                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                        },
+                )
+            } else {
+                PermanentNavigationDrawer(
+                    modifier = modifier,
+                    drawerContent = {
+                        AppNavigationDrawerContent(
+                            selectedDestination = selectedDestination,
+                            onNavigationDestinationClicked = { destination ->
+                                selectedDestination = destination
+                                navigator.goTo(destination.screen)
+                            },
+                        )
+                    },
+                ) {
+                    NavigableCircuitContent(
+                        navigator = navigator,
+                        backStack = backStack,
+                        modifier = Modifier.fillMaxSize(),
+                        decoratorFactory =
+                            remember(navigator) {
+                                GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                            },
+                    )
+                }
+            }
+        }
+
+        DeviceCatalogNavigationType.NAVIGATION_RAIL -> {
+            // Medium screens (small tablets, foldables): Use navigation rail
+            // Hide navigation rail during onboarding for full-screen experience
+            if (isOnboardingActive) {
+                NavigableCircuitContent(
+                    navigator = navigator,
+                    backStack = backStack,
+                    modifier = modifier.fillMaxSize(),
+                    decoratorFactory =
+                        remember(navigator) {
+                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                        },
+                )
+            } else {
+                Row(modifier = modifier.fillMaxSize()) {
+                    AppNavigationRail(
                         selectedDestination = selectedDestination,
                         onNavigationDestinationClicked = { destination ->
                             selectedDestination = destination
                             navigator.goTo(destination.screen)
                         },
                     )
-                },
-            ) {
-                NavigableCircuitContent(
-                    navigator = navigator,
-                    backStack = backStack,
-                    modifier = Modifier.fillMaxSize(),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                        },
-                )
-            }
-        }
-
-        DeviceCatalogNavigationType.NAVIGATION_RAIL -> {
-            // Medium screens (small tablets, foldables): Use navigation rail
-            Row(modifier = modifier.fillMaxSize()) {
-                AppNavigationRail(
-                    selectedDestination = selectedDestination,
-                    onNavigationDestinationClicked = { destination ->
-                        selectedDestination = destination
-                        navigator.goTo(destination.screen)
-                    },
-                )
-                NavigableCircuitContent(
-                    navigator = navigator,
-                    backStack = backStack,
-                    modifier = Modifier.weight(1f),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
-                        },
-                )
+                    NavigableCircuitContent(
+                        navigator = navigator,
+                        backStack = backStack,
+                        modifier = Modifier.weight(1f),
+                        decoratorFactory =
+                            remember(navigator) {
+                                GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                            },
+                    )
+                }
             }
         }
 
         DeviceCatalogNavigationType.BOTTOM_NAVIGATION -> {
             // Compact screens (phones): Use bottom navigation
+            // Hide bottom navigation during onboarding for full-screen experience
             // Note: Screens provide their own Scaffold, so we don't wrap in another Scaffold here
-            Column(modifier = modifier.fillMaxSize()) {
+            if (isOnboardingActive) {
                 NavigableCircuitContent(
                     navigator = navigator,
                     backStack = backStack,
-                    modifier = Modifier.weight(1f),
+                    modifier = modifier.fillMaxSize(),
                     decoratorFactory =
                         remember(navigator) {
                             GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
                         },
                 )
-                AppBottomNavigation(
-                    selectedDestination = selectedDestination,
-                    onNavigationDestinationClicked = { destination ->
-                        selectedDestination = destination
-                        navigator.goTo(destination.screen)
-                    },
-                )
+            } else {
+                Column(modifier = modifier.fillMaxSize()) {
+                    NavigableCircuitContent(
+                        navigator = navigator,
+                        backStack = backStack,
+                        modifier = Modifier.weight(1f),
+                        decoratorFactory =
+                            remember(navigator) {
+                                GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                            },
+                    )
+                    AppBottomNavigation(
+                        selectedDestination = selectedDestination,
+                        onNavigationDestinationClicked = { destination ->
+                            selectedDestination = destination
+                            navigator.goTo(destination.screen)
+                        },
+                    )
+                }
             }
         }
     }
