@@ -51,6 +51,10 @@ securityCrypto = "1.1.0"
 # https://developer.android.com/jetpack/androidx/releases/appcompat
 appcompat = "1.7.1"
 
+# DataStore - Modern data storage solution
+# https://developer.android.com/jetpack/androidx/releases/datastore
+datastore = "1.1.1"
+
 # Room Database
 # https://developer.android.com/training/data-storage/room
 roomDb = "2.8.4"
@@ -132,6 +136,10 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 # AppCompat for language preferences
 # https://developer.android.com/jetpack/androidx/releases/appcompat
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+
+# DataStore - Modern data storage solution
+# https://developer.android.com/topic/libraries/architecture/datastore
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 

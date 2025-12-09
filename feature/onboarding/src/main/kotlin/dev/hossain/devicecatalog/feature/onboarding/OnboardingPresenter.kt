@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -14,6 +15,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
@@ -27,6 +29,7 @@ class OnboardingPresenter(
     @Composable
     override fun present(): OnboardingScreen.State {
         val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
         var currentPage by remember { mutableIntStateOf(0) }
         val totalPages = 3
 
@@ -46,16 +49,20 @@ class OnboardingPresenter(
                             Timber.d("Next clicked, moving to page: $currentPage")
                         } else {
                             // Last page, complete onboarding
-                            OnboardingManager.markOnboardingCompleted(context)
-                            Timber.d("Onboarding completed")
-                            navigator.pop()
+                            coroutineScope.launch {
+                                OnboardingManager.markOnboardingCompleted(context)
+                                Timber.d("Onboarding completed")
+                                navigator.pop()
+                            }
                         }
                     }
 
                     OnboardingScreen.Event.SkipClicked -> {
-                        OnboardingManager.markOnboardingCompleted(context)
-                        Timber.d("Onboarding skipped")
-                        navigator.pop()
+                        coroutineScope.launch {
+                            OnboardingManager.markOnboardingCompleted(context)
+                            Timber.d("Onboarding skipped")
+                            navigator.pop()
+                        }
                     }
                 }
             },

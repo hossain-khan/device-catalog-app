@@ -1,9 +1,11 @@
 package dev.hossain.devicecatalog.feature.settings
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -15,6 +17,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AssistedInject
@@ -24,8 +27,14 @@ class DeveloperSettingsPresenter(
     @Composable
     override fun present(): DeveloperSettingsScreenCircuit.State {
         val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
         val featureFlags = FeatureFlags.getAllFlags(context)
-        var onboardingCompleted by remember { mutableStateOf(OnboardingManager.hasCompletedOnboarding(context)) }
+        var onboardingCompleted by remember { mutableStateOf(false) }
+
+        // Load initial onboarding state
+        LaunchedEffect(Unit) {
+            onboardingCompleted = OnboardingManager.hasCompletedOnboarding(context)
+        }
 
         return DeveloperSettingsScreenCircuit.State(
             featureFlags = featureFlags,
@@ -37,9 +46,11 @@ class DeveloperSettingsPresenter(
                     }
 
                     DeveloperSettingsScreenCircuit.Event.ResetOnboarding -> {
-                        OnboardingManager.resetOnboarding(context)
-                        onboardingCompleted = false
-                        Timber.d("Onboarding reset - will show on next app launch")
+                        coroutineScope.launch {
+                            OnboardingManager.resetOnboarding(context)
+                            onboardingCompleted = false
+                            Timber.d("Onboarding reset - will show on next app launch")
+                        }
                     }
 
                     DeveloperSettingsScreenCircuit.Event.NavigateBack -> {
