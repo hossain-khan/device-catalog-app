@@ -589,7 +589,7 @@ private fun InfoRow(
         )
         IconButton(
             onClick = {
-                clipboard.setText(AnnotatedString(value))
+                clipboard.set(AnnotatedString(value))
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar("Copied to clipboard")
                 }
