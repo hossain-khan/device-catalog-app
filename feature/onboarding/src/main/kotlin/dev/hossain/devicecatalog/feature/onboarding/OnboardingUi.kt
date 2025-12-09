@@ -49,10 +49,17 @@ fun OnboardingUi(
 ) {
     val pagerState = rememberPagerState(pageCount = { state.totalPages })
 
-    // Sync pager state with presenter state
+    // Sync pager state with presenter state (pager -> state)
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             state.eventSink(OnboardingScreen.Event.PageChanged(page))
+        }
+    }
+
+    // Sync presenter state with pager state (state -> pager)
+    LaunchedEffect(state.currentPage) {
+        if (pagerState.currentPage != state.currentPage) {
+            pagerState.animateScrollToPage(state.currentPage)
         }
     }
 
