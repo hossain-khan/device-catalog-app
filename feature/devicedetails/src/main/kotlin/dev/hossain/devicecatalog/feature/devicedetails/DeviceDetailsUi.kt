@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.feature.devicedetails
 
+import android.content.ClipData
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
@@ -60,6 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -589,8 +591,9 @@ private fun InfoRow(
         )
         IconButton(
             onClick = {
-                clipboard.set(AnnotatedString(value))
                 coroutineScope.launch {
+                    val clipData = ClipData.newPlainText(label, value)
+                    clipboard.setClipEntry(ClipEntry(clipData))
                     snackbarHostState.showSnackbar("Copied to clipboard")
                 }
             },

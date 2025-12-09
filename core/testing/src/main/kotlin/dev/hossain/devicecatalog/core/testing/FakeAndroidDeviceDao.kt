@@ -159,7 +159,9 @@ class FakeAndroidDeviceDao : AndroidDeviceDao {
 
     // ----------------------------------------------------------------
     // Paging queries
-    // ----------------------------------------------------------------    override fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations> {
+    // ----------------------------------------------------------------
+
+    override fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations> {
         return FakePagingSource(devicesFlow.value.sortedWith(compareBy({ it.device.manufacturer }, { it.device.modelName })))
     }
     
