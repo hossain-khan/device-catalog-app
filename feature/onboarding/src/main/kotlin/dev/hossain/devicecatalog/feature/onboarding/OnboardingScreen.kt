@@ -33,7 +33,9 @@ data object OnboardingScreen : Screen {
         /**
          * User navigated to a specific page.
          */
-        data class PageChanged(val page: Int) : Event()
+        data class PageChanged(
+            val page: Int,
+        ) : Event()
 
         /**
          * User clicked the "Next" button.

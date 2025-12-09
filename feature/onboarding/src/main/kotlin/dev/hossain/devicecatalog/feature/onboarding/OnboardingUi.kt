@@ -154,9 +154,17 @@ private fun OnboardingPage(
         // Icon
         val icon =
             when (page) {
-                0 -> Icons.Default.Devices
-                1 -> Icons.Default.Search
-                else -> Icons.Default.Psychology
+                0 -> {
+                    Icons.Default.Devices
+                }
+
+                1 -> {
+                    Icons.Default.Search
+                }
+
+                else -> {
+                    Icons.Default.Psychology
+                }
             }
 
         Icon(
@@ -171,9 +179,17 @@ private fun OnboardingPage(
         // Title
         val title =
             when (page) {
-                0 -> "Welcome to Android Device Universe"
-                1 -> "Explore Thousands of Devices"
-                else -> "Test Your Knowledge"
+                0 -> {
+                    "Welcome to Android Device Universe"
+                }
+
+                1 -> {
+                    "Explore Thousands of Devices"
+                }
+
+                else -> {
+                    "Test Your Knowledge"
+                }
             }
 
         Text(
@@ -188,15 +204,20 @@ private fun OnboardingPage(
         // Description
         val description =
             when (page) {
-                0 ->
+                0 -> {
                     "Your comprehensive guide to exploring the world of Android devices. " +
                         "Browse, search, and discover detailed specifications of thousands of devices."
-                1 ->
+                }
+
+                1 -> {
                     "Use powerful search and filtering to find exactly what you're looking for. " +
                         "Filter by manufacturer, form factor, RAM, and Android version."
-                else ->
+                }
+
+                else -> {
                     "Challenge yourself with interactive quizzes, brand recognition challenges, " +
                         "and device comparison tools. Learn while having fun!"
+                }
             }
 
         Text(
