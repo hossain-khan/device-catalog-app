@@ -113,14 +113,15 @@ fun DeviceDetailsUi(
                 },
                 actions = {
                     // Show share button only when device is loaded
-                    if (state.device != null) {
+                    // Disabled for now, since there is already FAB for sharing
+                    /*if (state.device != null) {
                         IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
                             Icon(
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "Share device details",
                             )
                         }
-                    }
+                    }*/
                 },
                 scrollBehavior = scrollBehavior,
                 colors =
@@ -405,7 +406,11 @@ private fun TechnicalSpecsCard(
 ) {
     ExpandableInfoCard(title = "Technical Specifications", defaultExpanded = true) {
         if (device.ram.isNotBlank()) {
-            InfoRow(label = "RAM", value = RamFormatter.formatRamToGb(device.ram), snackbarHostState = snackbarHostState)
+            InfoRow(
+                label = "RAM",
+                value = "${RamFormatter.formatRamToGb(device.ram)} (${device.ram})",
+                snackbarHostState = snackbarHostState,
+            )
         }
         if (device.processorName.isNotBlank()) {
             InfoRow(label = "Processor", value = device.processorName, snackbarHostState = snackbarHostState)
