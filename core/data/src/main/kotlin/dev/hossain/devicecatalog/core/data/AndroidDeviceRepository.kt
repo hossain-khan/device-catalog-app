@@ -48,6 +48,25 @@ class AndroidDeviceRepository
         }
 
         /**
+         * Get paged list of devices sorted by latest SDK version first.
+         */
+        fun getPagedDevicesLatestFirst(): Flow<PagingData<AndroidDeviceWithRelations>> {
+            Timber.d("Creating paged devices flow sorted by latest SDK version first")
+            return Pager(
+                config =
+                    PagingConfig(
+                        pageSize = 30,
+                        initialLoadSize = 45,
+                        prefetchDistance = 15,
+                        enablePlaceholders = true,
+                        maxSize = 150,
+                    ),
+            ) {
+                deviceDao.getPagedDevicesWithRelationsLatestFirst()
+            }.flow
+        }
+
+        /**
          * Get paged list of devices filtered by search query with relationships.
          *
          * Performance optimizations for search results:
@@ -73,12 +92,43 @@ class AndroidDeviceRepository
         }
 
         /**
+         * Get paged list of devices filtered by search query sorted by latest SDK version first.
+         */
+        fun getPagedDevicesBySearchLatestFirst(query: String): Flow<PagingData<AndroidDeviceWithRelations>> {
+            val searchQuery = "%$query%"
+            Timber.d("Creating paged devices flow with search: $query (sorted by SDK)")
+            return Pager(
+                config =
+                    PagingConfig(
+                        pageSize = 25,
+                        initialLoadSize = 40,
+                        prefetchDistance = 12,
+                        enablePlaceholders = true,
+                        maxSize = 120,
+                    ),
+            ) {
+                deviceDao.getPagedDevicesWithRelationsBySearchLatestFirst(searchQuery)
+            }.flow
+        }
+
+        /**
          * Get all devices with relationships as domain models.
          */
         fun getAllDevices(): Flow<List<DeviceInfo>> {
             Timber.d("Getting all devices with relationships")
             return deviceDao.getAllDevicesWithRelations().map { devicesWithRelations ->
                 Timber.d("Retrieved ${devicesWithRelations.size} devices from database")
+                devicesWithRelations.map { it.toModel() }
+            }
+        }
+
+        /**
+         * Get all devices sorted by latest SDK version first (newest Android versions at the top).
+         */
+        fun getAllDevicesLatestFirst(): Flow<List<DeviceInfo>> {
+            Timber.d("Getting all devices sorted by latest SDK version first")
+            return deviceDao.getAllDevicesWithRelationsLatestFirst().map { devicesWithRelations ->
+                Timber.d("Retrieved ${devicesWithRelations.size} devices from database (sorted by SDK)")
                 devicesWithRelations.map { it.toModel() }
             }
         }
@@ -103,6 +153,18 @@ class AndroidDeviceRepository
             Timber.d("Searching devices with query: $query")
             return deviceDao.searchDevicesWithRelations(searchQuery).map { devicesWithRelations ->
                 Timber.d("Search returned ${devicesWithRelations.size} devices")
+                devicesWithRelations.map { it.toModel() }
+            }
+        }
+
+        /**
+         * Search devices sorted by latest SDK version first (newest Android versions at the top).
+         */
+        fun searchDevicesLatestFirst(query: String): Flow<List<DeviceInfo>> {
+            val searchQuery = "%$query%"
+            Timber.d("Searching devices with query: $query (sorted by SDK)")
+            return deviceDao.searchDevicesWithRelationsLatestFirst(searchQuery).map { devicesWithRelations ->
+                Timber.d("Search returned ${devicesWithRelations.size} devices (sorted by SDK)")
                 devicesWithRelations.map { it.toModel() }
             }
         }

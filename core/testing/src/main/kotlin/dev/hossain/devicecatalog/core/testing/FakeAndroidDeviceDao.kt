@@ -132,11 +132,35 @@ class FakeAndroidDeviceDao : AndroidDeviceDao {
             }.sortedWith(compareBy({ it.device.manufacturer }, { it.device.modelName }))
         }
     }
-    
+
+    // ----------------------------------------------------------------
+    // Latest First queries (sorted by SDK version descending)
+    // ----------------------------------------------------------------
+
+    override fun getAllDevicesWithRelationsLatestFirst(): Flow<List<AndroidDeviceWithRelations>> {
+        // For testing, just return devices sorted alphabetically (fake doesn't need real SDK sorting)
+        return getAllDevicesWithRelations()
+    }
+
+    override fun searchDevicesWithRelationsLatestFirst(search: String): Flow<List<AndroidDeviceWithRelations>> {
+        // For testing, just return filtered devices sorted alphabetically
+        return searchDevicesWithRelations(search)
+    }
+
+    override fun getPagedDevicesWithRelationsLatestFirst(): PagingSource<Int, AndroidDeviceWithRelations> {
+        // For testing, just return paginated devices sorted alphabetically
+        return getPagedDevicesWithRelations()
+    }
+
+    override fun getPagedDevicesWithRelationsBySearchLatestFirst(search: String): PagingSource<Int, AndroidDeviceWithRelations> {
+        // For testing, just return filtered paginated devices sorted alphabetically
+        return getPagedDevicesWithRelationsBySearch(search)
+    }
+
     // ----------------------------------------------------------------
     // Paging queries
     // ----------------------------------------------------------------
-    
+
     override fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations> {
         return FakePagingSource(devicesFlow.value.sortedWith(compareBy({ it.device.manufacturer }, { it.device.modelName })))
     }
