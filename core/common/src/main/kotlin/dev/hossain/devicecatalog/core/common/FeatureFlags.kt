@@ -39,6 +39,16 @@ object FeatureFlags {
     private val EXPORT_PDF_KEY = booleanPreferencesKey(KEY_EXPORT_PDF)
     private val DEEP_LINKING_KEY = booleanPreferencesKey(KEY_DEEP_LINKING)
 
+    // Map of key names to preference keys for efficient lookup
+    private val keyNameToPreferenceKey =
+        mapOf(
+            KEY_HAPTIC_FEEDBACK to HAPTIC_FEEDBACK_KEY,
+            KEY_ADVANCED_STATISTICS to ADVANCED_STATISTICS_KEY,
+            KEY_DEVICE_COMPARISON to DEVICE_COMPARISON_KEY,
+            KEY_EXPORT_PDF to EXPORT_PDF_KEY,
+            KEY_DEEP_LINKING to DEEP_LINKING_KEY,
+        )
+
     // Default values
     private val defaultFlags =
         mapOf(
@@ -142,15 +152,7 @@ object FeatureFlags {
         context: Context,
         key: Preferences.Key<Boolean>,
         keyName: String,
-    ): Boolean {
-        val defaultValue = defaultFlags[keyName] ?: false
-        val value =
-            context.featureFlagsDataStore.data.map { preferences ->
-                preferences[key] ?: defaultValue
-            }.first()
-        Timber.v("Feature flag $keyName: $value")
-        return value
-    }
+    ): Boolean = getFlagFlow(context, key, keyName).first()
 
     /**
      * Sets a feature flag value (for testing and debugging).
@@ -161,7 +163,8 @@ object FeatureFlags {
         key: String,
         value: Boolean,
     ) {
-        val preferenceKey = booleanPreferencesKey(key)
+        // Use the cached preference key if available, otherwise create a new one
+        val preferenceKey = keyNameToPreferenceKey[key] ?: booleanPreferencesKey(key)
         context.featureFlagsDataStore.edit { preferences ->
             preferences[preferenceKey] = value
         }
@@ -175,7 +178,7 @@ object FeatureFlags {
     suspend fun getAllFlags(context: Context): Map<String, Boolean> =
         context.featureFlagsDataStore.data.map { preferences ->
             defaultFlags.mapValues { (key, defaultValue) ->
-                val preferenceKey = booleanPreferencesKey(key)
+                val preferenceKey = keyNameToPreferenceKey[key] ?: booleanPreferencesKey(key)
                 preferences[preferenceKey] ?: defaultValue
             }
         }.first()
