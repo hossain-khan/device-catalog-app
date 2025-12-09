@@ -57,12 +57,6 @@ class OnboardingPresenter(
                         Timber.d("Onboarding skipped")
                         navigator.pop()
                     }
-
-                    OnboardingScreen.Event.CompleteOnboarding -> {
-                        OnboardingManager.markOnboardingCompleted(context)
-                        Timber.d("Onboarding completed via direct action")
-                        navigator.pop()
-                    }
                 }
             },
         )

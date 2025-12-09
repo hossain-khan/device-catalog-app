@@ -46,10 +46,5 @@ data object OnboardingScreen : Screen {
          * User clicked the "Skip" button.
          */
         data object SkipClicked : Event()
-
-        /**
-         * User completed the onboarding.
-         */
-        data object CompleteOnboarding : Event()
     }
 }
