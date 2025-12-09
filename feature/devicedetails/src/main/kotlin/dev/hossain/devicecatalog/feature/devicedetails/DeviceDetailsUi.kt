@@ -60,7 +60,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.heading
@@ -564,7 +564,7 @@ private fun InfoRow(
     value: String,
     snackbarHostState: SnackbarHostState,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboard = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
 
     Row(
@@ -589,7 +589,7 @@ private fun InfoRow(
         )
         IconButton(
             onClick = {
-                clipboardManager.setText(AnnotatedString(value))
+                clipboard.setText(AnnotatedString(value))
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar("Copied to clipboard")
                 }
