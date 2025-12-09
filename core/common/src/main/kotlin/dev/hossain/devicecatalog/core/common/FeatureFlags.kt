@@ -164,7 +164,12 @@ object FeatureFlags {
         value: Boolean,
     ) {
         // Use the cached preference key if available, otherwise create a new one
-        val preferenceKey = keyNameToPreferenceKey[key] ?: booleanPreferencesKey(key)
+        val preferenceKey =
+            keyNameToPreferenceKey[key]
+                ?: run {
+                    Timber.w("Unknown feature flag key: $key. Creating dynamic preference key.")
+                    booleanPreferencesKey(key)
+                }
         context.featureFlagsDataStore.edit { preferences ->
             preferences[preferenceKey] = value
         }
@@ -178,7 +183,12 @@ object FeatureFlags {
     suspend fun getAllFlags(context: Context): Map<String, Boolean> =
         context.featureFlagsDataStore.data.map { preferences ->
             defaultFlags.mapValues { (key, defaultValue) ->
-                val preferenceKey = keyNameToPreferenceKey[key] ?: booleanPreferencesKey(key)
+                val preferenceKey =
+                    keyNameToPreferenceKey[key]
+                        ?: run {
+                            Timber.w("Unknown feature flag key in defaultFlags: $key. Creating dynamic preference key.")
+                            booleanPreferencesKey(key)
+                        }
                 preferences[preferenceKey] ?: defaultValue
             }
         }.first()
