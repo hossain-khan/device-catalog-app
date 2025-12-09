@@ -19,4 +19,9 @@ object PreferenceKeys {
      * Secure preferences file name (used with EncryptedSharedPreferences)
      */
     const val SECURE_PREFERENCES = "secure_preferences"
+
+    /**
+     * Key for storing onboarding completion status
+     */
+    const val ONBOARDING_COMPLETED = "onboarding_completed"
 }

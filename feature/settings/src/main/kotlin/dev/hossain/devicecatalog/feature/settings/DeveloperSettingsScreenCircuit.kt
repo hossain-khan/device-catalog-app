@@ -9,6 +9,7 @@ import kotlinx.parcelize.Parcelize
 data object DeveloperSettingsScreenCircuit : Screen {
     data class State(
         val featureFlags: Map<String, Boolean>,
+        val onboardingCompleted: Boolean,
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -17,6 +18,8 @@ data object DeveloperSettingsScreenCircuit : Screen {
             val key: String,
             val value: Boolean,
         ) : Event()
+
+        data object ResetOnboarding : Event()
 
         data object NavigateBack : Event()
     }

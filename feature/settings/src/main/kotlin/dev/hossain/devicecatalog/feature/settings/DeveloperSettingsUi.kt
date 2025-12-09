@@ -95,6 +95,25 @@ fun DeveloperSettingsUi(
                 )
             }
 
+            // Onboarding Section
+            item {
+                Text(
+                    text = "Onboarding",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 16.dp),
+                )
+            }
+
+            item {
+                OnboardingResetCard(
+                    onboardingCompleted = state.onboardingCompleted,
+                    onReset = {
+                        state.eventSink(DeveloperSettingsScreenCircuit.Event.ResetOnboarding)
+                    },
+                )
+            }
+
             // Performance Metrics Section
             item {
                 Text(
@@ -142,6 +161,61 @@ private fun FeatureFlagItem(
             Switch(
                 checked = enabled,
                 onCheckedChange = onToggle,
+            )
+        }
+    }
+}
+
+@Composable
+private fun OnboardingResetCard(
+    onboardingCompleted: Boolean,
+    onReset: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            ),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Onboarding Status",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = if (onboardingCompleted) "Completed" else "Not Completed",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (onboardingCompleted) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.error
+                        },
+                )
+            }
+
+            androidx.compose.material3.Button(
+                onClick = onReset,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = onboardingCompleted,
+            ) {
+                Text("Reset Onboarding")
+            }
+
+            Text(
+                text = "Reset onboarding to see the welcome screens again on next app launch.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -212,6 +286,7 @@ private fun DeveloperSettingsUiPreviewLight() {
             state =
                 DeveloperSettingsScreenCircuit.State(
                     featureFlags = mapOf("feature_advanced_filtering" to true, "feature_experimental" to false),
+                    onboardingCompleted = true,
                     eventSink = {},
                 ),
         )
@@ -230,6 +305,7 @@ private fun DeveloperSettingsUiPreviewDark() {
             state =
                 DeveloperSettingsScreenCircuit.State(
                     featureFlags = mapOf("feature_advanced_filtering" to true, "feature_experimental" to false),
+                    onboardingCompleted = true,
                     eventSink = {},
                 ),
         )

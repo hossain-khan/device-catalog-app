@@ -20,6 +20,7 @@ import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,11 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.rememberCircuitNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
+import dev.hossain.devicecatalog.core.common.OnboardingManager
+import dev.hossain.devicecatalog.feature.onboarding.OnboardingScreen
 import dev.hossain.devicecatalog.ui.adaptive.DeviceCatalogNavigationType
 import dev.hossain.devicecatalog.ui.adaptive.toNavigationType
 import timber.log.Timber
@@ -50,11 +54,20 @@ fun AppNavigation(
     windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     val landingScreen: NavigationDestination = NavigationDestination.destinations.first()
     val backStack = rememberSaveableBackStack(root = landingScreen.screen)
     val navigator = rememberCircuitNavigator(backStack)
     var selectedDestination: NavigationDestination by rememberSaveable {
         mutableStateOf(landingScreen)
+    }
+
+    // Check if user needs onboarding
+    LaunchedEffect(Unit) {
+        if (!OnboardingManager.hasCompletedOnboarding(context)) {
+            Timber.d("First time user detected, showing onboarding")
+            navigator.goTo(OnboardingScreen)
+        }
     }
 
     // Determine navigation type based on window size class
