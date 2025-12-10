@@ -37,6 +37,7 @@ include(":core:testing")
 include(":core:ui")
 
 // Feature modules
+include(":feature:aboutapp")
 include(":feature:devices")
 include(":feature:devicedetails")
 include(":feature:devicecomparison")

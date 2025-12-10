@@ -8,9 +8,9 @@ import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.screen.Screen
+import dev.hossain.devicecatalog.feature.aboutapp.AboutScreen
 import dev.hossain.devicecatalog.feature.devices.DevicesScreen
 import dev.hossain.devicecatalog.feature.quizhub.QuizHubScreen
-import dev.hossain.devicecatalog.feature.statistics.AboutScreen
 import dev.hossain.devicecatalog.feature.statistics.DeviceStatsScreen
 import kotlinx.parcelize.Parcelize
 

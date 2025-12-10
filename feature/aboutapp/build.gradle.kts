@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.hossain.devicecatalog.feature.statistics"
+    namespace = "dev.hossain.devicecatalog.feature.aboutapp"
 
     buildFeatures {
         buildConfig = true
@@ -14,11 +14,10 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
-    implementation(project(":core:model"))
-    implementation(project(":core:ui"))
-    implementation(project(":feature:statsexplorer"))
+
+    // Cross-feature navigation (aboutapp navigates to developer settings in debug builds)
+    implementation(project(":feature:settings"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.feature.statistics
+package dev.hossain.devicecatalog.feature.aboutapp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogOutlinedButton
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
-import dev.hossain.devicecatalog.feature.statistics.BuildConfig
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = AboutScreen::class, scope = AppScope::class)

@@ -116,6 +116,7 @@ dependencies {
     implementation(project(":core:ui"))
 
     // Feature modules
+    implementation(project(":feature:aboutapp"))
     implementation(project(":feature:devices"))
     implementation(project(":feature:devicedetails"))
     implementation(project(":feature:dreamphone"))
