@@ -2,6 +2,7 @@ package dev.hossain.devicecatalog.core.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import kotlin.math.pow
 
 /**
  * Color scheme for device type backgrounds.
@@ -28,7 +29,7 @@ private val deviceTypeColorsLight =
         wearable = Color(0xFFFDD9B3), // Peach - Soft and friendly
         automotive = Color(0xFFB3D4E5), // Sky Blue - Tech and innovation
         chromebook = Color(0xFFE5D4B3), // Beige/Tan - Professional
-        gaming = Color(0xFFD9B3E5), // Purple - Gaming and entertainment
+        gaming = Color(0xFFE5B3D4), // Rose/Pink-Purple - Gaming and entertainment
     )
 
 /**
@@ -42,7 +43,7 @@ private val deviceTypeColorsDark =
         wearable = Color(0xFFD9A76D), // Dark Peach - Warm tone
         automotive = Color(0xFF6D9DB8), // Dark Sky Blue - Professional
         chromebook = Color(0xFFC4A76D), // Dark Tan - Neutral and warm
-        gaming = Color(0xFF9C6DAA), // Dark Purple - Rich gaming feel
+        gaming = Color(0xFFBD6D9C), // Dark Rose - Rich gaming feel
     )
 
 /**
@@ -71,7 +72,7 @@ private fun Color.luminance(): Float {
         return if (component <= 0.03928f) {
             component / 12.92f
         } else {
-            Math.pow(((component + 0.055) / 1.055).toDouble(), 2.4).toFloat()
+            ((component + 0.055) / 1.055).pow(2.4).toFloat()
         }
     }
 
