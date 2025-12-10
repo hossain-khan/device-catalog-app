@@ -105,6 +105,8 @@ fun MetricCard(
                 Text(
                     text = metric.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
+                    // Slightly reduced alpha (0.85f) for subtitle to distinguish from main text
+                    // while maintaining good readability on vibrant backgrounds
                     color = textColor.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center,
                 )

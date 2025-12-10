@@ -131,6 +131,8 @@ private fun DeviceStatsContent(
         // Swipeable metric cards
         item {
             val chartColors = MaterialTheme.chartColors
+            // Using Color.White for text because chartColors are vibrant backgrounds
+            // designed with white text in mind for high contrast in both light/dark modes
             val metricCards =
                 listOf(
                     MetricCardData(
