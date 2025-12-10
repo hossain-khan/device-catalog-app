@@ -133,41 +133,49 @@ private fun DeviceStatsContent(
             val chartColors = MaterialTheme.chartColors
             // Using Color.White for text because chartColors are vibrant backgrounds
             // designed with white text in mind for high contrast in both light/dark modes
+
+            // Safe color access with fallback to primary color scheme
+            val colorForTotalDevices = chartColors.getOrElse(0) { MaterialTheme.colorScheme.primary }
+            val colorForManufacturers = chartColors.getOrElse(1) { MaterialTheme.colorScheme.secondary }
+            val colorForFormFactors = chartColors.getOrElse(2) { MaterialTheme.colorScheme.tertiary }
+            val colorForRamVariants = chartColors.getOrElse(3) { MaterialTheme.colorScheme.primaryContainer }
+            val colorForSdkVersions = chartColors.getOrElse(4) { MaterialTheme.colorScheme.secondaryContainer }
+
             val metricCards =
                 listOf(
                     MetricCardData(
                         title = "Total Devices",
                         value = stats.totalDevices.toString(),
                         subtitle = "Android devices in catalog",
-                        backgroundColor = chartColors[0],
+                        backgroundColor = colorForTotalDevices,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "Manufacturers",
                         value = stats.totalManufacturers.toString(),
                         subtitle = "Unique device manufacturers",
-                        backgroundColor = chartColors[1],
+                        backgroundColor = colorForManufacturers,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "Form Factors",
                         value = stats.totalFormFactors.toString(),
                         subtitle = "Different device types",
-                        backgroundColor = chartColors[2],
+                        backgroundColor = colorForFormFactors,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "RAM Variants",
                         value = stats.ramDistribution.size.toString(),
                         subtitle = "Memory configurations",
-                        backgroundColor = chartColors[3],
+                        backgroundColor = colorForRamVariants,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "SDK Versions",
                         value = stats.sdkVersionDistribution.size.toString(),
                         subtitle = "Supported Android versions",
-                        backgroundColor = chartColors[4],
+                        backgroundColor = colorForSdkVersions,
                         textColor = Color.White,
                     ),
                 )
