@@ -1,4 +1,4 @@
-package dev.hossain.devicecatalog.feature.statistics
+package dev.hossain.devicecatalog.feature.aboutapp
 
 import android.content.Context
 import android.content.Intent
