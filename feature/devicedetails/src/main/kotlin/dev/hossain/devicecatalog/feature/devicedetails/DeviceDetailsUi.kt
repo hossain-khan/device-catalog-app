@@ -61,6 +61,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -80,6 +82,7 @@ import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeBolderColors
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
 import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.launch
@@ -322,11 +325,15 @@ private fun DeviceDetailsContent(
 @Composable
 private fun DeviceHeaderCard(device: AndroidDevice) {
     val deviceTypeColors = deviceTypeColors()
+    val deviceTypeBolderColors = deviceTypeBolderColors()
+    val deviceColor = deviceTypeColors.colorFor(device.formFactor)
+    val darkerDeviceColor = deviceTypeBolderColors.colorFor(device.formFactor)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = deviceColor,
             ),
     ) {
         Row(
@@ -342,7 +349,7 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                     Modifier
                         .size(64.dp)
                         .clip(RoundedCornerShape(12.dp)),
-                color = deviceTypeColors.colorFor(device.formFactor),
+                color = darkerDeviceColor,
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
@@ -374,18 +381,18 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                     text = device.modelName,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = "${device.manufacturer} • ${device.brand}",
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                 )
 
                 Text(
                     text = device.formFactor.value,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 )
             }
         }
