@@ -47,6 +47,34 @@ private val deviceTypeColorsDark =
     )
 
 /**
+ * Light theme bolder/darker device type colors - for emphasis like icon backgrounds
+ */
+private val deviceTypeBolderColorsLight =
+    DeviceTypeColors(
+        phone = Color(0xFF5FA894), // Darker Teal - Bolder mint
+        tablet = Color(0xFF9B5FB8), // Darker Lavender - Bolder purple
+        tv = Color(0xFFFF6B6B), // Darker Coral - Bolder pink/red
+        wearable = Color(0xFFE5A85C), // Darker Peach - Bolder orange
+        automotive = Color(0xFF5F8FA8), // Darker Sky Blue - Bolder blue
+        chromebook = Color(0xFFB89F5F), // Darker Tan - Bolder brown
+        gaming = Color(0xFFB85F8F), // Darker Rose - Bolder pink
+    )
+
+/**
+ * Dark theme bolder device type colors - even more luminous for emphasis
+ */
+private val deviceTypeBolderColorsDark =
+    DeviceTypeColors(
+        phone = Color(0xFF3A6B5E), // Even darker teal
+        tablet = Color(0xFF6B3A7D), // Even darker lavender
+        tv = Color(0xFFB85757), // Even darker coral
+        wearable = Color(0xFFB8854E), // Even darker peach
+        automotive = Color(0xFF4E7B99), // Even darker sky blue
+        chromebook = Color(0xFFA5854E), // Even darker tan
+        gaming = Color(0xFF9E4E7B), // Even darker rose
+    )
+
+/**
  * Returns the appropriate device type colors based on the current color scheme.
  */
 @Composable
@@ -58,6 +86,20 @@ fun deviceTypeColors(): DeviceTypeColors {
             deviceTypeColorsDark
         } else {
             deviceTypeColorsLight
+        }
+    }
+}
+
+/**
+ * Returns the bolder/darker device type colors for emphasis (e.g., icon backgrounds).
+ */
+@Composable
+fun deviceTypeBolderColors(): DeviceTypeColors {
+    return androidx.compose.material3.MaterialTheme.colorScheme.let { colorScheme ->
+        if (colorScheme.surface.luminance() < 0.5f) {
+            deviceTypeBolderColorsDark
+        } else {
+            deviceTypeBolderColorsLight
         }
     }
 }
