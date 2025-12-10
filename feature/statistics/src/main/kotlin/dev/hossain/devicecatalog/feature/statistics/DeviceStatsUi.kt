@@ -49,6 +49,7 @@ import dev.hossain.devicecatalog.core.data.ManufacturerCount
 import dev.hossain.devicecatalog.core.data.RamCount
 import dev.hossain.devicecatalog.core.data.ScreenDensityCount
 import dev.hossain.devicecatalog.core.data.SdkVersionCount
+import dev.hossain.devicecatalog.core.designsystem.theme.chartColors
 import dev.hossain.devicecatalog.feature.statistics.components.BarChartData
 import dev.hossain.devicecatalog.feature.statistics.components.ChartLegend
 import dev.hossain.devicecatalog.feature.statistics.components.HorizontalBarChart
@@ -129,32 +130,43 @@ private fun DeviceStatsContent(
     ) {
         // Swipeable metric cards
         item {
+            val chartColors = MaterialTheme.chartColors
             val metricCards =
                 listOf(
                     MetricCardData(
                         title = "Total Devices",
                         value = stats.totalDevices.toString(),
                         subtitle = "Android devices in catalog",
+                        backgroundColor = chartColors[0],
+                        textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "Manufacturers",
                         value = stats.totalManufacturers.toString(),
                         subtitle = "Unique device manufacturers",
+                        backgroundColor = chartColors[1],
+                        textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "Form Factors",
                         value = stats.totalFormFactors.toString(),
                         subtitle = "Different device types",
+                        backgroundColor = chartColors[2],
+                        textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "RAM Variants",
                         value = stats.ramDistribution.size.toString(),
                         subtitle = "Memory configurations",
+                        backgroundColor = chartColors[3],
+                        textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "SDK Versions",
                         value = stats.sdkVersionDistribution.size.toString(),
                         subtitle = "Supported Android versions",
+                        backgroundColor = chartColors[4],
+                        textColor = Color.White,
                     ),
                 )
             SwipeableMetricCards(metrics = metricCards)
