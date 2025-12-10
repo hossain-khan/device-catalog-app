@@ -73,7 +73,7 @@ fun MetricCard(
 ) {
     val backgroundColor = metric.backgroundColor ?: MaterialTheme.colorScheme.primaryContainer
     val textColor = metric.textColor ?: MaterialTheme.colorScheme.onPrimaryContainer
-    
+
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
