@@ -71,12 +71,18 @@ fun MetricCard(
     metric: MetricCardData,
     modifier: Modifier = Modifier,
 ) {
+    val defaultBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+    val defaultTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+
+    val backgroundColor = metric.backgroundColor ?: defaultBackgroundColor
+    val textColor = metric.textColor ?: defaultTextColor
+
     Card(
         modifier = modifier,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = backgroundColor,
             ),
     ) {
         Column(
@@ -86,7 +92,7 @@ fun MetricCard(
             Text(
                 text = metric.title,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = textColor,
                 textAlign = TextAlign.Center,
             )
 
@@ -94,7 +100,7 @@ fun MetricCard(
                 text = metric.value,
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
+                color = textColor,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
 
@@ -102,7 +108,9 @@ fun MetricCard(
                 Text(
                     text = metric.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                    // Slightly reduced alpha (0.85f) for subtitle to distinguish from main text
+                    // while maintaining good readability on vibrant backgrounds
+                    color = textColor.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center,
                 )
             }
@@ -117,6 +125,8 @@ data class MetricCardData(
     val title: String,
     val value: String,
     val subtitle: String? = null,
+    val backgroundColor: Color? = null,
+    val textColor: Color? = null,
 )
 
 /**
