@@ -80,6 +80,7 @@ import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
 import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.launch
 
@@ -320,6 +321,7 @@ private fun DeviceDetailsContent(
 
 @Composable
 private fun DeviceHeaderCard(device: AndroidDevice) {
+    val deviceTypeColors = deviceTypeColors()
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors =
@@ -340,7 +342,7 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                     Modifier
                         .size(64.dp)
                         .clip(RoundedCornerShape(12.dp)),
-                color = MaterialTheme.colorScheme.primary,
+                color = deviceTypeColors.colorFor(device.formFactor),
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
@@ -359,7 +361,7 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                             ),
                         contentDescription = null,
                         modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }

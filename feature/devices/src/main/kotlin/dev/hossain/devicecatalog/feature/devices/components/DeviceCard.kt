@@ -39,6 +39,7 @@ import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
 
 /**
  * Material 3 device card component with proper touch targets and accessibility support.
@@ -82,12 +83,13 @@ fun DeviceCard(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             // Device placeholder icon with background
+            val deviceTypeColors = deviceTypeColors()
             Surface(
                 modifier =
                     Modifier
                         .size(56.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                color = MaterialTheme.colorScheme.primaryContainer,
+                color = deviceTypeColors.colorFor(device.formFactor),
             ) {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -108,7 +110,7 @@ fun DeviceCard(
                             ),
                         contentDescription = null,
                         modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }
