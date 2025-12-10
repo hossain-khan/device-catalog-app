@@ -71,8 +71,11 @@ fun MetricCard(
     metric: MetricCardData,
     modifier: Modifier = Modifier,
 ) {
-    val backgroundColor = metric.backgroundColor ?: MaterialTheme.colorScheme.primaryContainer
-    val textColor = metric.textColor ?: MaterialTheme.colorScheme.onPrimaryContainer
+    val defaultBackgroundColor = MaterialTheme.colorScheme.primaryContainer
+    val defaultTextColor = MaterialTheme.colorScheme.onPrimaryContainer
+
+    val backgroundColor = metric.backgroundColor ?: defaultBackgroundColor
+    val textColor = metric.textColor ?: defaultTextColor
 
     Card(
         modifier = modifier,
