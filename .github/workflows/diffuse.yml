@@ -7,13 +7,9 @@ on:
       # Documentation files
       - '**.md'
       - 'docs/**'
-      - '.github/copilot-instructions.md'
       
       # Project resources (banners, screenshots, design files)
       - 'project-resources/**'
-      
-      # GitHub workflow files (changes to workflows don't affect APK)
-      - '.github/workflows/**'
       
       # DevContainer configuration
       - '.devcontainer/**'
