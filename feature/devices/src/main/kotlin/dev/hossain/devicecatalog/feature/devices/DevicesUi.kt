@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -72,12 +73,6 @@ fun DevicesUi(
     state: DevicesScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    Timber.d(
-        "DevicesUi: isLoading=${state.isLoading}, isRefreshing=${state.isRefreshing}, " +
-            "isEmpty=${state.isEmpty}, usePaging=${state.usePaging}, " +
-            "searchQuery=${state.searchQuery}, resultCount=${state.searchResultCount}",
-    )
-
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutConfig = rememberDeviceListLayoutConfig()
 
@@ -117,6 +112,7 @@ fun DevicesUi(
                 contentDescription =
                     "Device catalog screen with ${state.searchResultCount} devices"
             },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
