@@ -3,6 +3,30 @@ name: APK Size Analysis with Diffuse
 on:
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      # Documentation files
+      - '**.md'
+      - 'docs/**'
+      - '.github/copilot-instructions.md'
+      
+      # Project resources (banners, screenshots, design files)
+      - 'project-resources/**'
+      
+      # GitHub workflow files (changes to workflows don't affect APK)
+      - '.github/workflows/**'
+      
+      # DevContainer configuration
+      - '.devcontainer/**'
+      
+      # Configuration files that don't affect builds
+      - 'renovate.json'
+      - '.editorconfig'
+      - '.gitignore'
+      - 'LICENSE'
+      
+      # Release notes
+      - 'CHANGELOG.md'
+      - 'RELEASE.md'
 
 jobs:
   diffuse:
