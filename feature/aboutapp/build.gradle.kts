@@ -15,6 +15,8 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:designsystem"))
+
+    // Cross-feature navigation (aboutapp navigates to developer settings in debug builds)
     implementation(project(":feature:settings"))
 
     implementation(libs.circuit.codegen.annotations)
