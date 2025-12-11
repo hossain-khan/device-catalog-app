@@ -313,7 +313,7 @@ class DevicesPresenter(
         // RAM filter
         if (filters.minRamMb != null || filters.maxRamMb != null) {
             val ramMb = parseRamValue(device.ram)
-            
+
             // Skip devices with no RAM information
             if (ramMb == null) {
                 return false
@@ -366,7 +366,7 @@ class DevicesPresenter(
         return try {
             // Remove "MB" suffix
             val ramValue = ram.replace("MB", "").trim()
-            
+
             // Check if it's a range (contains "-")
             if (ramValue.contains("-")) {
                 val parts = ramValue.split("-")
