@@ -75,6 +75,10 @@ data object DevicesScreen : Screen {
         val manufacturers: Set<String> = emptySet(),
         val minSdkVersion: Int? = null,
         val maxSdkVersion: Int? = null,
+        val minRamMb: Int? = null,
+        val maxRamMb: Int? = null,
+        val minScreenDpi: Int? = null,
+        val maxScreenDpi: Int? = null,
     ) {
         /**
          * Returns true if any filters are active.
@@ -83,7 +87,11 @@ data object DevicesScreen : Screen {
             formFactors.isNotEmpty() ||
                 manufacturers.isNotEmpty() ||
                 minSdkVersion != null ||
-                maxSdkVersion != null
+                maxSdkVersion != null ||
+                minRamMb != null ||
+                maxRamMb != null ||
+                minScreenDpi != null ||
+                maxScreenDpi != null
 
         /**
          * Returns the count of active filters.
@@ -93,6 +101,8 @@ data object DevicesScreen : Screen {
             if (formFactors.isNotEmpty()) count++
             if (manufacturers.isNotEmpty()) count++
             if (minSdkVersion != null || maxSdkVersion != null) count++
+            if (minRamMb != null || maxRamMb != null) count++
+            if (minScreenDpi != null || maxScreenDpi != null) count++
             return count
         }
     }

@@ -97,6 +97,43 @@ fun ActiveFilterChips(
                 )
             }
 
+            // RAM range chip
+            if (filters.minRamMb != null || filters.maxRamMb != null) {
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.RamRange) },
+                    label = {
+                        Text(
+                            text = formatRamRangeChip(filters.minRamMb, filters.maxRamMb),
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove RAM range filter",
+                        )
+                    },
+                )
+            }
+
+            // DPI range chip
+            if (filters.minScreenDpi != null || filters.maxScreenDpi != null) {
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.DpiRange) },
+                    label = {
+                        Text(
+                            text =
+                                "DPI ${filters.minScreenDpi ?: 120}-${filters.maxScreenDpi ?: 640}",
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove DPI range filter",
+                        )
+                    },
+                )
+            }
+
             // Clear all chip - always show when there are active filters
             if (filters.hasActiveFilters()) {
                 AssistChip(
@@ -127,4 +164,28 @@ sealed class FilterType {
     ) : FilterType()
 
     data object SdkRange : FilterType()
+
+    data object RamRange : FilterType()
+
+    data object DpiRange : FilterType()
+}
+
+/**
+ * Formats RAM range for chip display, converting to GB when >= 1024 MB.
+ */
+private fun formatRamRangeChip(
+    minRamMb: Int?,
+    maxRamMb: Int?,
+): String {
+    val min = minRamMb ?: 512
+    val max = maxRamMb ?: 16384
+
+    fun formatRam(mb: Int): String =
+        if (mb >= 1024) {
+            "${mb / 1024} GB"
+        } else {
+            "$mb MB"
+        }
+
+    return "RAM ${formatRam(min)}-${formatRam(max)}"
 }

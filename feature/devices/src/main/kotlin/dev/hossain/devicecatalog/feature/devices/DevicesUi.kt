@@ -214,6 +214,20 @@ fun DevicesUi(
                                     maxSdkVersion = null,
                                 )
                             }
+
+                            FilterType.RamRange -> {
+                                state.activeFilters.copy(
+                                    minRamMb = null,
+                                    maxRamMb = null,
+                                )
+                            }
+
+                            FilterType.DpiRange -> {
+                                state.activeFilters.copy(
+                                    minScreenDpi = null,
+                                    maxScreenDpi = null,
+                                )
+                            }
                         }
                     state.eventSink(DevicesScreen.Event.ApplyFilters(updatedFilters))
                 },

@@ -65,6 +65,18 @@ fun FilterBottomSheet(
 ) {
     var formFactors by remember { mutableStateOf(currentFilters.formFactors) }
     var manufacturers by remember { mutableStateOf(currentFilters.manufacturers) }
+    var ramRange by remember {
+        mutableStateOf(
+            (currentFilters.minRamMb?.toFloat() ?: 512f) to
+                (currentFilters.maxRamMb?.toFloat() ?: 16384f),
+        )
+    }
+    var dpiRange by remember {
+        mutableStateOf(
+            (currentFilters.minScreenDpi?.toFloat() ?: 120f) to
+                (currentFilters.maxScreenDpi?.toFloat() ?: 640f),
+        )
+    }
     var sdkRange by remember {
         mutableStateOf(
             (currentFilters.minSdkVersion?.toFloat() ?: 21f) to
@@ -138,6 +150,60 @@ fun FilterBottomSheet(
             HorizontalDivider()
             Spacer(modifier = Modifier.height(16.dp))
 
+            // RAM Range Filter
+            Text(
+                text = "RAM Range",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+
+            Text(
+                text = formatRamRange(ramRange.first.toInt(), ramRange.second.toInt()),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            RangeSlider(
+                value = ramRange.first..ramRange.second,
+                onValueChange = { range ->
+                    ramRange = range.start to range.endInclusive
+                },
+                valueRange = 512f..16384f,
+                steps = 30,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Screen DPI Range Filter
+            Text(
+                text = "Screen DPI Range",
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+
+            Text(
+                text = "${dpiRange.first.toInt()} - ${dpiRange.second.toInt()} DPI",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            RangeSlider(
+                value = dpiRange.first..dpiRange.second,
+                onValueChange = { range ->
+                    dpiRange = range.start to range.endInclusive
+                },
+                valueRange = 120f..640f,
+                steps = 12,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(16.dp))
+
             // SDK Version Range Filter
             Text(
                 text = "SDK Version Range",
@@ -203,6 +269,8 @@ fun FilterBottomSheet(
                     onClick = {
                         formFactors = emptySet()
                         manufacturers = emptySet()
+                        ramRange = 512f to 16384f
+                        dpiRange = 120f to 640f
                         sdkRange = 21f to 35f
                         onClearFilters()
                     },
@@ -217,6 +285,10 @@ fun FilterBottomSheet(
                             DevicesScreen.FilterState(
                                 formFactors = formFactors,
                                 manufacturers = manufacturers,
+                                minRamMb = ramRange.first.toInt(),
+                                maxRamMb = ramRange.second.toInt(),
+                                minScreenDpi = dpiRange.first.toInt(),
+                                maxScreenDpi = dpiRange.second.toInt(),
                                 minSdkVersion = sdkRange.first.toInt(),
                                 maxSdkVersion = sdkRange.second.toInt(),
                             )
@@ -231,4 +303,21 @@ fun FilterBottomSheet(
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+}
+
+/**
+ * Formats RAM values for display, converting to GB when >= 1024 MB.
+ */
+private fun formatRamRange(
+    minMb: Int,
+    maxMb: Int,
+): String {
+    fun formatRam(mb: Int): String =
+        if (mb >= 1024) {
+            "${mb / 1024} GB"
+        } else {
+            "$mb MB"
+        }
+
+    return "${formatRam(minMb)} - ${formatRam(maxMb)}"
 }
