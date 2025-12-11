@@ -158,7 +158,7 @@ fun FilterBottomSheet(
             )
 
             Text(
-                text = "${ramRange.first.toInt()} MB - ${ramRange.second.toInt()} MB",
+                text = formatRamRange(ramRange.first.toInt(), ramRange.second.toInt()),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -303,4 +303,21 @@ fun FilterBottomSheet(
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+}
+
+/**
+ * Formats RAM values for display, converting to GB when >= 1024 MB.
+ */
+private fun formatRamRange(
+    minMb: Int,
+    maxMb: Int,
+): String {
+    fun formatRam(mb: Int): String =
+        if (mb >= 1024) {
+            "${mb / 1024} GB"
+        } else {
+            "$mb MB"
+        }
+
+    return "${formatRam(minMb)} - ${formatRam(maxMb)}"
 }

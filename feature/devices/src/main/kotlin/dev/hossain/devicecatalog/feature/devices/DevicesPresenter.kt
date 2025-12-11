@@ -354,36 +354,56 @@ class DevicesPresenter(
     }
 
     /**
-     * Parses RAM value from string format (e.g., "1610MB", "3944-8168MB").
+     * Parses RAM value from string format (e.g., "1610MB", "12 GB", "3944-8168MB").
      * For ranges, returns the midpoint value.
      * Returns null if the value cannot be parsed.
+     * Always returns value in MB.
      */
     private fun parseRamValue(ram: String): Int? {
-        if (ram.isBlank() || ram == "0MB") {
+        if (ram.isBlank() || ram == "0MB" || ram == "0 MB" || ram == "0GB" || ram == "0 GB") {
             return null
         }
 
         return try {
-            // Remove "MB" suffix
-            val ramValue = ram.replace("MB", "").trim()
-
             // Check if it's a range (contains "-")
-            if (ramValue.contains("-")) {
-                val parts = ramValue.split("-")
+            if (ram.contains("-")) {
+                val parts = ram.split("-")
                 if (parts.size == 2) {
-                    val min = parts[0].toIntOrNull() ?: return null
-                    val max = parts[1].toIntOrNull() ?: return null
+                    val min = parseSimpleRamValue(parts[0]) ?: return null
+                    val max = parseSimpleRamValue(parts[1]) ?: return null
                     // Return midpoint of range
                     (min + max) / 2
                 } else {
                     null
                 }
             } else {
-                ramValue.toIntOrNull()
+                parseSimpleRamValue(ram)
             }
         } catch (e: Exception) {
             Timber.w(e, "Failed to parse RAM value: $ram")
             null
+        }
+    }
+
+    /**
+     * Parses a simple RAM value (non-range) and returns value in MB.
+     * Supports both MB and GB suffixes.
+     */
+    private fun parseSimpleRamValue(ram: String): Int? {
+        val trimmed = ram.trim()
+        return when {
+            trimmed.contains("GB", ignoreCase = true) -> {
+                val value = trimmed.replace(Regex("[^0-9.]"), "").toFloatOrNull()
+                value?.let { (it * 1024).toInt() }
+            }
+
+            trimmed.contains("MB", ignoreCase = true) -> {
+                trimmed.replace(Regex("[^0-9]"), "").toIntOrNull()
+            }
+
+            else -> {
+                null
+            }
         }
     }
 

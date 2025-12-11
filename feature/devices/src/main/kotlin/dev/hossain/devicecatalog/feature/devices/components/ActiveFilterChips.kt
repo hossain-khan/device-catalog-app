@@ -103,8 +103,7 @@ fun ActiveFilterChips(
                     onClick = { onRemoveFilter(FilterType.RamRange) },
                     label = {
                         Text(
-                            text =
-                                "RAM ${filters.minRamMb ?: 512}-${filters.maxRamMb ?: 16384} MB",
+                            text = formatRamRangeChip(filters.minRamMb, filters.maxRamMb),
                         )
                     },
                     trailingIcon = {
@@ -169,4 +168,24 @@ sealed class FilterType {
     data object RamRange : FilterType()
 
     data object DpiRange : FilterType()
+}
+
+/**
+ * Formats RAM range for chip display, converting to GB when >= 1024 MB.
+ */
+private fun formatRamRangeChip(
+    minRamMb: Int?,
+    maxRamMb: Int?,
+): String {
+    val min = minRamMb ?: 512
+    val max = maxRamMb ?: 16384
+
+    fun formatRam(mb: Int): String =
+        if (mb >= 1024) {
+            "${mb / 1024} GB"
+        } else {
+            "$mb MB"
+        }
+
+    return "RAM ${formatRam(min)}-${formatRam(max)}"
 }
