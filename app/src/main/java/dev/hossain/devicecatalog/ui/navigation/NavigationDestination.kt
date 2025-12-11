@@ -2,7 +2,7 @@ package dev.hossain.devicecatalog.ui.navigation
 
 import android.os.Parcelable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Star
@@ -27,7 +27,7 @@ sealed class NavigationDestination(
     data object Devices : NavigationDestination(
         route = "devices",
         title = "Devices",
-        icon = Icons.AutoMirrored.Filled.List,
+        icon = Icons.Default.Android,
         screen = DevicesScreen,
     )
 
