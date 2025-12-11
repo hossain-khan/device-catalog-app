@@ -97,6 +97,44 @@ fun ActiveFilterChips(
                 )
             }
 
+            // RAM range chip
+            if (filters.minRamMb != null || filters.maxRamMb != null) {
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.RamRange) },
+                    label = {
+                        Text(
+                            text =
+                                "RAM ${filters.minRamMb ?: 512}-${filters.maxRamMb ?: 16384} MB",
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove RAM range filter",
+                        )
+                    },
+                )
+            }
+
+            // DPI range chip
+            if (filters.minScreenDpi != null || filters.maxScreenDpi != null) {
+                AssistChip(
+                    onClick = { onRemoveFilter(FilterType.DpiRange) },
+                    label = {
+                        Text(
+                            text =
+                                "DPI ${filters.minScreenDpi ?: 120}-${filters.maxScreenDpi ?: 640}",
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove DPI range filter",
+                        )
+                    },
+                )
+            }
+
             // Clear all chip - always show when there are active filters
             if (filters.hasActiveFilters()) {
                 AssistChip(
@@ -127,4 +165,8 @@ sealed class FilterType {
     ) : FilterType()
 
     data object SdkRange : FilterType()
+
+    data object RamRange : FilterType()
+
+    data object DpiRange : FilterType()
 }

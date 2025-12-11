@@ -310,7 +310,81 @@ class DevicesPresenter(
             }
         }
 
+        // RAM filter
+        if (filters.minRamMb != null || filters.maxRamMb != null) {
+            val ramMb = parseRamValue(device.ram)
+            
+            // Skip devices with no RAM information
+            if (ramMb == null) {
+                return false
+            }
+
+            if (filters.minRamMb != null && ramMb < filters.minRamMb) {
+                return false
+            }
+
+            if (filters.maxRamMb != null && ramMb > filters.maxRamMb) {
+                return false
+            }
+        }
+
+        // Screen DPI filter
+        if (filters.minScreenDpi != null || filters.maxScreenDpi != null) {
+            val deviceDpis = device.screenDensities
+
+            // Skip devices with no DPI information
+            if (deviceDpis.isEmpty()) {
+                return false
+            }
+
+            val minDeviceDpi = deviceDpis.minOrNull() ?: return false
+            val maxDeviceDpi = deviceDpis.maxOrNull() ?: return false
+
+            // Check if device DPI range overlaps with filter range
+            if (filters.minScreenDpi != null && maxDeviceDpi < filters.minScreenDpi) {
+                return false
+            }
+
+            if (filters.maxScreenDpi != null && minDeviceDpi > filters.maxScreenDpi) {
+                return false
+            }
+        }
+
         return true
+    }
+
+    /**
+     * Parses RAM value from string format (e.g., "1610MB", "3944-8168MB").
+     * For ranges, returns the midpoint value.
+     * Returns null if the value cannot be parsed.
+     */
+    private fun parseRamValue(ram: String): Int? {
+        if (ram.isBlank() || ram == "0MB") {
+            return null
+        }
+
+        return try {
+            // Remove "MB" suffix
+            val ramValue = ram.replace("MB", "").trim()
+            
+            // Check if it's a range (contains "-")
+            if (ramValue.contains("-")) {
+                val parts = ramValue.split("-")
+                if (parts.size == 2) {
+                    val min = parts[0].toIntOrNull() ?: return null
+                    val max = parts[1].toIntOrNull() ?: return null
+                    // Return midpoint of range
+                    (min + max) / 2
+                } else {
+                    null
+                }
+            } else {
+                ramValue.toIntOrNull()
+            }
+        } catch (e: Exception) {
+            Timber.w(e, "Failed to parse RAM value: $ram")
+            null
+        }
     }
 
     @CircuitInject(DevicesScreen::class, AppScope::class)
