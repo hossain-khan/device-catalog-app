@@ -24,7 +24,7 @@ import kotlin.reflect.KClass
 )
 @SingleIn(AppScope::class)
 interface AppGraph {
-    val activityProviders: Map<KClass<out Activity>, Provider<Activity>>
+    val activityProviders: Map<KClass<out Activity>, () -> Activity>
     val circuit: Circuit
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory

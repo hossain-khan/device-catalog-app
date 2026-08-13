@@ -23,5 +23,5 @@ interface UiMultibindings {
      * Feature modules can contribute activities to this map using @ActivityKey.
      */
     @Multibinds
-    fun activityProviders(): Map<KClass<out Activity>, Provider<Activity>>
+    fun activityProviders(): Map<KClass<out Activity>, () -> Activity>
 }

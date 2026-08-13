@@ -45,7 +45,7 @@ class ComposeAppComponentFactory : AppComponentFactory() {
     private inline fun <reified T : Any> getInstance(
         classLoader: ClassLoader,
         className: String,
-        providers: Map<KClass<out T>, Provider<T>>,
+        providers: Map<KClass<out T>, () -> T>,
     ): T? {
         // Load the class using the provided ClassLoader and attempt to retrieve the instance.
         val clazz = Class.forName(className, false, classLoader).asSubclass(T::class.java)
@@ -99,6 +99,6 @@ class ComposeAppComponentFactory : AppComponentFactory() {
      * This map is initialized when the application is created via the Metro dependency graph.
      */
     companion object {
-        private lateinit var activityProviders: Map<KClass<out Activity>, Provider<Activity>>
+        private lateinit var activityProviders: Map<KClass<out Activity>, () -> Activity>
     }
 }
