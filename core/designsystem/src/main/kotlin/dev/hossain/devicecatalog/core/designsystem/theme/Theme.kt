@@ -110,14 +110,14 @@ private val DarkColorScheme =
  * and custom theme appearance across all Android versions.
  *
  * @param darkTheme Whether to use dark theme. Defaults to system preference.
- * @param dynamicColor Whether to use dynamic theming on Android 12+. Defaults to false (disabled).
+ * @param dynamicColor Whether to use dynamic theming on Android 12+. Defaults to true.
  * @param content The content to theme.
  */
 @Composable
 fun DeviceCatalogAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is disabled to use custom vibrant colors
-    dynamicColor: Boolean = false,
+    // Dynamic color enabled on Android 12+ per Material You design guidelines
+    dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =

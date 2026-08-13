@@ -11,7 +11,7 @@ androidxPaging = "3.3.6"
 
 # https://developer.android.com/build/releases/gradle-plugin
 # https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility
-agp = "8.13.1"
+agp = "9.1.0"
 circuit = "0.31.0"
 
 # Coil - Image loading library for Android backed by Kotlin Coroutines
@@ -19,6 +19,7 @@ circuit = "0.31.0"
 coil = "3.3.0"
 
 composeBom = "2025.11.01"
+material3 = "1.5.0-alpha26"
 coreKtx = "1.17.0"
 espressoCore = "3.7.0"
 googleFonts = "1.9.5"
@@ -29,8 +30,8 @@ junitVersion = "1.3.0"
 # https://kotlinlang.org/docs/releases.html
 kotlin = "2.2.21"
 kotlinxCoroutines = "1.9.0"
-# The KSP (Kotlin Symbol Processing) plugin version must align with the Kotlin compiler version (2.2.21 in this case)
-ksp = "2.3.3"
+# The KSP (Kotlin Symbol Processing) plugin version must align with the Kotlin compiler version
+ksp = "2.3.6"
 
 # Kotlin linter with built-in formatter
 # https://github.com/jeremymailen/kotlinter-gradle
@@ -67,8 +68,8 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
