@@ -95,7 +95,7 @@ fun AppNavigation(
                     modifier = Modifier.fillMaxSize(),
                     decoratorFactory =
                         remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                            GestureNavigationDecorationFactory()
                         },
                 )
             }
@@ -117,7 +117,7 @@ fun AppNavigation(
                     modifier = Modifier.weight(1f),
                     decoratorFactory =
                         remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                            GestureNavigationDecorationFactory()
                         },
                 )
             }
@@ -133,7 +133,7 @@ fun AppNavigation(
                     modifier = Modifier.weight(1f),
                     decoratorFactory =
                         remember(navigator) {
-                            GestureNavigationDecorationFactory(onBackInvoked = navigator::pop)
+                            GestureNavigationDecorationFactory()
                         },
                 )
                 AppBottomNavigation(
