@@ -14,6 +14,9 @@ import androidx.room.RoomDatabase
  *   - brand (used in device property lookups)
  *   - form_factor (used in filtering operations)
  *
+ * Version 3 changes:
+ * - Updated bundled device catalog database with latest device data
+ *
  * - https://developer.android.com/training/data-storage/room
  */
 @Database(
@@ -25,13 +28,14 @@ import androidx.room.RoomDatabase
         DeviceScreenSize::class,
         DeviceSdkVersion::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true,
     // https://developer.android.com/training/data-storage/room/migrating-db-versions
     // https://github.com/hossain-khan/android-weather-alert/issues/272#issuecomment-2629512823
     // https://medium.com/androiddevelopers/room-auto-migrations-d5370b0ca6eb
     autoMigrations = [
         androidx.room.AutoMigration(from = 1, to = 2),
+        androidx.room.AutoMigration(from = 2, to = 3),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
