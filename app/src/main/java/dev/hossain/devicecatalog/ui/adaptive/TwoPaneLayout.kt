@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.movableContentOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 /**
  * Two-pane adaptive layout that shows content side by side on tablets
@@ -36,7 +36,12 @@ fun TwoPaneLayout(
     detailPane: (@Composable () -> Unit)? = null,
     listPaneWeight: Float = 0.4f,
 ) {
-    if (showTwoPane && detailPane != null) {
+    val movableListPane = remember(listPane) { movableContentOf { listPane() } }
+    val movableDetailPane = remember(detailPane) {
+        detailPane?.let { movableContentOf { it() } }
+    }
+
+    if (showTwoPane && movableDetailPane != null) {
         // Two-pane layout for tablets
         Row(modifier = modifier.fillMaxSize()) {
             // List pane
@@ -47,7 +52,7 @@ fun TwoPaneLayout(
                         .fillMaxHeight(),
                 color = MaterialTheme.colorScheme.surface,
             ) {
-                listPane()
+                movableListPane()
             }
 
             // Divider
@@ -64,18 +69,18 @@ fun TwoPaneLayout(
                         .fillMaxHeight(),
                 color = MaterialTheme.colorScheme.surface,
             ) {
-                detailPane()
+                movableDetailPane()
             }
         }
     } else {
         // Single-pane layout for phones
         Box(modifier = modifier.fillMaxSize()) {
-            if (detailPane != null) {
+            if (movableDetailPane != null) {
                 // Show detail if available
-                detailPane()
+                movableDetailPane()
             } else {
                 // Show list otherwise
-                listPane()
+                movableListPane()
             }
         }
     }
@@ -103,6 +108,9 @@ fun MasterDetailLayout(
     modifier: Modifier = Modifier,
     masterPaneRatio: Float = 0.35f,
 ) {
+    val movableMasterContent = remember(masterContent) { movableContentOf { masterContent() } }
+    val movableDetailContent = remember(detailContent) { movableContentOf { detailContent() } }
+
     if (showMasterDetail) {
         // Master-detail side by side for tablets
         Row(modifier = modifier.fillMaxSize()) {
@@ -114,7 +122,7 @@ fun MasterDetailLayout(
                         .fillMaxHeight(),
                 color = MaterialTheme.colorScheme.surface,
             ) {
-                masterContent()
+                movableMasterContent()
             }
 
             // Divider
@@ -132,7 +140,7 @@ fun MasterDetailLayout(
                 color = MaterialTheme.colorScheme.surfaceContainerLow,
             ) {
                 if (showDetail) {
-                    detailContent()
+                    movableDetailContent()
                 } else {
                     detailPlaceholder()
                 }
@@ -142,9 +150,9 @@ fun MasterDetailLayout(
         // Single pane for phones
         Box(modifier = modifier.fillMaxSize()) {
             if (showDetail) {
-                detailContent()
+                movableDetailContent()
             } else {
-                masterContent()
+                movableMasterContent()
             }
         }
     }
@@ -178,3 +186,4 @@ fun AdaptiveListDetailLayout(
         modifier = modifier,
     )
 }
+
