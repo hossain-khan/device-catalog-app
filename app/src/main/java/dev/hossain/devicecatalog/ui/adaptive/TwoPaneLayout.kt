@@ -37,9 +37,10 @@ fun TwoPaneLayout(
     listPaneWeight: Float = 0.4f,
 ) {
     val movableListPane = remember(listPane) { movableContentOf { listPane() } }
-    val movableDetailPane = remember(detailPane) {
-        detailPane?.let { movableContentOf { it() } }
-    }
+    val movableDetailPane =
+        remember(detailPane) {
+            detailPane?.let { movableContentOf { it() } }
+        }
 
     if (showTwoPane && movableDetailPane != null) {
         // Two-pane layout for tablets
@@ -186,4 +187,3 @@ fun AdaptiveListDetailLayout(
         modifier = modifier,
     )
 }
-
