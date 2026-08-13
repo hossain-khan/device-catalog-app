@@ -1,6 +1,7 @@
 package dev.hossain.devicecatalog
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
@@ -9,12 +10,11 @@ import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginE
  * Configure Compose-specific options.
  */
 internal fun Project.configureAndroidCompose(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    extension: Any,
 ) {
-    commonExtension.apply {
-        buildFeatures {
-            compose = true
-        }
+    when (extension) {
+        is ApplicationExtension -> extension.buildFeatures.compose = true
+        is LibraryExtension -> extension.buildFeatures.compose = true
     }
 
     extensions.configure<ComposeCompilerGradlePluginExtension> {

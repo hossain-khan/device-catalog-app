@@ -1,4 +1,4 @@
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import dev.hossain.devicecatalog.configureAndroidCompose
 import dev.hossain.devicecatalog.configureKotlinAndroid
 import org.gradle.api.Plugin
@@ -15,7 +15,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
                 apply("org.jetbrains.kotlin.plugin.compose")
                 apply("com.google.devtools.ksp")
                 apply("dev.zacsweers.metro")
