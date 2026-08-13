@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.core.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 
@@ -34,8 +35,8 @@ import androidx.room.RoomDatabase
     // https://github.com/hossain-khan/android-weather-alert/issues/272#issuecomment-2629512823
     // https://medium.com/androiddevelopers/room-auto-migrations-d5370b0ca6eb
     autoMigrations = [
-        androidx.room.AutoMigration(from = 1, to = 2),
-        androidx.room.AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
