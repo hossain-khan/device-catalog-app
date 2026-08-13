@@ -1,5 +1,5 @@
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import dev.hossain.devicecatalog.configureAndroidCompose
 import org.gradle.api.Plugin
 import org.gradle.api.Project
