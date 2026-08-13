@@ -11,7 +11,7 @@ androidxPaging = "3.3.6"
 
 # https://developer.android.com/build/releases/gradle-plugin
 # https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility
-agp = "9.1.0"
+agp = "9.3.0"
 circuit = "0.36.1"
 
 # Coil - Image loading library for Android backed by Kotlin Coroutines
