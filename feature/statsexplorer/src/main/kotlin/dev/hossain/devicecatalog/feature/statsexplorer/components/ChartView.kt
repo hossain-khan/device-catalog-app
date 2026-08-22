@@ -27,23 +27,19 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.data.columnModel
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
+import com.patrykandpatrick.vico.compose.cartesian.layer.ColumnCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.Fill
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
-import com.patrykandpatrick.vico.compose.common.fill
-import com.patrykandpatrick.vico.compose.common.shape.rounded
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
-import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import dev.hossain.devicecatalog.core.designsystem.theme.chartColors
 import dev.hossain.devicecatalog.feature.statsexplorer.StatCategory
 
@@ -127,7 +123,7 @@ fun VicoColumnChartView(
     LaunchedEffect(entries) {
         if (values.isNotEmpty()) {
             modelProducer.runTransaction {
-                columnSeries {
+                columnModel {
                     series(values)
                 }
             }
@@ -153,9 +149,8 @@ fun VicoColumnChartView(
                     columnProvider =
                         ColumnCartesianLayer.ColumnProvider.series(
                             rememberLineComponent(
-                                fill = fill(barColor),
+                                fill = Fill(barColor),
                                 thickness = 18.dp,
-                                shape = CorneredShape.rounded(4.dp),
                             ),
                         ),
                 ),
@@ -185,7 +180,7 @@ fun VicoLineChartView(
     LaunchedEffect(entries) {
         if (values.isNotEmpty()) {
             modelProducer.runTransaction {
-                lineSeries {
+                lineModel {
                     series(values)
                 }
             }
@@ -211,10 +206,10 @@ fun VicoLineChartView(
                     lineProvider =
                         LineCartesianLayer.LineProvider.series(
                             LineCartesianLayer.Line(
-                                fill = LineCartesianLayer.LineFill.single(fill(lineColor)),
+                                fill = LineCartesianLayer.LineFill.single(Fill(lineColor)),
                                 areaFill =
                                     LineCartesianLayer.AreaFill.single(
-                                        fill(lineColor.copy(alpha = 0.2f)),
+                                        Fill(lineColor.copy(alpha = 0.2f)),
                                     ),
                             ),
                         ),

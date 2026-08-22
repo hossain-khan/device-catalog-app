@@ -28,17 +28,15 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
-import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.compose.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.compose.cartesian.data.lineModel
+import com.patrykandpatrick.vico.compose.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
-import com.patrykandpatrick.vico.compose.common.fill
-import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
-import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
-import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.compose.common.Fill
 
 /**
  * Simple pie chart component for mobile-optimized statistics visualization.
@@ -240,7 +238,7 @@ fun LineChart(
     LaunchedEffect(data) {
         if (data.isNotEmpty()) {
             modelProducer.runTransaction {
-                lineSeries {
+                lineModel {
                     series(data.map { it.value })
                 }
             }
@@ -266,10 +264,10 @@ fun LineChart(
                     lineProvider =
                         LineCartesianLayer.LineProvider.series(
                             LineCartesianLayer.Line(
-                                fill = LineCartesianLayer.LineFill.single(fill(lineColor)),
+                                fill = LineCartesianLayer.LineFill.single(Fill(lineColor)),
                                 areaFill =
                                     LineCartesianLayer.AreaFill.single(
-                                        fill(lineColor.copy(alpha = 0.2f)),
+                                        Fill(lineColor.copy(alpha = 0.2f)),
                                     ),
                             ),
                         ),
