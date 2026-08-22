@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,12 +21,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.compose.common.shape.rounded
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.ColumnCartesianLayer
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.core.common.shape.CorneredShape
 import dev.hossain.devicecatalog.core.designsystem.theme.chartColors
 import dev.hossain.devicecatalog.feature.statsexplorer.StatCategory
 
@@ -44,7 +60,7 @@ fun ChartView(
 
     when (category) {
         StatCategory.RAM -> {
-            HorizontalBarChartView(
+            VicoColumnChartView(
                 data = distribution,
                 barColor = chartColors[0],
                 modifier = modifier,
@@ -52,7 +68,7 @@ fun ChartView(
         }
 
         StatCategory.PROCESSORS -> {
-            HorizontalBarChartView(
+            VicoColumnChartView(
                 data = distribution,
                 barColor = chartColors[1],
                 modifier = modifier,
@@ -68,7 +84,7 @@ fun ChartView(
         }
 
         StatCategory.MANUFACTURERS -> {
-            HorizontalBarChartView(
+            VicoColumnChartView(
                 data = distribution,
                 barColor = chartColors[2],
                 modifier = modifier,
@@ -76,7 +92,7 @@ fun ChartView(
         }
 
         StatCategory.SDK_VERSIONS -> {
-            LineAreaChartView(
+            VicoLineChartView(
                 data = distribution,
                 lineColor = chartColors[3],
                 modifier = modifier,
@@ -84,9 +100,9 @@ fun ChartView(
         }
 
         StatCategory.OPENGL -> {
-            StackedBarChartView(
+            VicoColumnChartView(
                 data = distribution,
-                colors = chartColors,
+                barColor = chartColors[4 % chartColors.size],
                 modifier = modifier,
             )
         }
@@ -94,69 +110,121 @@ fun ChartView(
 }
 
 /**
- * Horizontal bar chart with animated bars.
+ * Vico-powered Column/Bar chart for statistics categories.
  */
 @Composable
-fun HorizontalBarChartView(
+fun VicoColumnChartView(
     data: Map<String, Int>,
     barColor: Color,
     modifier: Modifier = Modifier,
 ) {
-    val animatable = remember { Animatable(0f) }
+    val entries = remember(data) { data.entries.take(8).toList() }
+    val labels = remember(entries) { entries.map { it.key } }
+    val values = remember(entries) { entries.map { it.value } }
 
-    LaunchedEffect(data) {
-        animatable.snapTo(0f)
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 600),
-        )
-    }
+    val modelProducer = remember { CartesianChartModelProducer() }
 
-    val maxValue = data.values.maxOrNull()?.toFloat() ?: 1f
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        data.entries.take(10).forEach { (label, value) ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = label.take(12),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.width(100.dp),
-                    maxLines = 1,
-                )
-
-                Box(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .height(20.dp),
-                ) {
-                    Canvas(modifier = Modifier.matchParentSize()) {
-                        val barWidth = (value / maxValue) * size.width * animatable.value
-                        drawRoundRect(
-                            color = barColor,
-                            topLeft = Offset.Zero,
-                            size = Size(barWidth, size.height),
-                        )
-                    }
+    LaunchedEffect(entries) {
+        if (values.isNotEmpty()) {
+            modelProducer.runTransaction {
+                columnSeries {
+                    series(values)
                 }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Text(
-                    text = value.toString(),
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.width(50.dp),
-                )
             }
         }
     }
+
+    val valueFormatter =
+        remember(labels) {
+            CartesianValueFormatter { _, x, _ ->
+                val index = x.toInt()
+                if (index in labels.indices) {
+                    labels[index].take(8)
+                } else {
+                    ""
+                }
+            }
+        }
+
+    CartesianChartHost(
+        chart =
+            rememberCartesianChart(
+                rememberColumnCartesianLayer(
+                    columnProvider =
+                        ColumnCartesianLayer.ColumnProvider.series(
+                            rememberLineComponent(
+                                fill = fill(barColor),
+                                thickness = 18.dp,
+                                shape = CorneredShape.rounded(4.dp),
+                            ),
+                        ),
+                ),
+                startAxis = VerticalAxis.rememberStart(),
+                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = valueFormatter),
+            ),
+        modelProducer = modelProducer,
+        modifier = modifier.fillMaxWidth().height(220.dp),
+    )
+}
+
+/**
+ * Vico-powered Line chart for SDK version adoption.
+ */
+@Composable
+fun VicoLineChartView(
+    data: Map<String, Int>,
+    lineColor: Color,
+    modifier: Modifier = Modifier,
+) {
+    val entries = remember(data) { data.entries.toList() }
+    val labels = remember(entries) { entries.map { it.key.replace("API ", "") } }
+    val values = remember(entries) { entries.map { it.value } }
+
+    val modelProducer = remember { CartesianChartModelProducer() }
+
+    LaunchedEffect(entries) {
+        if (values.isNotEmpty()) {
+            modelProducer.runTransaction {
+                lineSeries {
+                    series(values)
+                }
+            }
+        }
+    }
+
+    val valueFormatter =
+        remember(labels) {
+            CartesianValueFormatter { _, x, _ ->
+                val index = x.toInt()
+                if (index in labels.indices) {
+                    labels[index]
+                } else {
+                    ""
+                }
+            }
+        }
+
+    CartesianChartHost(
+        chart =
+            rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    lineProvider =
+                        LineCartesianLayer.LineProvider.series(
+                            LineCartesianLayer.Line(
+                                fill = LineCartesianLayer.LineFill.single(fill(lineColor)),
+                                areaFill =
+                                    LineCartesianLayer.AreaFill.single(
+                                        fill(lineColor.copy(alpha = 0.2f)),
+                                    ),
+                            ),
+                        ),
+                ),
+                startAxis = VerticalAxis.rememberStart(),
+                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = valueFormatter),
+            ),
+        modelProducer = modelProducer,
+        modifier = modifier.fillMaxWidth().height(200.dp),
+    )
 }
 
 /**
@@ -233,161 +301,6 @@ fun DonutChartView(
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
                         color = chartColors[0],
-                    )
-                }
-            }
-        }
-    }
-}
-
-/**
- * Line/Area chart for SDK version adoption.
- */
-@Composable
-fun LineAreaChartView(
-    data: Map<String, Int>,
-    lineColor: Color,
-    modifier: Modifier = Modifier,
-) {
-    val animatable = remember { Animatable(0f) }
-    val areaColor = lineColor.copy(alpha = 0.2f)
-
-    LaunchedEffect(data) {
-        animatable.snapTo(0f)
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 800),
-        )
-    }
-
-    Column(modifier = modifier) {
-        Canvas(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(16.dp),
-        ) {
-            if (data.isEmpty()) return@Canvas
-
-            val values = data.values.toList()
-            val maxValue = values.maxOrNull()?.toFloat() ?: 1f
-            val minValue = values.minOrNull()?.toFloat() ?: 0f
-            val valueRange = (maxValue - minValue).coerceAtLeast(1f)
-
-            val stepX = size.width / (values.size - 1).coerceAtLeast(1)
-            val scaleY = size.height / valueRange
-
-            // Draw line and points
-            for (i in 0 until values.size - 1) {
-                val x1 = i * stepX
-                val y1 = size.height - ((values[i] - minValue) * scaleY)
-                val x2 = (i + 1) * stepX
-                val y2 = size.height - ((values[i + 1] - minValue) * scaleY)
-
-                val animatedX2 = x1 + (x2 - x1) * animatable.value
-                val animatedY2 = y1 + (y2 - y1) * animatable.value
-
-                drawLine(
-                    color = lineColor,
-                    start = Offset(x1, y1),
-                    end = Offset(animatedX2, animatedY2),
-                    strokeWidth = 3f,
-                )
-            }
-
-            // Draw points
-            values.forEachIndexed { index, value ->
-                val x = index * stepX
-                val y = size.height - ((value - minValue) * scaleY)
-
-                drawCircle(
-                    color = lineColor,
-                    radius = 5f * animatable.value,
-                    center = Offset(x, y),
-                )
-            }
-        }
-
-        // X-axis labels
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            data.keys.take(5).forEach { label ->
-                Text(
-                    text = label.replace("API ", ""),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-    }
-}
-
-/**
- * Stacked bar chart for OpenGL versions.
- */
-@Composable
-fun StackedBarChartView(
-    data: Map<String, Int>,
-    colors: List<Color>,
-    modifier: Modifier = Modifier,
-) {
-    val animatable = remember { Animatable(0f) }
-
-    LaunchedEffect(data) {
-        animatable.snapTo(0f)
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 600),
-        )
-    }
-
-    val maxValue = data.values.maxOrNull()?.toFloat() ?: 1f
-
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        data.entries.forEachIndexed { index, (label, value) ->
-            Column {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .height(24.dp),
-                    ) {
-                        Canvas(modifier = Modifier.matchParentSize()) {
-                            val barWidth = (value / maxValue) * size.width * animatable.value
-                            drawRoundRect(
-                                color = colors[index % colors.size],
-                                topLeft = Offset.Zero,
-                                size = Size(barWidth, size.height),
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        text = value.toString(),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = colors[index % colors.size],
-                        modifier = Modifier.width(50.dp),
                     )
                 }
             }

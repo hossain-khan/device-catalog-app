@@ -27,6 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
+import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 
 /**
  * Simple pie chart component for mobile-optimized statistics visualization.
@@ -215,69 +227,59 @@ data class LegendItem(
 )
 
 /**
- * Simple line chart for SDK version timeline.
+ * Vico-powered Line chart for SDK version timeline.
  */
 @Composable
 fun LineChart(
     data: List<LineChartData>,
     modifier: Modifier = Modifier,
 ) {
-    val animatable = remember { Animatable(0f) }
+    val modelProducer = remember { CartesianChartModelProducer() }
     val lineColor = MaterialTheme.colorScheme.primary
 
     LaunchedEffect(data) {
-        animatable.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 800),
-        )
-    }
-
-    Canvas(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .padding(16.dp),
-    ) {
-        if (data.isEmpty()) return@Canvas
-
-        val maxValue = data.maxOfOrNull { it.value } ?: 1f
-        val minValue = data.minOfOrNull { it.value } ?: 0f
-        val valueRange = maxValue - minValue
-
-        val stepX = size.width / (data.size - 1).coerceAtLeast(1)
-        val scaleY = if (valueRange > 0) size.height / valueRange else 1f
-
-        // Draw line
-        for (i in 0 until data.size - 1) {
-            val x1 = i * stepX
-            val y1 = size.height - ((data[i].value - minValue) * scaleY)
-            val x2 = (i + 1) * stepX
-            val y2 = size.height - ((data[i + 1].value - minValue) * scaleY)
-
-            val animatedX2 = x1 + (x2 - x1) * animatable.value
-            val animatedY2 = y1 + (y2 - y1) * animatable.value
-
-            drawLine(
-                color = lineColor,
-                start = Offset(x1, y1),
-                end = Offset(animatedX2, animatedY2),
-                strokeWidth = 4f,
-            )
-        }
-
-        // Draw points
-        data.forEachIndexed { index, point ->
-            val x = index * stepX
-            val y = size.height - ((point.value - minValue) * scaleY)
-
-            drawCircle(
-                color = lineColor,
-                radius = 6f * animatable.value,
-                center = Offset(x, y),
-            )
+        if (data.isNotEmpty()) {
+            modelProducer.runTransaction {
+                lineSeries {
+                    series(data.map { it.value })
+                }
+            }
         }
     }
+
+    val valueFormatter =
+        remember(data) {
+            CartesianValueFormatter { _, x, _ ->
+                val index = x.toInt()
+                if (index in data.indices) {
+                    data[index].label
+                } else {
+                    ""
+                }
+            }
+        }
+
+    CartesianChartHost(
+        chart =
+            rememberCartesianChart(
+                rememberLineCartesianLayer(
+                    lineProvider =
+                        LineCartesianLayer.LineProvider.series(
+                            LineCartesianLayer.Line(
+                                fill = LineCartesianLayer.LineFill.single(fill(lineColor)),
+                                areaFill =
+                                    LineCartesianLayer.AreaFill.single(
+                                        fill(lineColor.copy(alpha = 0.2f)),
+                                    ),
+                            ),
+                        ),
+                ),
+                startAxis = VerticalAxis.rememberStart(),
+                bottomAxis = HorizontalAxis.rememberBottom(valueFormatter = valueFormatter),
+            ),
+        modelProducer = modelProducer,
+        modifier = modifier.fillMaxWidth().height(180.dp),
+    )
 }
 
 /**
