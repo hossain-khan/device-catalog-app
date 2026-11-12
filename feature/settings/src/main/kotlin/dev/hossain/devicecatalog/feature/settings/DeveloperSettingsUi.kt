@@ -1,26 +1,30 @@
 package dev.hossain.devicecatalog.feature.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -31,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.core.common.FeatureFlags
 import dev.hossain.devicecatalog.core.common.PerformanceMonitor
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 
@@ -86,14 +91,31 @@ fun DeveloperSettingsUi(
                 )
             }
 
-            items(state.featureFlags.toList()) { (key, value) ->
-                FeatureFlagItem(
-                    name = FeatureFlags.formatFeatureFlagName(key),
-                    enabled = value,
-                    onToggle = { newValue ->
-                        state.eventSink(DeveloperSettingsScreenCircuit.Event.ToggleFeatureFlag(key, newValue))
-                    },
-                )
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                        ),
+                ) {
+                    val flagsList = state.featureFlags.toList()
+                    flagsList.forEachIndexed { index, (key, value) ->
+                        if (index > 0) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            )
+                        }
+                        FeatureFlagItem(
+                            name = FeatureFlags.formatFeatureFlagName(key),
+                            enabled = value,
+                            onToggle = { newValue ->
+                                state.eventSink(DeveloperSettingsScreenCircuit.Event.ToggleFeatureFlag(key, newValue))
+                            },
+                        )
+                    }
+                }
             }
 
             // Onboarding Section
@@ -139,31 +161,39 @@ private fun FeatureFlagItem(
     onToggle: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            ),
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onToggle(!enabled) }
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyLarge,
             modifier =
                 Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.weight(1f),
-            )
-            Switch(
-                checked = enabled,
-                onCheckedChange = onToggle,
-            )
-        }
+                    .weight(1f)
+                    .padding(end = 16.dp),
+        )
+        Switch(
+            checked = enabled,
+            onCheckedChange = onToggle,
+            thumbContent =
+                if (enabled) {
+                    {
+                        Icon(
+                            imageVector = DeviceCatalogIcons.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
+        )
     }
 }
 
@@ -193,23 +223,39 @@ private fun OnboardingResetCard(
                     text = "Onboarding Status",
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Text(
-                    text = if (onboardingCompleted) "Completed" else "Not Completed",
-                    style = MaterialTheme.typography.bodyMedium,
+                Surface(
+                    shape = MaterialTheme.shapes.extraSmall,
                     color =
                         if (onboardingCompleted) {
-                            MaterialTheme.colorScheme.primary
+                            MaterialTheme.colorScheme.primaryContainer
                         } else {
-                            MaterialTheme.colorScheme.error
+                            MaterialTheme.colorScheme.errorContainer
                         },
-                )
+                ) {
+                    Text(
+                        text = if (onboardingCompleted) "Completed" else "Not Completed",
+                        style = MaterialTheme.typography.labelMedium,
+                        color =
+                            if (onboardingCompleted) {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onErrorContainer
+                            },
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    )
+                }
             }
 
-            androidx.compose.material3.Button(
+            Button(
                 onClick = onReset,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = onboardingCompleted,
             ) {
+                Icon(
+                    imageVector = DeviceCatalogIcons.RestartAlt,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
                 Text("Reset Onboarding")
             }
 
@@ -239,7 +285,9 @@ private fun PerformanceMetricsCard(modifier: Modifier = Modifier) {
             val firstFrameTime = PerformanceMonitor.getTimeToFirstFrame()
 
             MetricRow("App Start Time", if (appStartTime > 0) "${appStartTime}ms" else "N/A")
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             MetricRow("First Frame Time", if (firstFrameTime > 0) "${firstFrameTime}ms" else "N/A")
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
             // Memory metrics
             val runtime = Runtime.getRuntime()
@@ -257,19 +305,29 @@ private fun MetricRow(
     value: String,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
-        )
+        Surface(
+            shape = MaterialTheme.shapes.extraSmall,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            )
+        }
     }
 }
 
