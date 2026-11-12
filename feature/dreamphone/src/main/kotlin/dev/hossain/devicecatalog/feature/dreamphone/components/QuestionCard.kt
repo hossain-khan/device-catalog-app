@@ -1,6 +1,7 @@
 package dev.hossain.devicecatalog.feature.dreamphone.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -18,11 +19,11 @@ import androidx.compose.ui.unit.dp
 fun QuestionCard(
     title: String,
     subtitle: String?,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,

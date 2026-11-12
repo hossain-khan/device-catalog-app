@@ -47,9 +47,8 @@ fun DeviceCatalogCard(
                     pressedElevation = 3.dp,
                     hoveredElevation = 2.dp,
                 ),
-        ) {
-            Column(content = content)
-        }
+            content = content,
+        )
     } else {
         Card(
             modifier = modifier,
@@ -63,9 +62,8 @@ fun DeviceCatalogCard(
                 CardDefaults.cardElevation(
                     defaultElevation = 1.dp,
                 ),
-        ) {
-            Column(content = content)
-        }
+            content = content,
+        )
     }
 }
 
@@ -96,9 +94,8 @@ fun DeviceCatalogElevatedCard(
                     pressedElevation = 8.dp,
                     hoveredElevation = 7.dp,
                 ),
-        ) {
-            Column(content = content)
-        }
+            content = content,
+        )
     } else {
         Card(
             modifier = modifier,
@@ -112,9 +109,8 @@ fun DeviceCatalogElevatedCard(
                 CardDefaults.elevatedCardElevation(
                     defaultElevation = 6.dp,
                 ),
-        ) {
-            Column(content = content)
-        }
+            content = content,
+        )
     }
 }
 

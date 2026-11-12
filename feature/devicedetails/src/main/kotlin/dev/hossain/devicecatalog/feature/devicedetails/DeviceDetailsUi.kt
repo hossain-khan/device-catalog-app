@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -502,8 +503,9 @@ private fun PlatformInfoCard(device: AndroidDevice) {
 @Composable
 private fun ExpandableInfoCard(
     title: String,
+    modifier: Modifier = Modifier.fillMaxWidth(),
     defaultExpanded: Boolean = false,
-    content: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     var expanded by remember { mutableStateOf(defaultExpanded) }
     val rotationAngle by animateFloatAsState(
@@ -512,7 +514,7 @@ private fun ExpandableInfoCard(
     )
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
@@ -556,9 +558,8 @@ private fun ExpandableInfoCard(
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    content()
-                }
+                    content = content,
+                )
             }
         }
     }
@@ -567,10 +568,11 @@ private fun ExpandableInfoCard(
 @Composable
 private fun InfoCard(
     title: String,
-    content: @Composable () -> Unit,
+    modifier: Modifier = Modifier.fillMaxWidth(),
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,

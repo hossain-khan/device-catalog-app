@@ -25,8 +25,8 @@ import androidx.compose.ui.semantics.semantics
  * @param query Current search query
  * @param onQueryChange Callback when search query changes
  * @param onClearQuery Callback when clear button is clicked
- * @param resultCount Number of search results to display
- * @param modifier Modifier for the search bar
+ * @param resultCount Number of search results found for current query
+ * @param modifier Modifier for the search bar (defaults to filling maximum width)
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,8 +34,8 @@ fun DeviceSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit,
-    resultCount: Int,
-    modifier: Modifier = Modifier,
+    resultCount: Int = 0,
+    modifier: Modifier = Modifier.fillMaxWidth(),
 ) {
     SearchBar(
         inputField = {
@@ -47,7 +47,12 @@ fun DeviceSearchBar(
                 onExpandedChange = { /* No-op, we don't use expanded state */ },
                 modifier =
                     Modifier.semantics {
-                        contentDescription = "Search devices by name, manufacturer, or brand"
+                        contentDescription =
+                            if (query.isNotEmpty()) {
+                                "Search devices by name, manufacturer, or brand. $resultCount results found."
+                            } else {
+                                "Search devices by name, manufacturer, or brand"
+                            }
                     },
                 placeholder = {
                     Text(text = "Search devices...")
@@ -76,7 +81,7 @@ fun DeviceSearchBar(
         },
         expanded = false,
         onExpandedChange = { /* No-op, we don't use expanded state */ },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         windowInsets = WindowInsets(0, 0, 0, 0),
     ) {
         // Empty content - we don't show suggestions yet

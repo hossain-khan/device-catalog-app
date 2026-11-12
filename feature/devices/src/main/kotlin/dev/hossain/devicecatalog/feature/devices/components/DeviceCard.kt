@@ -50,19 +50,17 @@ import dev.hossain.devicecatalog.core.ui.image.DeviceImage
 fun DeviceCard(
     device: AndroidDevice,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(),
 ) {
     val deviceDescription = "Android device ${device.manufacturer} ${device.modelName}"
 
     Card(
         onClick = onClick,
         modifier =
-            modifier
-                .fillMaxWidth()
-                .semantics {
-                    contentDescription = deviceDescription
-                    role = Role.Button
-                },
+            modifier.semantics {
+                contentDescription = deviceDescription
+                role = Role.Button
+            },
         elevation =
             CardDefaults.cardElevation(
                 defaultElevation = 1.dp,
