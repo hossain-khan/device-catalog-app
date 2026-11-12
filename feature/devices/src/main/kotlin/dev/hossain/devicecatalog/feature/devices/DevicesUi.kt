@@ -371,9 +371,12 @@ private fun PaginatedDeviceList(
                             onClick = {
                                 state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo))
                             },
+                            modifier = Modifier.animateItem(),
                         )
                     } else {
-                        DeviceCardSkeleton()
+                        DeviceCardSkeleton(
+                            modifier = Modifier.animateItem(),
+                        )
                     }
                 }
 
@@ -430,9 +433,12 @@ private fun PaginatedDeviceList(
                             onClick = {
                                 state.eventSink(DevicesScreen.Event.DeviceClicked(deviceInfo))
                             },
+                            modifier = Modifier.animateItem(),
                         )
                     } else {
-                        DeviceCardSkeleton()
+                        DeviceCardSkeleton(
+                            modifier = Modifier.animateItem(),
+                        )
                     }
                 }
 
@@ -494,6 +500,7 @@ private fun RegularDeviceList(
                         onClick = {
                             state.eventSink(DevicesScreen.Event.DeviceClicked(device))
                         },
+                        modifier = Modifier.animateItem(),
                     )
                 }
             }
@@ -516,6 +523,7 @@ private fun RegularDeviceList(
                         onClick = {
                             state.eventSink(DevicesScreen.Event.DeviceClicked(device))
                         },
+                        modifier = Modifier.animateItem(),
                     )
                 }
             }

@@ -313,15 +313,14 @@ private fun AnswerOptionCard(
                 modifier = Modifier.weight(1f),
             )
 
-            AnimatedVisibility(visible = isRevealed) {
+            val showFeedback = isRevealed && (isCorrect || isSelected)
+            AnimatedVisibility(visible = showFeedback) {
                 Icon(
                     imageVector =
                         if (isCorrect) {
                             Icons.Default.Check
-                        } else if (isSelected) {
-                            Icons.Default.Close
                         } else {
-                            return@AnimatedVisibility
+                            Icons.Default.Close
                         },
                     contentDescription = if (isCorrect) "Correct" else "Incorrect",
                     modifier = Modifier.size(24.dp),

@@ -39,6 +39,7 @@ fun PieChart(
     val animatable = remember { Animatable(0f) }
 
     LaunchedEffect(data) {
+        animatable.snapTo(0f)
         animatable.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 800),
@@ -96,6 +97,7 @@ fun HorizontalBarChart(
     val animatable = remember { Animatable(0f) }
 
     LaunchedEffect(data) {
+        animatable.snapTo(0f)
         animatable.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 600),
@@ -226,6 +228,7 @@ fun LineChart(
     val lineColor = MaterialTheme.colorScheme.primary
 
     LaunchedEffect(data) {
+        animatable.snapTo(0f)
         animatable.animateTo(
             targetValue = 1f,
             animationSpec = tween(durationMillis = 800),
