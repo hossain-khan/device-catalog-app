@@ -141,7 +141,7 @@ fun FilterBottomSheet(
                                     formFactors + formFactor
                                 }
                         },
-                        label = { Text(text = formFactor.name.replace("_", " ")) },
+                        label = { Text(text = formFactor.value) },
                     )
                 }
             }

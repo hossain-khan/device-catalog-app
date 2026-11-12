@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.feature.statsexplorer.StatCategory
 
@@ -62,7 +63,7 @@ fun StatCard(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 12.dp, vertical = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Icon(
@@ -81,8 +82,10 @@ fun StatCard(
 
             Text(
                 text = category.displayName,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
                 color =
                     if (isSelected) {
                         MaterialTheme.colorScheme.onPrimaryContainer
@@ -142,7 +145,7 @@ fun StatCategoryRow(
                 subtitle = if (isSelected) "items" else "tap to view",
                 isSelected = isSelected,
                 onClick = { onCategorySelected(category) },
-                modifier = Modifier.width(120.dp),
+                modifier = Modifier.width(140.dp),
             )
         }
     }

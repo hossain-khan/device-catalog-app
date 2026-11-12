@@ -70,6 +70,17 @@ fun AppNavigation(
         }
     }
 
+    val currentScreen = backStack.topRecord?.screen
+    val currentDestination = NavigationDestination.destinations.firstOrNull { it.screen == currentScreen }
+    val isTopLevelDestination = currentDestination != null
+
+    // Keep selectedDestination in sync with backstack when top-level destination is reached
+    LaunchedEffect(currentDestination) {
+        if (currentDestination != null && currentDestination != selectedDestination) {
+            selectedDestination = currentDestination
+        }
+    }
+
     // Determine navigation type based on window size class
     val navigationType = windowSizeClass.toNavigationType()
     Timber.d("Navigation type: $navigationType for window size: ${windowSizeClass.widthSizeClass}")
@@ -136,13 +147,15 @@ fun AppNavigation(
                             GestureNavigationDecorationFactory()
                         },
                 )
-                AppBottomNavigation(
-                    selectedDestination = selectedDestination,
-                    onNavigationDestinationClicked = { destination ->
-                        selectedDestination = destination
-                        navigator.goTo(destination.screen)
-                    },
-                )
+                if (isTopLevelDestination) {
+                    AppBottomNavigation(
+                        selectedDestination = selectedDestination,
+                        onNavigationDestinationClicked = { destination ->
+                            selectedDestination = destination
+                            navigator.goTo(destination.screen)
+                        },
+                    )
+                }
             }
         }
     }
