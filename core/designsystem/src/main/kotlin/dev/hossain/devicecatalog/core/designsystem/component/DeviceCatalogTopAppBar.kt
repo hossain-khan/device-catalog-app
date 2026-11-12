@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.core.designsystem.component
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +26,7 @@ import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
  * @param navigationIcon Optional navigation icon (typically back button)
  * @param navigationIconContentDescription Content description for the navigation icon
  * @param onNavigationClick Click handler for the navigation icon
+ * @param navigationContent Optional slot for custom navigation icon composable
  * @param actions Optional action icons displayed on the right
  * @param colors The colors to use for the app bar
  * @param scrollBehavior Optional scroll behavior for collapsing/expanding the app bar
@@ -37,7 +39,8 @@ fun DeviceCatalogTopAppBar(
     navigationIcon: ImageVector? = null,
     navigationIconContentDescription: String? = null,
     onNavigationClick: () -> Unit = {},
-    actions: @Composable () -> Unit = {},
+    navigationContent: (@Composable () -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
     colors: TopAppBarColors =
         TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -54,7 +57,9 @@ fun DeviceCatalogTopAppBar(
         },
         modifier = modifier,
         navigationIcon = {
-            if (navigationIcon != null) {
+            if (navigationContent != null) {
+                navigationContent()
+            } else if (navigationIcon != null) {
                 IconButton(onClick = onNavigationClick) {
                     Icon(
                         imageVector = navigationIcon,
@@ -64,7 +69,7 @@ fun DeviceCatalogTopAppBar(
                 }
             }
         },
-        actions = { actions() },
+        actions = actions,
         colors = colors,
         scrollBehavior = scrollBehavior,
     )

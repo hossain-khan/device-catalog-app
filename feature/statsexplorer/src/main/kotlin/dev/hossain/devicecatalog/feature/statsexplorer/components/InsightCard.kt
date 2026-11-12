@@ -28,12 +28,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun InsightCard(
     insights: List<String>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxWidth(),
 ) {
     if (insights.isEmpty()) return
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier,
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,

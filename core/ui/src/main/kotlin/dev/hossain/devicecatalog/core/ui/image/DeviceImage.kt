@@ -37,6 +37,7 @@ import dev.hossain.devicecatalog.core.designsystem.R
  * @param showIconFallback Whether to show the device form factor icon when loading or if image fails.
  * @param fallbackTint Color tint applied to the fallback form factor icon.
  * @param fallbackIconModifier Modifier applied directly to the fallback form factor icon.
+ * @param fallback Optional custom slot to render when the image is loading or has failed.
  */
 @Composable
 fun DeviceImage(
@@ -47,6 +48,7 @@ fun DeviceImage(
     showIconFallback: Boolean = true,
     fallbackTint: Color = LocalContentColor.current,
     fallbackIconModifier: Modifier = Modifier,
+    fallback: (@Composable () -> Unit)? = null,
 ) {
     val candidateUrls = remember(device) { DeviceImageUtils.getDeviceImageCandidates(device) }
     var candidateIndex by remember(device) { mutableIntStateOf(0) }
@@ -60,11 +62,15 @@ fun DeviceImage(
         contentAlignment = Alignment.Center,
     ) {
         if (!isLoaded && showIconFallback) {
-            DeviceFormFactorIcon(
-                formFactor = device.formFactor,
-                modifier = fallbackIconModifier,
-                tint = fallbackTint,
-            )
+            if (fallback != null) {
+                fallback()
+            } else {
+                DeviceFormFactorIcon(
+                    formFactor = device.formFactor,
+                    modifier = fallbackIconModifier,
+                    tint = fallbackTint,
+                )
+            }
         }
 
         if (!hasError && currentUrl != null) {

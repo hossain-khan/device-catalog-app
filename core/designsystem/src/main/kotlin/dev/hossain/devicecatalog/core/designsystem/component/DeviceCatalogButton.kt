@@ -1,6 +1,7 @@
 package dev.hossain.devicecatalog.core.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -23,7 +24,7 @@ fun DeviceCatalogButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    content: @Composable () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     Button(
         onClick = onClick,
@@ -34,9 +35,8 @@ fun DeviceCatalogButton(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
-    ) {
-        content()
-    }
+        content = content,
+    )
 }
 
 /**
@@ -48,7 +48,7 @@ fun DeviceCatalogSecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    content: @Composable () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     FilledTonalButton(
         onClick = onClick,
@@ -59,9 +59,8 @@ fun DeviceCatalogSecondaryButton(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             ),
-    ) {
-        content()
-    }
+        content = content,
+    )
 }
 
 /**
@@ -73,7 +72,7 @@ fun DeviceCatalogOutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    content: @Composable () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     OutlinedButton(
         onClick = onClick,
@@ -88,9 +87,8 @@ fun DeviceCatalogOutlinedButton(
             ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary,
             ),
-    ) {
-        content()
-    }
+        content = content,
+    )
 }
 
 /**
@@ -102,7 +100,7 @@ fun DeviceCatalogTextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    content: @Composable () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     TextButton(
         onClick = onClick,
@@ -112,9 +110,8 @@ fun DeviceCatalogTextButton(
             ButtonDefaults.textButtonColors(
                 contentColor = MaterialTheme.colorScheme.primary,
             ),
-    ) {
-        content()
-    }
+        content = content,
+    )
 }
 
 // Previews

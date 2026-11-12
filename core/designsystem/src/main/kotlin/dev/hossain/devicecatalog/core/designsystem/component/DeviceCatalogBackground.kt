@@ -16,16 +16,16 @@ import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
  * Device Catalog background component.
  * Provides consistent background styling across the app.
  *
- * @param modifier Modifier to be applied to the background
+ * @param modifier Modifier to be applied to the background (defaults to filling available size)
  * @param content Content to be displayed on top of the background
  */
 @Composable
 fun DeviceCatalogBackground(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxSize(),
     content: @Composable () -> Unit,
 ) {
     Surface(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         color = MaterialTheme.colorScheme.background,
     ) {
         content()
@@ -36,14 +36,14 @@ fun DeviceCatalogBackground(
  * Device Catalog gradient background component.
  * Provides a subtle gradient background for visual interest.
  *
- * @param modifier Modifier to be applied to the background
+ * @param modifier Modifier to be applied to the background (defaults to filling available size)
  * @param topColor The color at the top of the gradient
  * @param bottomColor The color at the bottom of the gradient
  * @param content Content to be displayed on top of the background
  */
 @Composable
 fun DeviceCatalogGradientBackground(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.fillMaxSize(),
     topColor: Color = MaterialTheme.colorScheme.surface,
     bottomColor: Color = MaterialTheme.colorScheme.background,
     content: @Composable () -> Unit,
@@ -51,7 +51,6 @@ fun DeviceCatalogGradientBackground(
     Box(
         modifier =
             modifier
-                .fillMaxSize()
                 .background(
                     brush =
                         Brush.verticalGradient(
