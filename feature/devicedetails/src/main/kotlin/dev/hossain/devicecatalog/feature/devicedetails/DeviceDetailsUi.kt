@@ -60,9 +60,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
@@ -543,7 +543,7 @@ private fun ExpandableInfoCard(
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = if (expanded) "Collapse $title" else "Expand $title",
-                    modifier = Modifier.rotate(rotationAngle),
+                    modifier = Modifier.graphicsLayer { rotationZ = rotationAngle },
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }

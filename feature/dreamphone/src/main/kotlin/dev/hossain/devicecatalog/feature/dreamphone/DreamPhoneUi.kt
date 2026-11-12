@@ -139,30 +139,40 @@ private fun SurveyScreen(
 
         // Question content
         if (currentQuestion != null) {
-            LazyColumn(
+            AnimatedContent(
+                targetState = currentQuestion,
+                transitionSpec = {
+                    (fadeIn() + slideInHorizontally { it / 3 }) togetherWith
+                        (fadeOut() + slideOutHorizontally { -it / 3 })
+                },
                 modifier =
                     Modifier
                         .weight(1f)
                         .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                item {
-                    QuestionCard(
-                        title = currentQuestion.title,
-                        subtitle = currentQuestion.subtitle,
-                    ) {
-                        QuestionContent(
-                            question = currentQuestion,
-                            currentAnswer = state.answers[currentQuestion.id],
-                            onAnswerChanged = { answer ->
-                                state.eventSink(
-                                    DreamPhoneScreen.Event.AnswerSelected(
-                                        currentQuestion.id,
-                                        answer,
-                                    ),
-                                )
-                            },
-                        )
+                label = "survey_question_transition",
+            ) { question ->
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    item {
+                        QuestionCard(
+                            title = question.title,
+                            subtitle = question.subtitle,
+                        ) {
+                            QuestionContent(
+                                question = question,
+                                currentAnswer = state.answers[question.id],
+                                onAnswerChanged = { answer ->
+                                    state.eventSink(
+                                        DreamPhoneScreen.Event.AnswerSelected(
+                                            question.id,
+                                            answer,
+                                        ),
+                                    )
+                                },
+                            )
+                        }
                     }
                 }
             }

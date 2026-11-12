@@ -23,11 +23,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
@@ -38,10 +40,10 @@ import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
  */
 @Composable
 fun DeviceCardSkeleton(modifier: Modifier = Modifier) {
-    // Create shimmer animation at composable level to avoid deprecated Modifier.composed
+    // Create shimmer animation with alpha read deferred to draw phase to avoid frame-rate recomposition
     val transition = rememberInfiniteTransition(label = "shimmer")
     val alpha by transition.animateFloat(
-        initialValue = 0.2f,
+        initialValue = 0.3f,
         targetValue = 0.9f,
         animationSpec =
             infiniteRepeatable(
@@ -51,20 +53,20 @@ fun DeviceCardSkeleton(modifier: Modifier = Modifier) {
         label = "shimmer_alpha",
     )
 
-    val shimmerColorScheme = MaterialTheme.colorScheme
-    val shimmerColors =
-        listOf(
-            shimmerColorScheme.surface,
-            shimmerColorScheme.surfaceVariant.copy(alpha = alpha),
-            shimmerColorScheme.surface,
-        )
-
+    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
     val shimmerBrush =
-        Brush.linearGradient(
-            colors = shimmerColors,
-            start = Offset.Zero,
-            end = Offset(x = 300f, y = 300f),
-        )
+        remember(surfaceVariant) {
+            Brush.linearGradient(
+                colors =
+                    listOf(
+                        surfaceVariant.copy(alpha = 0.4f),
+                        surfaceVariant,
+                        surfaceVariant.copy(alpha = 0.4f),
+                    ),
+                start = Offset.Zero,
+                end = Offset(x = 300f, y = 300f),
+            )
+        }
 
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -79,6 +81,7 @@ fun DeviceCardSkeleton(modifier: Modifier = Modifier) {
             modifier =
                 Modifier
                     .fillMaxWidth()
+                    .graphicsLayer { this.alpha = alpha }
                     .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
