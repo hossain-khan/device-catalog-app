@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
@@ -49,6 +50,7 @@ object DeviceCatalogIcons {
     val Info: ImageVector = Icons.Default.Info
     val Warning: ImageVector = Icons.Default.Warning
     val Star: ImageVector = Icons.Default.Star
+    val Statistics: ImageVector = Icons.Default.QueryStats
 
     // UI icons
     val KeyboardArrowDown: ImageVector = Icons.Default.KeyboardArrowDown

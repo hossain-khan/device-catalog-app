@@ -5,7 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.screen.Screen
 import dev.hossain.devicecatalog.feature.aboutapp.AboutScreen
@@ -51,7 +51,7 @@ sealed class NavigationDestination(
     data object Stats : NavigationDestination(
         route = "stats",
         title = "Stats",
-        icon = Icons.Default.Star,
+        icon = Icons.Default.QueryStats,
         screen = DeviceStatsScreen,
     )
 
