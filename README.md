@@ -50,17 +50,6 @@ Android Device Universe is a mobile app that brings the official Android Device 
 - **♿ Accessible**: Built with accessibility in mind, supporting TalkBack and system font scaling
 - **📱 Adaptive**: Responsive design that looks great on phones, tablets, and foldables
 
-## 🚀 Get Started
-
-*The app is currently in development. Once released, you'll be able to download it from the Google Play Store.*
-
-Meanwhile, you can:
-- ⭐ Star the repository to stay updated
-- 👀 Watch for release announcements
-- 🛠️ Check out the source code and contribute
-
-*Note: This app is for informational purposes and provides data from the official Android Device Catalog.*
-
 ---
 
 ## 🔗 Related Resources
