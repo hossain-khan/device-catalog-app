@@ -47,7 +47,6 @@ fun QuizResultsUi(
 
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = { Text("Quiz Complete!") },
@@ -78,26 +77,6 @@ fun QuizResultsUi(
                 )
             }
 
-            // Review section header
-            item {
-                Text(
-                    text = "Review Your Answers",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
-            }
-
-            // Answer review cards
-            items(state.answers) { answer ->
-                AnswerReviewCard(
-                    answer = answer,
-                    onViewDeviceDetails = { deviceId ->
-                        state.eventSink(QuizResultsScreen.Event.ViewDeviceDetails(deviceId))
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
             // Action buttons
             item {
                 Column(
@@ -118,6 +97,26 @@ fun QuizResultsUi(
                         Text("Choose Manufacturer")
                     }
                 }
+            }
+
+            // Review section header
+            item {
+                Text(
+                    text = "Review Your Answers",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+
+            // Answer review cards
+            items(state.answers) { answer ->
+                AnswerReviewCard(
+                    answer = answer,
+                    onViewDeviceDetails = { deviceId ->
+                        state.eventSink(QuizResultsScreen.Event.ViewDeviceDetails(deviceId))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
             }
 
             // Bottom spacer

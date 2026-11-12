@@ -66,7 +66,7 @@ object RamFormatter {
      *
      * Examples:
      * - "1024-2048MB" -> "1-2GB"
-     * - "512-1024MB" -> "1-1GB"
+     * - "512-1024MB" -> "1GB" (when both boundaries round to the same GB)
      * - "0-3038MB" -> "0-3GB"
      *
      * @param matchResult The regex match result containing range boundaries
@@ -77,7 +77,11 @@ object RamFormatter {
         return try {
             val startGb = (startMb.toDouble() / 1024.0).roundToInt()
             val endGb = (endMb.toDouble() / 1024.0).roundToInt()
-            "${startGb}-${endGb}GB"
+            if (startGb == endGb) {
+                "${startGb}GB"
+            } else {
+                "${startGb}-${endGb}GB"
+            }
         } catch (e: NumberFormatException) {
             matchResult.value
         }

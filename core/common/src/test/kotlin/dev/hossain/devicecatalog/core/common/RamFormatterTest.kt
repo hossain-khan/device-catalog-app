@@ -91,9 +91,9 @@ class RamFormatterTest {
     }
 
     @Test
-    fun `formatRamToGb handles range 512-1024MB to 1-1GB`() {
-        // Both round to 1GB
-        assertEquals("1-1GB", RamFormatter.formatRamToGb("512-1024MB"))
+    fun `formatRamToGb handles range 512-1024MB to 1GB when boundaries match`() {
+        // Both round to 1GB, so it returns single 1GB rather than 1-1GB
+        assertEquals("1GB", RamFormatter.formatRamToGb("512-1024MB"))
     }
 
     @Test

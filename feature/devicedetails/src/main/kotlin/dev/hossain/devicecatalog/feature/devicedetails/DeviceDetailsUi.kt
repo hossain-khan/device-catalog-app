@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -104,7 +105,6 @@ fun DeviceDetailsUi(
             modifier
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             TopAppBar(
                 title = {
@@ -122,17 +122,15 @@ fun DeviceDetailsUi(
                     }
                 },
                 actions = {
-                    // Show share button only when device is loaded
-                    // Disabled for now, since there is already FAB for sharing
-
-                    /*if (state.device != null) {
+                    // Show share action in top app bar when device is loaded
+                    if (state.device != null) {
                         IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
                             Icon(
                                 imageVector = Icons.Default.Share,
                                 contentDescription = "Share device details",
                             )
                         }
-                    }*/
+                    }
                 },
                 scrollBehavior = scrollBehavior,
                 colors =
@@ -143,21 +141,6 @@ fun DeviceDetailsUi(
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        floatingActionButton = {
-            // Show FAB only when device is loaded
-            if (state.device != null) {
-                FloatingActionButton(
-                    onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Share,
-                        contentDescription = "Share device details",
-                    )
-                }
-            }
-        },
     ) { innerPadding ->
         when {
             state.isLoading -> {
@@ -303,11 +286,8 @@ private fun DeviceDetailsContent(
                 .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // Device header with icon and basic info
-        DeviceHeaderCard(device = device)
-
-        // Device image showcase banner
-        DeviceImagePreviewCard(device = device)
+        // Unified device hero card with image, model, and form factor
+        DeviceHeroCard(device = device)
 
         // Basic device information
         BasicInfoCard(device = device, snackbarHostState = snackbarHostState)
@@ -328,11 +308,9 @@ private fun DeviceDetailsContent(
 }
 
 @Composable
-private fun DeviceHeaderCard(device: AndroidDevice) {
+private fun DeviceHeroCard(device: AndroidDevice) {
     val deviceTypeColors = deviceTypeColors()
-    val deviceTypeBolderColors = deviceTypeBolderColors()
     val deviceColor = deviceTypeColors.colorFor(device.formFactor)
-    val darkerDeviceColor = deviceTypeBolderColors.colorFor(device.formFactor)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -340,82 +318,57 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
             CardDefaults.cardColors(
                 containerColor = deviceColor,
             ),
+        shape = RoundedCornerShape(16.dp),
     ) {
-        Row(
+        Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                    .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Device image with form-factor icon fallback
-            Surface(
+            // Large device image showcase
+            Box(
                 modifier =
                     Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                color = darkerDeviceColor,
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+                        .padding(12.dp),
+                contentAlignment = Alignment.Center,
             ) {
                 DeviceImage(
                     device = device,
-                    modifier = Modifier.padding(4.dp),
-                    fallbackIconModifier = Modifier.size(32.dp),
-                    fallbackTint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.fillMaxSize(),
+                    fallbackIconModifier = Modifier.size(64.dp),
+                    fallbackTint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                 )
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Device title and subtitle
-            Column {
-                Text(
-                    text = device.modelName,
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = "${device.manufacturer} • ${device.brand}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
-                )
-
-                Text(
-                    text = device.formFactor.value,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                )
-            }
-        }
-    }
-}
-
-/**
- * Preview showcase card displaying the device image or form factor icon.
- */
-@Composable
-private fun DeviceImagePreviewCard(device: AndroidDevice) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
-            ),
-        shape = RoundedCornerShape(16.dp),
-    ) {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(16.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            DeviceImage(
-                device = device,
-                modifier = Modifier.fillMaxSize(),
-                fallbackIconModifier = Modifier.size(64.dp),
-                fallbackTint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            Text(
+                text = device.modelName,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = "${device.manufacturer} • ${device.brand}",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                textAlign = TextAlign.Center,
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = device.formFactor.value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                textAlign = TextAlign.Center,
             )
         }
     }
@@ -427,7 +380,7 @@ private fun BasicInfoCard(
     snackbarHostState: SnackbarHostState,
 ) {
     ExpandableInfoCard(title = "Basic Information", defaultExpanded = true) {
-        InfoRow(label = "Device Name", value = device.device, snackbarHostState = snackbarHostState)
+        InfoRow(label = "Codename", value = device.device, snackbarHostState = snackbarHostState)
         InfoRow(label = "Manufacturer", value = device.manufacturer, snackbarHostState = snackbarHostState)
         InfoRow(label = "Brand", value = device.brand, snackbarHostState = snackbarHostState)
         InfoRow(label = "Model", value = device.modelName, snackbarHostState = snackbarHostState)

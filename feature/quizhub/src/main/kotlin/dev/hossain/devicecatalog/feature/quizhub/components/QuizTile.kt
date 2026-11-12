@@ -42,7 +42,7 @@ fun QuizTile(
         modifier =
             modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
+                .aspectRatio(0.85f),
         colors =
             CardDefaults.elevatedCardColors(
                 containerColor =
@@ -63,14 +63,14 @@ fun QuizTile(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(16.dp),
+                        .padding(horizontal = 12.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Icon(
                     imageVector = quizInfo.icon,
                     contentDescription = null,
-                    modifier = Modifier.size(64.dp),
+                    modifier = Modifier.size(48.dp),
                     tint =
                         if (quizInfo.isAvailable) {
                             MaterialTheme.colorScheme.primary
@@ -81,7 +81,7 @@ fun QuizTile(
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = quizInfo.title,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     color =
                         if (quizInfo.isAvailable) {
@@ -93,7 +93,7 @@ fun QuizTile(
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = quizInfo.description,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color =
                         if (quizInfo.isAvailable) {
