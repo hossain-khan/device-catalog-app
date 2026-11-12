@@ -40,6 +40,7 @@ import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
+import dev.hossain.devicecatalog.core.ui.image.DeviceImage
 
 /**
  * Material 3 device card component with proper touch targets and accessibility support.
@@ -82,7 +83,7 @@ fun DeviceCard(
                     .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Device placeholder icon with background
+            // Device image with form-factor icon fallback and background
             val deviceTypeColors = deviceTypeColors()
             Surface(
                 modifier =
@@ -91,28 +92,12 @@ fun DeviceCard(
                         .clip(RoundedCornerShape(8.dp)),
                 color = deviceTypeColors.colorFor(device.formFactor),
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter =
-                            painterResource(
-                                id =
-                                    when (device.formFactor) {
-                                        FormFactor.PHONE -> R.drawable.mobile_24dp
-                                        FormFactor.TABLET -> R.drawable.tablet_24dp
-                                        FormFactor.TV -> R.drawable.tv_24dp
-                                        FormFactor.WEARABLE -> R.drawable.smart_watch_24dp
-                                        FormFactor.ANDROID_AUTOMOTIVE -> R.drawable.car_automotive_24dp
-                                        FormFactor.CHROMEBOOK -> R.drawable.laptop_chromebook_24dp
-                                        FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> R.drawable.game_controller_24dp
-                                    },
-                            ),
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
+                DeviceImage(
+                    device = device,
+                    modifier = Modifier.padding(4.dp),
+                    fallbackIconModifier = Modifier.size(32.dp),
+                    fallbackTint = MaterialTheme.colorScheme.onSurface,
+                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))

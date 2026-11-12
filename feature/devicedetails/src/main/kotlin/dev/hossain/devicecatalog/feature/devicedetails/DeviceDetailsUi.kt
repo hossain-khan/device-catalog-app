@@ -84,6 +84,7 @@ import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeBolderColors
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
+import dev.hossain.devicecatalog.core.ui.image.DeviceImage
 import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.launch
 
@@ -304,6 +305,9 @@ private fun DeviceDetailsContent(
         // Device header with icon and basic info
         DeviceHeaderCard(device = device)
 
+        // Device image showcase banner
+        DeviceImagePreviewCard(device = device)
+
         // Basic device information
         BasicInfoCard(device = device, snackbarHostState = snackbarHostState)
 
@@ -343,7 +347,7 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                     .padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Device icon
+            // Device image with form-factor icon fallback
             Surface(
                 modifier =
                     Modifier
@@ -351,26 +355,12 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                         .clip(RoundedCornerShape(12.dp)),
                 color = darkerDeviceColor,
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        painter =
-                            painterResource(
-                                id =
-                                    when (device.formFactor) {
-                                        FormFactor.PHONE -> R.drawable.mobile_24dp
-                                        FormFactor.TABLET -> R.drawable.tablet_24dp
-                                        FormFactor.TV -> R.drawable.tv_24dp
-                                        FormFactor.WEARABLE -> R.drawable.smart_watch_24dp
-                                        FormFactor.ANDROID_AUTOMOTIVE -> R.drawable.car_automotive_24dp
-                                        FormFactor.CHROMEBOOK -> R.drawable.laptop_chromebook_24dp
-                                        FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> R.drawable.game_controller_24dp
-                                    },
-                            ),
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
+                DeviceImage(
+                    device = device,
+                    modifier = Modifier.padding(4.dp),
+                    fallbackIconModifier = Modifier.size(32.dp),
+                    fallbackTint = MaterialTheme.colorScheme.onSurface,
+                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -395,6 +385,37 @@ private fun DeviceHeaderCard(device: AndroidDevice) {
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 )
             }
+        }
+    }
+}
+
+/**
+ * Preview showcase card displaying the device image or form factor icon.
+ */
+@Composable
+private fun DeviceImagePreviewCard(device: AndroidDevice) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
+            ),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .padding(16.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            DeviceImage(
+                device = device,
+                modifier = Modifier.fillMaxSize(),
+                fallbackIconModifier = Modifier.size(64.dp),
+                fallbackTint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            )
         }
     }
 }
