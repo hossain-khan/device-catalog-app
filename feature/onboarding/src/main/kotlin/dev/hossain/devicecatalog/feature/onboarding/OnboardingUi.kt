@@ -1,5 +1,7 @@
 package dev.hossain.devicecatalog.feature.onboarding
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -108,23 +112,7 @@ fun OnboardingUi(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 repeat(state.totalPages) { index ->
-                    val isSelected = index == state.currentPage
-                    Box(
-                        modifier =
-                            Modifier
-                                .padding(4.dp)
-                                .size(if (isSelected) 12.dp else 8.dp)
-                                .clip(CircleShape)
-                                .background(
-                                    if (isSelected) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface.copy(
-                                            alpha = 0.3f,
-                                        )
-                                    },
-                                ),
-                    )
+                    PageIndicator(isSelected = index == state.currentPage)
                 }
             }
 
@@ -145,6 +133,39 @@ fun OnboardingUi(
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+}
+
+/**
+ * Material 3 animated pill page indicator.
+ */
+@Composable
+private fun PageIndicator(
+    isSelected: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val width by animateDpAsState(
+        targetValue = if (isSelected) 24.dp else 8.dp,
+        label = "onboarding_indicator_width",
+    )
+    val color by animateColorAsState(
+        targetValue =
+            if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            },
+        label = "onboarding_indicator_color",
+    )
+
+    Box(
+        modifier =
+            modifier
+                .padding(horizontal = 4.dp)
+                .height(8.dp)
+                .width(width)
+                .clip(CircleShape)
+                .background(color),
+    )
 }
 
 /**

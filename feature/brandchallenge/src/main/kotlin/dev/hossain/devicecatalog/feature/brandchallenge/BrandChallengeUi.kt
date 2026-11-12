@@ -1,6 +1,8 @@
 package dev.hossain.devicecatalog.feature.brandchallenge
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,8 +34,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -205,7 +209,11 @@ private fun QuizContent(
             )
             LinearProgressIndicator(
                 progress = { (currentQuestionIndex + 1).toFloat() / totalQuestions },
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(8.dp),
+                strokeCap = StrokeCap.Round,
             )
         }
 
@@ -275,15 +283,15 @@ private fun AnswerOptionCard(
     onSelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val containerColor =
+    val targetContainerColor =
         when {
             isRevealed && isCorrect -> MaterialTheme.colorScheme.primaryContainer
             isRevealed && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer
             isSelected -> MaterialTheme.colorScheme.secondaryContainer
-            else -> MaterialTheme.colorScheme.surface
+            else -> MaterialTheme.colorScheme.surfaceContainerLow
         }
 
-    val contentColor =
+    val targetContentColor =
         when {
             isRevealed && isCorrect -> MaterialTheme.colorScheme.onPrimaryContainer
             isRevealed && isSelected && !isCorrect -> MaterialTheme.colorScheme.onErrorContainer
@@ -291,9 +299,31 @@ private fun AnswerOptionCard(
             else -> MaterialTheme.colorScheme.onSurface
         }
 
+    val targetBorderColor =
+        when {
+            isRevealed && isCorrect -> MaterialTheme.colorScheme.primary
+            isRevealed && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
+            isSelected -> MaterialTheme.colorScheme.secondary
+            else -> MaterialTheme.colorScheme.outlineVariant
+        }
+
+    val containerColor by animateColorAsState(
+        targetValue = targetContainerColor,
+        label = "brand_challenge_answer_container_color",
+    )
+    val contentColor by animateColorAsState(
+        targetValue = targetContentColor,
+        label = "brand_challenge_answer_content_color",
+    )
+    val borderColor by animateColorAsState(
+        targetValue = targetBorderColor,
+        label = "brand_challenge_answer_border_color",
+    )
+
     OutlinedCard(
         onClick = { if (!isRevealed) onSelected() },
         modifier = modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, borderColor),
         colors =
             CardDefaults.outlinedCardColors(
                 containerColor = containerColor,
