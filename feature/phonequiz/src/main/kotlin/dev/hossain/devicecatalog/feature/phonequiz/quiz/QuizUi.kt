@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -110,7 +111,11 @@ fun QuizUi(
                     // Progress indicator
                     LinearProgressIndicator(
                         progress = { (state.currentQuestionIndex + 1).toFloat() / state.questions.size },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(8.dp),
+                        strokeCap = StrokeCap.Round,
                     )
 
                     // Question counter
