@@ -36,9 +36,9 @@ fun AnswerReviewCard(
             CardDefaults.cardColors(
                 containerColor =
                     if (answer.isCorrect) {
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+                        MaterialTheme.colorScheme.primaryContainer
                     } else {
-                        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+                        MaterialTheme.colorScheme.errorContainer
                     },
             ),
     ) {

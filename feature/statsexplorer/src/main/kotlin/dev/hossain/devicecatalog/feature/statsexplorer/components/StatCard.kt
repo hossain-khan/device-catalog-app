@@ -55,7 +55,7 @@ fun StatCard(
                     if (isSelected) {
                         MaterialTheme.colorScheme.primaryContainer
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.surfaceContainerLow
                     },
             ),
     ) {

@@ -38,7 +38,7 @@ fun DeviceCatalogCard(
             shape = shape,
             colors =
                 CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
             elevation =
@@ -55,7 +55,7 @@ fun DeviceCatalogCard(
             shape = shape,
             colors =
                 CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
             elevation =
@@ -85,8 +85,8 @@ fun DeviceCatalogElevatedCard(
             shape = shape,
             colors =
                 CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
             elevation =
                 CardDefaults.elevatedCardElevation(
@@ -102,8 +102,8 @@ fun DeviceCatalogElevatedCard(
             shape = shape,
             colors =
                 CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
             elevation =
                 CardDefaults.elevatedCardElevation(

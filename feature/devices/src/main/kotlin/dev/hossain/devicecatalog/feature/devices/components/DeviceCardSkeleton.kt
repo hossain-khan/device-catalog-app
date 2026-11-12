@@ -53,15 +53,16 @@ fun DeviceCardSkeleton(modifier: Modifier = Modifier) {
         label = "shimmer_alpha",
     )
 
-    val surfaceVariant = MaterialTheme.colorScheme.surfaceVariant
+    val surfaceContainer = MaterialTheme.colorScheme.surfaceContainer
+    val surfaceContainerHigh = MaterialTheme.colorScheme.surfaceContainerHigh
     val shimmerBrush =
-        remember(surfaceVariant) {
+        remember(surfaceContainer, surfaceContainerHigh) {
             Brush.linearGradient(
                 colors =
                     listOf(
-                        surfaceVariant.copy(alpha = 0.4f),
-                        surfaceVariant,
-                        surfaceVariant.copy(alpha = 0.4f),
+                        surfaceContainer,
+                        surfaceContainerHigh,
+                        surfaceContainer,
                     ),
                 start = Offset.Zero,
                 end = Offset(x = 300f, y = 300f),
@@ -73,7 +74,7 @@ fun DeviceCardSkeleton(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
         shape = RoundedCornerShape(12.dp),
     ) {

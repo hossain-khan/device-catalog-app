@@ -26,7 +26,7 @@ fun QuestionCard(
         modifier = modifier,
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
         elevation =
             CardDefaults.cardElevation(

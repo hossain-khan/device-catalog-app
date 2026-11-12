@@ -49,7 +49,7 @@ fun QuizTile(
                     if (quizInfo.isAvailable) {
                         MaterialTheme.colorScheme.primaryContainer
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.surfaceContainerLow
                     },
             ),
         elevation =
