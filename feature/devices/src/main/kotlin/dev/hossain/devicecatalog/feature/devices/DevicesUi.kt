@@ -25,19 +25,25 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,6 +81,8 @@ fun DevicesUi(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutConfig = rememberDeviceListLayoutConfig()
+    var isSearchExpanded by rememberSaveable { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     // Handle error messages with retry action
     LaunchedEffect(state.errorMessage) {
@@ -108,65 +116,72 @@ fun DevicesUi(
 
     Scaffold(
         modifier =
-            modifier.semantics {
-                contentDescription =
-                    "Device catalog screen with ${state.searchResultCount} devices"
-            },
+            modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .semantics {
+                    contentDescription =
+                        "Device catalog screen with ${state.searchResultCount} devices"
+                },
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            TopAppBar(
-                title = {
-                    val title =
-                        when {
-                            state.searchQuery.isNotBlank() -> {
-                                "Search Results (${state.searchResultCount})"
-                            }
+            if (!isSearchExpanded) {
+                MediumTopAppBar(
+                    title = {
+                        val title =
+                            when {
+                                state.searchQuery.isNotBlank() -> {
+                                    "Search Results (${state.searchResultCount})"
+                                }
 
-                            state.activeFilters.hasActiveFilters() -> {
-                                "Filtered (${state.searchResultCount})"
-                            }
+                                state.activeFilters.hasActiveFilters() -> {
+                                    "Filtered (${state.searchResultCount})"
+                                }
 
-                            else -> {
-                                "Android Universe"
+                                else -> {
+                                    "Android Universe"
+                                }
                             }
+                        Text(text = title)
+                    },
+                    actions = {
+                        // Dream phone icon button
+                        IconButton(
+                            onClick = { state.eventSink(DevicesScreen.Event.OpenDreamPhoneSurvey) },
+                        ) {
+                            Icon(
+                                imageVector = dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons.Psychology,
+                                contentDescription = "Find my dream phone",
+                            )
                         }
-                    Text(text = title)
-                },
-                actions = {
-                    // Dream phone icon button
-                    IconButton(
-                        onClick = { state.eventSink(DevicesScreen.Event.OpenDreamPhoneSurvey) },
-                    ) {
-                        Icon(
-                            imageVector = dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons.Psychology,
-                            contentDescription = "Find my dream phone",
-                        )
-                    }
-                },
-            )
+                    },
+                    scrollBehavior = scrollBehavior,
+                )
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
-            BadgedBox(
-                badge = {
-                    AnimatedVisibility(
-                        visible = state.activeFilters.hasActiveFilters(),
-                        enter = fadeIn(),
-                        exit = fadeOut(),
-                    ) {
-                        Badge {
-                            Text(text = "${state.activeFilters.activeFilterCount()}")
+            if (!isSearchExpanded) {
+                BadgedBox(
+                    badge = {
+                        AnimatedVisibility(
+                            visible = state.activeFilters.hasActiveFilters(),
+                            enter = fadeIn(),
+                            exit = fadeOut(),
+                        ) {
+                            Badge {
+                                Text(text = "${state.activeFilters.activeFilterCount()}")
+                            }
                         }
-                    }
-                },
-            ) {
-                FloatingActionButton(
-                    onClick = { state.eventSink(DevicesScreen.Event.ShowFilterSheet) },
+                    },
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.FilterList,
-                        contentDescription = "Filter devices",
-                    )
+                    FloatingActionButton(
+                        onClick = { state.eventSink(DevicesScreen.Event.ShowFilterSheet) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.FilterList,
+                            contentDescription = "Filter devices",
+                        )
+                    }
                 }
             }
         },
@@ -187,7 +202,16 @@ fun DevicesUi(
                     state.eventSink(DevicesScreen.Event.ClearSearch)
                 },
                 resultCount = state.searchResultCount,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                expanded = isSearchExpanded,
+                onExpandedChange = { isSearchExpanded = it },
+                modifier =
+                    if (isSearchExpanded) {
+                        Modifier.fillMaxWidth()
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    },
             )
 
             // Active filter chips
