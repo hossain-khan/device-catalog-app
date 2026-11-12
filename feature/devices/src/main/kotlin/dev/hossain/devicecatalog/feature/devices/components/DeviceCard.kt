@@ -69,7 +69,7 @@ fun DeviceCard(
             ),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 contentColor = MaterialTheme.colorScheme.onSurface,
             ),
         shape = RoundedCornerShape(12.dp),
@@ -94,7 +94,7 @@ fun DeviceCard(
                     device = device,
                     modifier = Modifier.padding(4.dp),
                     fallbackIconModifier = Modifier.size(32.dp),
-                    fallbackTint = MaterialTheme.colorScheme.onSurface,
+                    fallbackTint = deviceTypeColors.onColorFor(device.formFactor),
                 )
             }
 

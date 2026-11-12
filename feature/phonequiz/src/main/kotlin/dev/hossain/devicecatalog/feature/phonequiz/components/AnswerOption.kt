@@ -32,10 +32,10 @@ fun AnswerOption(
 ) {
     val containerColor =
         when {
-            showResult && isCorrect -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-            showResult && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+            showResult && isCorrect -> MaterialTheme.colorScheme.primaryContainer
+            showResult && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer
             !showResult && isSelected -> MaterialTheme.colorScheme.primaryContainer
-            else -> MaterialTheme.colorScheme.surface
+            else -> MaterialTheme.colorScheme.surfaceContainerLow
         }
 
     val contentColor =

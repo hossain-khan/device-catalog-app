@@ -198,7 +198,7 @@ private fun SkeletonCard(
                 .height(height),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
         Box(
@@ -232,7 +232,7 @@ private fun ErrorContent(
             Surface(
                 modifier = Modifier.size(96.dp),
                 shape = RoundedCornerShape(48.dp),
-                color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f),
+                color = MaterialTheme.colorScheme.errorContainer,
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
@@ -311,6 +311,7 @@ private fun DeviceDetailsContent(
 private fun DeviceHeroCard(device: AndroidDevice) {
     val deviceTypeColors = deviceTypeColors()
     val deviceColor = deviceTypeColors.colorFor(device.formFactor)
+    val onDeviceColor = deviceTypeColors.onColorFor(device.formFactor)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -334,7 +335,7 @@ private fun DeviceHeroCard(device: AndroidDevice) {
                         .fillMaxWidth()
                         .height(180.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                         .padding(12.dp),
                 contentAlignment = Alignment.Center,
             ) {
@@ -342,32 +343,32 @@ private fun DeviceHeroCard(device: AndroidDevice) {
                     device = device,
                     modifier = Modifier.fillMaxSize(),
                     fallbackIconModifier = Modifier.size(64.dp),
-                    fallbackTint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    fallbackTint = onDeviceColor.copy(alpha = 0.8f),
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Device title and subtitle
+            // Device title and subtitle with WCAG-compliant onDeviceColor
             Text(
                 text = device.modelName,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = onDeviceColor,
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = "${device.manufacturer} • ${device.brand}",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                color = onDeviceColor.copy(alpha = 0.85f),
                 textAlign = TextAlign.Center,
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = device.formFactor.value,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                color = onDeviceColor.copy(alpha = 0.75f),
                 textAlign = TextAlign.Center,
             )
         }
@@ -470,7 +471,7 @@ private fun ExpandableInfoCard(
         modifier = modifier,
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
@@ -528,7 +529,7 @@ private fun InfoCard(
         modifier = modifier,
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {

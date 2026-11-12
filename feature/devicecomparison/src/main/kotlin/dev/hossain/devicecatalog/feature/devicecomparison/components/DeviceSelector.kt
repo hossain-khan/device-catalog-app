@@ -60,7 +60,7 @@ fun AddDeviceCard(
                 .height(100.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
         Column(

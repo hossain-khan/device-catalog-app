@@ -143,7 +143,7 @@ private fun FeatureFlagItem(
         modifier = modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
         Row(
@@ -177,7 +177,7 @@ private fun OnboardingResetCard(
         modifier = modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
         Column(
@@ -228,7 +228,7 @@ private fun PerformanceMetricsCard(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             ),
     ) {
         Column(

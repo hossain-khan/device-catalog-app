@@ -88,7 +88,7 @@ private fun SpecValue(
                     if (isHighlighted) {
                         MaterialTheme.colorScheme.primaryContainer
                     } else {
-                        MaterialTheme.colorScheme.surfaceVariant
+                        MaterialTheme.colorScheme.surfaceContainerLow
                     },
                 ).padding(8.dp),
     ) {
