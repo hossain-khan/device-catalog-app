@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.model.DeviceInfo
+import dev.hossain.devicecatalog.core.ui.image.DeviceImage
 
 /**
  * Maximum number of devices to display in the selector list.
@@ -109,8 +110,15 @@ fun SelectedDeviceCard(
                 Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+            DeviceImage(
+                device = device.androidDevice,
+                modifier = Modifier.size(44.dp),
+                fallbackIconModifier = Modifier.size(24.dp),
+                fallbackTint = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
             Column(
                 modifier = Modifier.weight(1f),
             ) {
@@ -248,6 +256,14 @@ private fun DeviceSelectorItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
+        leadingContent = {
+            DeviceImage(
+                device = device.androidDevice,
+                modifier = Modifier.size(40.dp),
+                fallbackIconModifier = Modifier.size(24.dp),
+                fallbackTint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        },
         headlineContent = {
             Text(
                 text = device.androidDevice.modelName,
