@@ -8,14 +8,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +27,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RangeSlider
+import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -61,28 +67,37 @@ fun FilterBottomSheet(
     onApplyFilters: (DevicesScreen.FilterState) -> Unit,
     onClearFilters: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     var formFactors by remember { mutableStateOf(currentFilters.formFactors) }
     var manufacturers by remember { mutableStateOf(currentFilters.manufacturers) }
-    var ramRange by remember {
-        mutableStateOf(
-            (currentFilters.minRamMb?.toFloat() ?: 512f) to
-                (currentFilters.maxRamMb?.toFloat() ?: 16384f),
-        )
-    }
-    var dpiRange by remember {
-        mutableStateOf(
-            (currentFilters.minScreenDpi?.toFloat() ?: 120f) to
-                (currentFilters.maxScreenDpi?.toFloat() ?: 640f),
-        )
-    }
-    var sdkRange by remember {
-        mutableStateOf(
-            (currentFilters.minSdkVersion?.toFloat() ?: 21f) to
-                (currentFilters.maxSdkVersion?.toFloat() ?: 35f),
-        )
-    }
+    val ramSliderState =
+        remember {
+            RangeSliderState(
+                startValue = currentFilters.minRamMb?.toFloat() ?: 512f,
+                endValue = currentFilters.maxRamMb?.toFloat() ?: 16384f,
+                steps = 30,
+                trackRange = 512f..16384f,
+            )
+        }
+    val dpiSliderState =
+        remember {
+            RangeSliderState(
+                startValue = currentFilters.minScreenDpi?.toFloat() ?: 120f,
+                endValue = currentFilters.maxScreenDpi?.toFloat() ?: 640f,
+                steps = 12,
+                trackRange = 120f..640f,
+            )
+        }
+    val sdkSliderState =
+        remember {
+            RangeSliderState(
+                startValue = currentFilters.minSdkVersion?.toFloat() ?: 21f,
+                endValue = currentFilters.maxSdkVersion?.toFloat() ?: 35f,
+                steps = 13,
+                trackRange = 21f..35f,
+            )
+        }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -93,214 +108,258 @@ fun FilterBottomSheet(
             },
     ) {
         Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            // Header
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+            // Scrollable filter content
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f, fill = false)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp),
             ) {
+                // Header
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Filter Devices",
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close filter",
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Form Factor Filter
                 Text(
-                    text = "Filter Devices",
-                    style = MaterialTheme.typography.headlineSmall,
+                    text = "Form Factor",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
                 )
-                IconButton(onClick = onDismiss) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close filter",
-                    )
-                }
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Form Factor Filter
-            Text(
-                text = "Form Factor",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                FormFactor.entries.forEach { formFactor ->
-                    FilterChip(
-                        selected = formFactor in formFactors,
-                        onClick = {
-                            formFactors =
-                                if (formFactor in formFactors) {
-                                    formFactors - formFactor
-                                } else {
-                                    formFactors + formFactor
-                                }
-                        },
-                        label = { Text(text = formFactor.value) },
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // RAM Range Filter
-            Text(
-                text = "RAM Range",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
-            Text(
-                text = formatRamRange(ramRange.first.toInt(), ramRange.second.toInt()),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            RangeSlider(
-                value = ramRange.first..ramRange.second,
-                onValueChange = { range ->
-                    ramRange = range.start to range.endInclusive
-                },
-                valueRange = 512f..16384f,
-                steps = 30,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Screen DPI Range Filter
-            Text(
-                text = "Screen DPI Range",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
-            Text(
-                text = "${dpiRange.first.toInt()} - ${dpiRange.second.toInt()} DPI",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            RangeSlider(
-                value = dpiRange.first..dpiRange.second,
-                onValueChange = { range ->
-                    dpiRange = range.start to range.endInclusive
-                },
-                valueRange = 120f..640f,
-                steps = 12,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // SDK Version Range Filter
-            Text(
-                text = "SDK Version Range",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
-            Text(
-                text = "API ${sdkRange.first.toInt()} - ${sdkRange.second.toInt()}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            RangeSlider(
-                value = sdkRange.first..sdkRange.second,
-                onValueChange = { range ->
-                    sdkRange = range.start to range.endInclusive
-                },
-                valueRange = 21f..35f,
-                steps = 13,
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Manufacturer Filter
-            Text(
-                text = "Manufacturer (Top $TOP_MANUFACTURERS_COUNT)",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
-
-            FlowRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                availableManufacturers.take(TOP_MANUFACTURERS_COUNT).forEach { manufacturer ->
-                    FilterChip(
-                        selected = manufacturer in manufacturers,
-                        onClick = {
-                            manufacturers =
-                                if (manufacturer in manufacturers) {
-                                    manufacturers - manufacturer
-                                } else {
-                                    manufacturers + manufacturer
-                                }
-                        },
-                        label = { Text(text = manufacturer) },
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Action Buttons
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                OutlinedButton(
-                    onClick = {
-                        formFactors = emptySet()
-                        manufacturers = emptySet()
-                        ramRange = 512f to 16384f
-                        dpiRange = 120f to 640f
-                        sdkRange = 21f to 35f
-                        onClearFilters()
-                    },
-                    modifier = Modifier.weight(1f),
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Text(text = "Clear All")
+                    FormFactor.entries.forEach { formFactor ->
+                        val isSelected = formFactor in formFactors
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = {
+                                formFactors =
+                                    if (isSelected) {
+                                        formFactors - formFactor
+                                    } else {
+                                        formFactors + formFactor
+                                    }
+                            },
+                            label = { Text(text = formFactor.value) },
+                            leadingIcon =
+                                if (isSelected) {
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                        )
+                                    }
+                                } else {
+                                    null
+                                },
+                        )
+                    }
                 }
 
-                Button(
-                    onClick = {
-                        val filters =
-                            DevicesScreen.FilterState(
-                                formFactors = formFactors,
-                                manufacturers = manufacturers,
-                                minRamMb = ramRange.first.toInt(),
-                                maxRamMb = ramRange.second.toInt(),
-                                minScreenDpi = dpiRange.first.toInt(),
-                                maxScreenDpi = dpiRange.second.toInt(),
-                                minSdkVersion = sdkRange.first.toInt(),
-                                maxSdkVersion = sdkRange.second.toInt(),
-                            )
-                        onApplyFilters(filters)
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // RAM Range Filter
+                Text(
+                    text = "RAM Range",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+
+                Text(
+                    text =
+                        formatRamRange(
+                            ramSliderState.startValue.toInt(),
+                            ramSliderState.endValue.toInt(),
+                        ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                RangeSlider(
+                    state = ramSliderState,
+                    onValueChange = { range ->
+                        ramSliderState.startValue = range.start
+                        ramSliderState.endValue = range.endInclusive
                     },
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Screen DPI Range Filter
+                Text(
+                    text = "Screen DPI Range",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+
+                Text(
+                    text = "${dpiSliderState.startValue.toInt()} - ${dpiSliderState.endValue.toInt()} DPI",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                RangeSlider(
+                    state = dpiSliderState,
+                    onValueChange = { range ->
+                        dpiSliderState.startValue = range.start
+                        dpiSliderState.endValue = range.endInclusive
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // SDK Version Range Filter
+                Text(
+                    text = "SDK Version Range",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+
+                Text(
+                    text = "API ${sdkSliderState.startValue.toInt()} - ${sdkSliderState.endValue.toInt()}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                RangeSlider(
+                    state = sdkSliderState,
+                    onValueChange = { range ->
+                        sdkSliderState.startValue = range.start
+                        sdkSliderState.endValue = range.endInclusive
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Manufacturer Filter
+                Text(
+                    text = "Manufacturer (Top $TOP_MANUFACTURERS_COUNT)",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                )
+
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Text(text = "Apply Filters")
+                    availableManufacturers.take(TOP_MANUFACTURERS_COUNT).forEach { manufacturer ->
+                        val isSelected = manufacturer in manufacturers
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = {
+                                manufacturers =
+                                    if (isSelected) {
+                                        manufacturers - manufacturer
+                                    } else {
+                                        manufacturers + manufacturer
+                                    }
+                            },
+                            label = { Text(text = manufacturer) },
+                            leadingIcon =
+                                if (isSelected) {
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Default.Check,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                        )
+                                    }
+                                } else {
+                                    null
+                                },
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // Sticky Bottom Action Bar
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                tonalElevation = 3.dp,
+            ) {
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            formFactors = emptySet()
+                            manufacturers = emptySet()
+                            ramSliderState.startValue = 512f
+                            ramSliderState.endValue = 16384f
+                            dpiSliderState.startValue = 120f
+                            dpiSliderState.endValue = 640f
+                            sdkSliderState.startValue = 21f
+                            sdkSliderState.endValue = 35f
+                            onClearFilters()
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = "Clear All")
+                    }
+
+                    Button(
+                        onClick = {
+                            val filters =
+                                DevicesScreen.FilterState(
+                                    formFactors = formFactors,
+                                    manufacturers = manufacturers,
+                                    minRamMb = ramSliderState.startValue.toInt(),
+                                    maxRamMb = ramSliderState.endValue.toInt(),
+                                    minScreenDpi = dpiSliderState.startValue.toInt(),
+                                    maxScreenDpi = dpiSliderState.endValue.toInt(),
+                                    minSdkVersion = sdkSliderState.startValue.toInt(),
+                                    maxSdkVersion = sdkSliderState.endValue.toInt(),
+                                )
+                            onApplyFilters(filters)
+                        },
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Text(text = "Apply Filters")
+                    }
+                }
+            }
         }
     }
 }
