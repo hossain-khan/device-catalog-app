@@ -3,10 +3,14 @@ package dev.hossain.devicecatalog.core.designsystem.icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.CompareArrows
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Info
@@ -15,6 +19,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.QueryStats
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
@@ -35,13 +40,18 @@ import androidx.compose.ui.graphics.vector.ImageVector
 object DeviceCatalogIcons {
     // Navigation icons
     val ArrowBack: ImageVector = Icons.AutoMirrored.Filled.ArrowBack
+    val KeyboardArrowRight: ImageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight
     val List: ImageVector = Icons.AutoMirrored.Filled.List
 
     // Action icons
+    val Check: ImageVector = Icons.Default.Check
     val Clear: ImageVector = Icons.Default.Clear
     val Close: ImageVector = Icons.Default.Close
+    val Code: ImageVector = Icons.Default.Code
     val ContentCopy: ImageVector = Icons.Default.ContentCopy
     val FilterList: ImageVector = Icons.Default.FilterList
+    val OpenInNew: ImageVector = Icons.AutoMirrored.Filled.OpenInNew
+    val RestartAlt: ImageVector = Icons.Default.RestartAlt
     val Search: ImageVector = Icons.Default.Search
     val Share: ImageVector = Icons.Default.Share
 
