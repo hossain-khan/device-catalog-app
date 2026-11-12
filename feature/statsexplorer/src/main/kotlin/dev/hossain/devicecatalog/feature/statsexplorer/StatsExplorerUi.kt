@@ -1,10 +1,10 @@
 package dev.hossain.devicecatalog.feature.statsexplorer
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -30,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.feature.statsexplorer.components.ChartView
 import dev.hossain.devicecatalog.feature.statsexplorer.components.InsightCard
-import dev.hossain.devicecatalog.feature.statsexplorer.components.StatCategoryRow
+import dev.hossain.devicecatalog.feature.statsexplorer.components.StatCategorySegmentedButtonRow
 import dev.zacsweers.metro.AppScope
 
 @CircuitInject(screen = StatsExplorerScreen::class, scope = AppScope::class)
@@ -46,6 +49,14 @@ fun StatsExplorerUi(
         topBar = {
             TopAppBar(
                 title = { Text("Stats Explorer") },
+                navigationIcon = {
+                    IconButton(onClick = { state.eventSink(StatsExplorerScreen.Event.BackClicked) }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Navigate back",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -93,24 +104,21 @@ private fun StatsExplorerContent(
     ) {
         // Category selector
         item {
-            Column {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+            ) {
                 Text(
-                    text = "Select Category",
+                    text = "Category",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = 8.dp),
                 )
 
-                val scrollState = rememberScrollState()
-                StatCategoryRow(
+                StatCategorySegmentedButtonRow(
                     categories = StatCategory.entries,
                     selectedCategory = selectedCategory,
-                    statCounts =
-                        statData?.let {
-                            mapOf(it.category to it.distribution.size)
-                        } ?: emptyMap(),
                     onCategorySelected = onCategorySelected,
-                    modifier = Modifier.horizontalScroll(scrollState),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
@@ -119,17 +127,34 @@ private fun StatsExplorerContent(
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                    ),
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
                 ) {
-                    Text(
-                        text = selectedCategory.displayName,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = selectedCategory.displayName,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+
+                        if (statData != null && statData.distribution.isNotEmpty()) {
+                            Text(
+                                text = "${statData.distribution.size} items",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -194,7 +219,10 @@ private fun DataDetailsCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

@@ -146,6 +146,11 @@ class StatsExplorerPresenter
                     is StatsExplorerScreen.Event.Refresh -> {
                         Timber.d("Refresh requested")
                     }
+
+                    is StatsExplorerScreen.Event.BackClicked -> {
+                        Timber.d("Back clicked")
+                        navigator.pop()
+                    }
                 }
             }
         }

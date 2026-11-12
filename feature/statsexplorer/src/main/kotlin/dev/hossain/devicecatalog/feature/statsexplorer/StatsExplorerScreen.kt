@@ -49,5 +49,7 @@ data class StatsExplorerScreen(
         ) : Event()
 
         data object Refresh : Event()
+
+        data object BackClicked : Event()
     }
 }

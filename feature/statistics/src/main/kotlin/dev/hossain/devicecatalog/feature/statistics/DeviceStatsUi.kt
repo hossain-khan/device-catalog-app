@@ -63,6 +63,7 @@ import dev.hossain.devicecatalog.feature.statistics.components.PieChart
 import dev.hossain.devicecatalog.feature.statistics.components.PieChartData
 import dev.hossain.devicecatalog.feature.statistics.components.SwipeableMetricCards
 import dev.zacsweers.metro.AppScope
+import java.util.Locale
 
 @CircuitInject(screen = DeviceStatsScreen::class, scope = AppScope::class)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,35 +151,35 @@ private fun DeviceStatsContent(
                 listOf(
                     MetricCardData(
                         title = "Total Devices",
-                        value = stats.totalDevices.toString(),
+                        value = String.format(Locale.US, "%,d", stats.totalDevices),
                         subtitle = "Android devices in catalog",
                         backgroundColor = colorForTotalDevices,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "Manufacturers",
-                        value = stats.totalManufacturers.toString(),
+                        value = String.format(Locale.US, "%,d", stats.totalManufacturers),
                         subtitle = "Unique device manufacturers",
                         backgroundColor = colorForManufacturers,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "Form Factors",
-                        value = stats.totalFormFactors.toString(),
+                        value = String.format(Locale.US, "%,d", stats.totalFormFactors),
                         subtitle = "Different device types",
                         backgroundColor = colorForFormFactors,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "RAM Variants",
-                        value = stats.ramDistribution.size.toString(),
+                        value = String.format(Locale.US, "%,d", stats.ramDistribution.size),
                         subtitle = "Memory configurations",
                         backgroundColor = colorForRamVariants,
                         textColor = Color.White,
                     ),
                     MetricCardData(
                         title = "SDK Versions",
-                        value = stats.sdkVersionDistribution.size.toString(),
+                        value = String.format(Locale.US, "%,d", stats.sdkVersionDistribution.size),
                         subtitle = "Supported Android versions",
                         backgroundColor = colorForSdkVersions,
                         textColor = Color.White,
@@ -298,7 +299,10 @@ private fun CollapsibleCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            ),
     ) {
         Column {
             Row(

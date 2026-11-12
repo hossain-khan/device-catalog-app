@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.feature.statsexplorer.components
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.PhoneAndroid
@@ -18,8 +20,12 @@ import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.ViewInAr
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,94 +37,47 @@ import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.feature.statsexplorer.StatCategory
 
 /**
- * Card displaying a single statistic with icon and value.
+ * Material 3 SingleChoiceSegmentedButtonRow for selecting statistical categories.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatCard(
-    category: StatCategory,
-    value: String,
-    subtitle: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
+fun StatCategorySegmentedButtonRow(
+    categories: List<StatCategory>,
+    selectedCategory: StatCategory,
+    onCategorySelected: (StatCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Card(
-        onClick = onClick,
-        modifier = modifier,
-        elevation =
-            CardDefaults.cardElevation(
-                defaultElevation = if (isSelected) 8.dp else 2.dp,
-            ),
-        colors =
-            CardDefaults.cardColors(
-                containerColor =
-                    if (isSelected) {
-                        MaterialTheme.colorScheme.primaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.surfaceContainerLow
-                    },
-            ),
+    val scrollState = rememberScrollState()
+    SingleChoiceSegmentedButtonRow(
+        modifier = modifier.horizontalScroll(scrollState),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 14.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                imageVector = category.toIcon(),
-                contentDescription = category.displayName,
-                tint =
-                    if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
-                modifier = Modifier.size(32.dp),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = category.displayName,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                color =
-                    if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = value,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-            )
-
-            Text(
-                text = subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color =
-                    if (isSelected) {
-                        MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                    },
+        categories.forEachIndexed { index, category ->
+            SegmentedButton(
+                selected = category == selectedCategory,
+                onClick = { onCategorySelected(category) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = categories.size),
+                icon = {
+                    SegmentedButtonDefaults.Icon(active = category == selectedCategory) {
+                        Icon(
+                            imageVector = category.toIcon(),
+                            contentDescription = null,
+                            modifier = Modifier.size(SegmentedButtonDefaults.IconSize),
+                        )
+                    }
+                },
+                label = {
+                    Text(
+                        text = category.displayName,
+                        maxLines = 1,
+                    )
+                },
             )
         }
     }
 }
 
 /**
- * Horizontal scrollable row of stat category cards.
+ * Horizontal scrollable row of stat category cards (legacy / alternate presentation).
  */
 @Composable
 fun StatCategoryRow(
@@ -128,27 +87,12 @@ fun StatCategoryRow(
     onCategorySelected: (StatCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    StatCategorySegmentedButtonRow(
+        categories = categories,
+        selectedCategory = selectedCategory,
+        onCategorySelected = onCategorySelected,
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        categories.forEach { category ->
-            val isSelected = category == selectedCategory
-            StatCard(
-                category = category,
-                value =
-                    if (isSelected) {
-                        statCounts[category]?.toString() ?: "..."
-                    } else {
-                        "→"
-                    },
-                subtitle = if (isSelected) "items" else "tap to view",
-                isSelected = isSelected,
-                onClick = { onCategorySelected(category) },
-                modifier = Modifier.width(140.dp),
-            )
-        }
-    }
+    )
 }
 
 /**
