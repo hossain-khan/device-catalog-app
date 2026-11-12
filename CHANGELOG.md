@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.11.0] - 2026-11-12
+
+### Added
+- Device image loading support using Coil 3 with CDN hosting and fallback candidate URLs (#215)
+- Reusable `DeviceImage` composable in `:core:ui` with smooth crossfade and form-factor icon fallback
+- Device image preview cards in device details and device comparison selector
+- `AGENTS.md` guidelines for AI coding agents (#216)
+
 ### Changed
+- Upgraded dependencies (#216):
+  - Coil: 3.5.0 → 3.6.3
+  - Compose BOM: 2026.08.00 → 2026.09.00
+  - Material 3: 1.5.0-alpha26 → 1.5.0-rc01
+  - AndroidX WorkManager: 2.11.2 → 2.12.0
+  - Compose Lint Checks: 1.5.4 → 1.6.1
+  - Core KTX: 1.19.0 → 1.19.1
+  - Google Fonts: 1.12.0 → 1.12.1
+  - Kotlinx Serialization: 1.11.0 → 1.12.0
 - Enhanced Material You theme with comprehensive color schemes
   - Replaced simple blue-based colors with full Material 3 color system
   - Added complete light/dark theme with all Material 3 color tokens (56+ colors per theme)
@@ -323,7 +340,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.2.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.11.0...HEAD
+[1.11.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.10.0...1.11.0
 [1.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/hossain-khan/device-catalog-app/releases/tag/1.0.0
