@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-11-12
+
+### Added
+- Comprehensive Material 3 design and edge-to-edge modernization across all app screens and flows (#223, #228)
+- Interactive Material 3 full-screen search experience with popular suggestion chips (`DeviceSearchBar`) (#225)
+- Centralized Material 3 icon definitions in `:core:designsystem` (`DeviceCatalogIcons`) (#229, #230)
+- Animated Material 3 pill page indicator in `OnboardingUi` with smooth size and color transitions (#231)
+
+### Changed
+- Converted primary top-level destinations to editorial collapsing app bars (`LargeTopAppBar` and `MediumTopAppBar`) with responsive scroll behaviors (#225, #230):
+  - `DevicesUi`: upgraded to `MediumTopAppBar` with `enterAlwaysScrollBehavior()`
+  - `QuizHubUi`, `DeviceStatsUi`, and `AboutUi`: upgraded to `LargeTopAppBar` with `exitUntilCollapsedScrollBehavior()`
+- Modernized filter bottom sheet (`FilterBottomSheet.kt`) (#224):
+  - Pinned persistent bottom action bar ("Clear All", "Apply Filters") docked above system navigation insets
+  - Added leading checkmark icons on selected `FilterChip`s
+  - Migrated RAM, DPI, and SDK range sliders to modern `RangeSliderState`
+- Standardized surface container hierarchy and color role pairings with WCAG-compliant contrast (#226):
+  - Replaced ad-hoc surface alpha blends with canonical `surfaceContainerLow` and `surfaceContainerLowest` tonal containers
+  - Calibrated form factor badge colors with dedicated accessible `onColor` contrast pairings
+- Upgraded Stats Explorer controls and expressive metric cards (#227):
+  - Replaced legacy filter chip row with Material 3 `SingleChoiceSegmentedButtonRow`
+  - Replaced custom filter dropdown with horizontal scrollable filter chips
+  - Redesigned metric summary cards with prominent hero values and category badge pills
+- Modernized `AboutUi` and `DeveloperSettingsUi` (#230):
+  - Grouped About screen links and catalog database details into structured `surfaceContainerLow` cards
+  - Consolidated Developer Settings feature flags into a single card container with dividers and M3 `thumbContent` checkmark switches
+- Enhanced progress indicators and selection animations (#231):
+  - Upgraded `LinearProgressIndicator` to 8dp thickness, `StrokeCap.Round`, and `surfaceContainerHighest` track color in `QuizUi`, `BrandChallengeUi`, and `DreamPhoneUi`
+  - Added smooth animated color transitions (`animateColorAsState`) and animated correctness feedback icons to quiz answer option cards
+
+### Fixed
+- Fixed edge-to-edge window inset conflicts in child screens (`QuizUi`, `BrandChallengeUi`, `ManufacturerSelectionUi`, `StatsExplorerUi`, `DeviceComparisonUi`) by respecting system navigation bar insets, ensuring action buttons never collide with the system gesture bar pill (#228, #229)
+- Fixed bottom navigation bar icon for Stats tab by updating from generic `Star` to semantic `QueryStats` icon (#228, #229)
+- Fixed potential content clipping on `AboutUi` by making layout vertically scrollable for smaller displays and high font scaling (#228, #230)
+
 ## [1.12.0] - 2026-11-12
 
 ### Added
@@ -365,7 +400,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.12.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.13.0...HEAD
+[1.13.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.10.0...1.11.0
 [1.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.1.0...1.2.0
