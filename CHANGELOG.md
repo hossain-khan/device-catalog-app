@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-11-12
+
+### Added
+- Comprehensive UI/UX refinements validated on Google Pixel 10 Pro XL display (#220, #221)
+
+### Changed
+- Refactored Jetpack Compose component design across `:core:designsystem` and feature modules adhering to official API guidelines (#219):
+  - Standardized root layout modifier placement and chained modifier conventions
+  - Converted boolean shape/style flags to semantic role/variant APIs
+  - Promoted variable content to `@Composable () -> Unit` slot parameters
+- Optimized Jetpack Compose motion and animations for lifecycle correctness and performance (#218):
+  - Standardized enter/exit visibility transitions using `AnimatedVisibility`
+  - Migrated state transitions to `rememberTransition` / `updateTransition`
+  - Replaced ad-hoc conditional layout branching with `Crossfade`
+- Reorganized `DeviceDetailsUi` header cards into a single unified `DeviceHeroCard` with clear `Codename` identification and TopAppBar share action (#221)
+- Improved `QuizResultsUi` layout by placing "Play Again" and "Choose Manufacturer" actions directly below the score card (#221)
+- Form factor filter chips now display formatted title-case text instead of raw enum names (#221)
+
+### Fixed
+- Fixed bottom navigation bar leaking onto non-top-level destinations (Onboarding, Quiz, Device Details, Settings, Dream Phone) (#221)
+- Fixed "Skip" button collision with status bar cutout and clock on tall displays in `OnboardingUi` (#220, #221)
+- Fixed RAM formatting edge cases where identical start/end gigabytes produced redundant ranges (e.g., `1GB` instead of `1-1GB`) (#221)
+- Fixed text clipping on Quiz Hub cards on high-DPI devices by adjusting aspect ratio and icon sizing (#220, #221)
+- Fixed single-letter word wrapping (`Distributi\non`, `Processor\ns`) on Stats Explorer cards by increasing width to 140dp (#220, #221)
+
 ## [1.11.0] - 2026-11-12
 
 ### Added
@@ -340,7 +365,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.11.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.12.0...HEAD
+[1.12.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.10.0...1.11.0
 [1.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.1.0...1.2.0
 [1.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.0.0...1.1.0
