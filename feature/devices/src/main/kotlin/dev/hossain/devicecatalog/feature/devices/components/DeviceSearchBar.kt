@@ -84,7 +84,7 @@ fun DeviceSearchBar(
 
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         SearchBar(
@@ -97,6 +97,7 @@ fun DeviceSearchBar(
                     onExpandedChange = setExpanded,
                     modifier =
                         Modifier
+                            .height(SearchBarDefaults.InputFieldHeight)
                             .then(
                                 if (!isExpanded) {
                                     Modifier.border(
@@ -275,7 +276,7 @@ fun DeviceSearchBar(
                     ),
                 modifier =
                     Modifier
-                        .height(56.dp)
+                        .height(SearchBarDefaults.InputFieldHeight)
                         .semantics {
                             contentDescription = "Filter devices"
                         },

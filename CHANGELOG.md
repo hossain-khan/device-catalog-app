@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- Fixed vertical misalignment between form factor and codename badges in `DeviceDetailsUi` hero card
+- Fixed vertical misalignment between form factor and codename badges in `DeviceDetailsUi` hero card (#236)
+- Fixed vertical alignment between search input field and `Filters` button in `DeviceSearchBar` (#236)
 
 ## [2.0.0] - 2026-11-15
 
