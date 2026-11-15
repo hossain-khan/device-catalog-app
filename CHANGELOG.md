@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-11-15
+
 ### Fixed
 - Fixed vertical misalignment between form factor and codename badges in `DeviceDetailsUi` hero card (#236)
 - Fixed vertical alignment between search input field and `Filters` button in `DeviceSearchBar` (#236)
@@ -416,7 +418,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.13.0...2.0.0
 [1.13.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.11.0...1.12.0
