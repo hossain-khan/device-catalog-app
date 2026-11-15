@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -332,6 +334,8 @@ private fun PaginatedDeviceList(
     modifier: Modifier = Modifier,
 ) {
     val lazyPagingItems = state.pagedDevices.collectAsLazyPagingItems()
+    val listState = rememberLazyListState()
+    val gridState = rememberLazyStaggeredGridState()
 
     Timber.tag("DevicesUi:Paging").d(
         "PaginatedDeviceList recomposed: itemCount=${lazyPagingItems.itemCount}, " +
@@ -347,9 +351,16 @@ private fun PaginatedDeviceList(
         )
     }
 
+    // Avoid composing LazyColumn/LazyVerticalStaggeredGrid with 0 items on the initial frame
+    // before collectAsLazyPagingItems receives cached PagingData, which would reset scroll state to 0.
+    if (lazyPagingItems.itemCount == 0 && state.searchResultCount > 0) {
+        return
+    }
+
     when {
         layoutConfig.columns == 1 -> {
             LazyColumn(
+                state = listState,
                 modifier = modifier.fillMaxSize(),
                 contentPadding = layoutConfig.contentPadding,
                 verticalArrangement = Arrangement.spacedBy(layoutConfig.itemSpacing),
@@ -410,6 +421,7 @@ private fun PaginatedDeviceList(
 
         else -> {
             LazyVerticalStaggeredGrid(
+                state = gridState,
                 columns = StaggeredGridCells.Fixed(layoutConfig.columns),
                 modifier = modifier.fillMaxSize(),
                 contentPadding = layoutConfig.contentPadding,

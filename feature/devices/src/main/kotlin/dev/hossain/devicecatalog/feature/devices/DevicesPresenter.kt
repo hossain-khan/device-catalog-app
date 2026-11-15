@@ -2,7 +2,6 @@ package dev.hossain.devicecatalog.feature.devices
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,9 +9,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.collectAsRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.AndroidDevice
@@ -24,7 +26,10 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -39,14 +44,20 @@ class DevicesPresenter(
     @OptIn(FlowPreview::class)
     @Composable
     override fun present(): DevicesScreen.State {
-        var usePaging by remember { mutableStateOf(true) }
+        var usePaging by rememberRetained { mutableStateOf(true) }
         var isRefreshing by remember { mutableStateOf(false) }
-        var searchQuery by remember { mutableStateOf("") }
-        var activeFilters by remember { mutableStateOf(DevicesScreen.FilterState()) }
+        var searchQuery by rememberRetained { mutableStateOf("") }
+        var activeFilters by rememberRetained { mutableStateOf(DevicesScreen.FilterState()) }
         var showFilterSheet by remember { mutableStateOf(false) }
 
         // Debounced search query to avoid excessive queries
-        var debouncedSearchQuery by remember { mutableStateOf("") }
+        var debouncedSearchQuery by rememberRetained { mutableStateOf("") }
+
+        // Retained CoroutineScope so PagingData remains cached across backstack navigation
+        val pagingScope =
+            rememberRetained {
+                CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+            }
 
         // Performance: Use LaunchedEffect with snapshotFlow for debouncing to reduce recompositions
         LaunchedEffect(Unit) {
@@ -54,8 +65,10 @@ class DevicesPresenter(
                 .debounce(300) // 300ms debounce for search
                 .distinctUntilChanged()
                 .collect { query ->
-                    debouncedSearchQuery = query
-                    Timber.d("Debounced search query: $query")
+                    if (debouncedSearchQuery != query) {
+                        debouncedSearchQuery = query
+                        Timber.d("Debounced search query: $query")
+                    }
                 }
         }
 
@@ -69,11 +82,10 @@ class DevicesPresenter(
         }
 
         // Get devices based on search query and filters
-        // Performance: Use remember to select the right flow, then collect it
-        // Add error handling for repository operations
-        var errorMessage by remember { mutableStateOf<String?>(null) }
+        // Performance: Use rememberRetained to keep flow and collected items across backstack navigation
+        var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
         val devicesFlow =
-            remember(debouncedSearchQuery) {
+            rememberRetained(debouncedSearchQuery) {
                 try {
                     if (debouncedSearchQuery.isBlank()) {
                         deviceRepository.getAllDevicesLatestFirst()
@@ -86,12 +98,12 @@ class DevicesPresenter(
                     kotlinx.coroutines.flow.flowOf(emptyList())
                 }
             }
-        val allDevices by devicesFlow.collectAsState(initial = emptyList())
+        val allDevices by devicesFlow.collectAsRetainedState(initial = emptyList())
 
         // Apply filters to the devices
-        // Performance: Use remember with explicit keys to only recalculate when dependencies change
+        // Performance: Use rememberRetained with explicit keys to only recalculate when dependencies change
         val filteredDevices =
-            remember(allDevices, activeFilters) {
+            rememberRetained(allDevices, activeFilters) {
                 val filtered = applyFilters(allDevices, activeFilters)
                 Timber.tag("DevicesPresenter:Filter").d(
                     "Filtered devices: total=${allDevices.size}, filtered=${filtered.size}, " +
@@ -103,7 +115,7 @@ class DevicesPresenter(
         // Calculate available manufacturers for filter UI (sorted by device count, descending)
         // Performance: Only recalculate when allDevices changes
         val availableManufacturers =
-            remember(allDevices) {
+            rememberRetained(allDevices) {
                 allDevices
                     .groupingBy { it.androidDevice.manufacturer }
                     .eachCount()
@@ -113,10 +125,9 @@ class DevicesPresenter(
             }
 
         // Get paged devices with search and filter
-        // Performance: Use remember to avoid recreating flow on each recomposition
-        // Must depend on both debouncedSearchQuery AND activeFilters to update when either changes
+        // Performance: Use rememberRetained + cachedIn so PagingData survives navigating to DeviceDetailsScreen
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
-            remember(debouncedSearchQuery, activeFilters) {
+            rememberRetained(debouncedSearchQuery, activeFilters) {
                 Timber.tag("DevicesPresenter:Paging").d(
                     "Creating paged flow: query='$debouncedSearchQuery', hasFilters=${activeFilters.hasActiveFilters()}",
                 )
@@ -127,19 +138,20 @@ class DevicesPresenter(
                         deviceRepository.getPagedDevicesBySearchLatestFirst(debouncedSearchQuery)
                     }
 
-                flow.map { pagingData ->
-                    pagingData
-                        .map { it.toModel() }
-                        .filter { deviceInfo ->
-                            val matches = matchesFilters(deviceInfo, activeFilters)
-                            if (!matches) {
-                                Timber.tag("DevicesPresenter:Paging").v(
-                                    "Filtered out: ${deviceInfo.androidDevice.manufacturer} ${deviceInfo.androidDevice.modelName}",
-                                )
+                flow
+                    .map { pagingData ->
+                        pagingData
+                            .map { it.toModel() }
+                            .filter { deviceInfo ->
+                                val matches = matchesFilters(deviceInfo, activeFilters)
+                                if (!matches) {
+                                    Timber.tag("DevicesPresenter:Paging").v(
+                                        "Filtered out: ${deviceInfo.androidDevice.manufacturer} ${deviceInfo.androidDevice.modelName}",
+                                    )
+                                }
+                                matches
                             }
-                            matches
-                        }
-                }
+                    }.cachedIn(pagingScope)
             }
 
         // Performance: Use derivedStateOf for computed values that depend on state
