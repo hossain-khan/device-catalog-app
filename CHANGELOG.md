@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Updated [.github/copilot-instructions.md](.github/copilot-instructions.md) to reflect Circuit `0.39.0` and Metro `1.5.2` conventions (`metrox-android`, `@BindingContainer`, `@CircuitSerializable`, native Circuit codegen, and direct `:app` feature dependencies)
 - Upgraded Metro DI from `1.4.1` to `1.5.2` and adopted official `metrox-android` (`MetroAppComponentFactory`, `MetroAppComponentProviders`, `MetroApplication`, implicit `@ActivityKey`) in place of custom `ComposeAppComponentFactory`, `ActivityKey`, and `UiMultibindings`
 - Replaced Circuit's KSP code generator (`circuit-codegen`) with Metro's built-in compiler-plugin Circuit codegen (`enableCircuitCodegen.set(true)`) across `:app` and all feature modules via `AndroidFeatureConventionPlugin`, removing KSP from `:feature:*`, `:core:common`, and `:core:data`
 - Enabled automatic Metro hidden-dependency validation (`hiddenDependencies.checkOnCompile.set(true)`) and added missing direct `:feature:devicecomparison` dependency to `:app`
