@@ -468,7 +468,7 @@ class DreamPhonePresenter(
 
     @CircuitInject(DreamPhoneScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(
             screen: DreamPhoneScreen,
             navigator: Navigator,

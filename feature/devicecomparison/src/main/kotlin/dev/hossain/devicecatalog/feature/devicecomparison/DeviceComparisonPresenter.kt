@@ -322,7 +322,7 @@ class DeviceComparisonPresenter(
 
     @CircuitInject(DeviceComparisonScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(
             screen: DeviceComparisonScreen,
             navigator: Navigator,

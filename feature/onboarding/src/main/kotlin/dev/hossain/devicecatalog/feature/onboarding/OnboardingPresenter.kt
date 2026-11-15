@@ -71,7 +71,7 @@ class OnboardingPresenter(
 
     @CircuitInject(OnboardingScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(navigator: Navigator): OnboardingPresenter
     }
 }

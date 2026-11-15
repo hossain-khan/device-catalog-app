@@ -5,9 +5,11 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.BindingContainer
 import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Inject
-import kotlin.collections.get
+import dev.zacsweers.metro.Multibinds
 import kotlin.reflect.KClass
 
 /**
@@ -30,15 +32,22 @@ import kotlin.reflect.KClass
 @ContributesBinding(AppScope::class)
 @Inject
 class AppWorkerFactory(
-    private val workerProviders: Map<KClass<out ListenableWorker>, WorkerInstanceFactory<*>>,
+    private val workerProviders: Map<KClass<out ListenableWorker>, () -> WorkerInstanceFactory<*>>,
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
         workerParameters: WorkerParameters,
-    ): ListenableWorker? = workerProviders[Class.forName(workerClassName).kotlin]?.create(workerParameters)
+    ): ListenableWorker? = workerProviders[Class.forName(workerClassName).kotlin]?.invoke()?.create(workerParameters)
 
     interface WorkerInstanceFactory<T : ListenableWorker> {
         fun create(params: WorkerParameters): T
+    }
+
+    @ContributesTo(AppScope::class)
+    @BindingContainer
+    interface Bindings {
+        @Multibinds(allowEmpty = true)
+        fun workerProviders(): Map<KClass<out ListenableWorker>, WorkerInstanceFactory<*>>
     }
 }

@@ -250,7 +250,7 @@ class StatsExplorerPresenter
 
         @CircuitInject(StatsExplorerScreen::class, AppScope::class)
         @AssistedFactory
-        interface Factory {
+        fun interface Factory {
             fun create(
                 screen: StatsExplorerScreen,
                 navigator: Navigator,

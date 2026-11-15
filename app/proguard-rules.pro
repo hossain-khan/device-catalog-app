@@ -29,17 +29,9 @@
 # Metro Dependency Injection
 # ================================================================================================
 # Keep all classes and members annotated with Metro annotations
--keep @dev.zacsweers.metro.annotations.* class * { *; }
+-keep @dev.zacsweers.metro.* class * { *; }
 -keepclassmembers class * {
-    @dev.zacsweers.metro.annotations.* *;
-}
-
-# Keep Inject constructors and members
--keepclasseswithmembernames class * {
-    @javax.inject.Inject <init>(...);
-}
--keepclasseswithmembers class * {
-    @javax.inject.Inject <fields>;
+    @dev.zacsweers.metro.* *;
 }
 
 # Keep AssistedInject constructors and Metro ContributesBinding

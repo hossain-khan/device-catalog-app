@@ -70,7 +70,7 @@ class QuizResultsPresenter(
 
     @CircuitInject(QuizResultsScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(
             screen: QuizResultsScreen,
             navigator: Navigator,

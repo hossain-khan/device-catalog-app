@@ -154,7 +154,7 @@ class QuizPresenter(
 
     @CircuitInject(QuizScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(
             screen: QuizScreen,
             navigator: Navigator,

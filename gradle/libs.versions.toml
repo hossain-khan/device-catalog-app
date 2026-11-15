@@ -38,7 +38,7 @@ ksp = "2.3.11"
 # https://github.com/pinterest/ktlint
 kotlinter = "5.7.0"
 lifecycleRuntimeKtx = "2.11.0"
-metro = "1.4.1"
+metro = "1.5.2"
 androidxWork = "2.12.0"
 androidxWindowManager = "1.5.1"
 
@@ -79,9 +79,12 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
+# Metro DI extensions for Android
+# https://zacsweers.github.io/metro/
+metrox-android = { group = "dev.zacsweers.metro", name = "metrox-android", version.ref = "metro" }
+
 # Circuit - ⚡️A Compose-driven architecture for Kotlin and Android applications.
 # https://github.com/slackhq/circuit/releases
-circuit-codegen = { group = "com.slack.circuit", name = "circuit-codegen", version.ref = "circuit" }
 circuit-codegen-annotations = { group = "com.slack.circuit", name = "circuit-codegen-annotations", version.ref = "circuit" }
 circuit-foundation = { group = "com.slack.circuit", name = "circuit-foundation", version.ref = "circuit" }
 circuit-overlay = { group = "com.slack.circuit", name = "circuit-overlay", version.ref = "circuit" }
@@ -101,8 +104,6 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomDb" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomDb" }
 androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomDb" }
-
-javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
 
 # # https://developer.android.com/develop/ui/compose/text/fonts
 # https://mvnrepository.com/artifact/androidx.compose.ui/ui-text-google-fonts
@@ -151,6 +152,7 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+metro-gradlePlugin = { group = "dev.zacsweers.metro", name = "gradle-plugin", version.ref = "metro" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -170,7 +172,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 
 androidx-room = { id = "androidx.room", version.ref = "roomDb" }
 
-# Metro KSP plugin
+# Metro Kotlin compiler plugin for dependency injection
 # https://zacsweers.github.io/metro/
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 

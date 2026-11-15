@@ -1,6 +1,5 @@
 plugins {
     id("devicecatalog.android.library")
-    alias(libs.plugins.ksp)
     alias(libs.plugins.metro)
 }
 
@@ -14,6 +13,5 @@ dependencies {
     api(project(":core:database"))
 
     api(libs.androidx.paging.runtime)
-    implementation(libs.javax.inject)
     implementation(libs.timber)
 }

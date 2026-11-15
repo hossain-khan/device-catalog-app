@@ -1,13 +1,16 @@
 import com.android.build.api.dsl.LibraryExtension
 import dev.hossain.devicecatalog.configureAndroidCompose
 import dev.hossain.devicecatalog.configureKotlinAndroid
+import dev.zacsweers.metro.gradle.ExperimentalMetroGradleApi
+import dev.zacsweers.metro.gradle.MetroPluginExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 /**
  * Convention plugin for feature modules.
- * Applies Android library, Compose, and Metro (DI) plugins with standard configuration.
+ * Applies Android library, Compose, and Metro (DI) plugins with standard configuration,
+ * including Metro's built-in Circuit codegen compiler support.
  * Use this for feature modules that contain UI with dependency injection.
  */
 class AndroidFeatureConventionPlugin : Plugin<Project> {
@@ -16,7 +19,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 apply("org.jetbrains.kotlin.plugin.compose")
-                apply("com.google.devtools.ksp")
                 apply("dev.zacsweers.metro")
             }
 
@@ -26,6 +28,11 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 defaultConfig {
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                 }
+            }
+
+            extensions.configure<MetroPluginExtension> {
+                @OptIn(ExperimentalMetroGradleApi::class)
+                enableCircuitCodegen.set(true)
             }
         }
     }

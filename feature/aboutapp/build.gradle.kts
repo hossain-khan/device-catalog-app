@@ -23,11 +23,6 @@ dependencies {
     implementation(libs.circuit.foundation)
     implementation(libs.circuit.serialization)
     implementation(libs.circuitx.android)
-    ksp(libs.circuit.codegen)
 
     implementation(libs.timber)
-}
-
-ksp {
-    arg("circuit.codegen.mode", "metro")
 }

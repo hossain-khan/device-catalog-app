@@ -106,7 +106,7 @@ class DeviceDetailsPresenter(
 
     @CircuitInject(DeviceDetailsScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(
             navigator: Navigator,
             screen: DeviceDetailsScreen,

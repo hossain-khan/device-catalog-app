@@ -14,6 +14,8 @@ import dev.hossain.devicecatalog.notification.NotificationChannels
 import dev.hossain.devicecatalog.work.DeviceSyncWorker
 import dev.hossain.devicecatalog.work.SampleWorker
 import dev.zacsweers.metro.createGraphFactory
+import dev.zacsweers.metrox.android.MetroAppComponentProviders
+import dev.zacsweers.metrox.android.MetroApplication
 import timber.log.Timber
 
 /**
@@ -26,10 +28,12 @@ import timber.log.Timber
  */
 class DeviceCatalogApp :
     Application(),
+    MetroApplication,
     Configuration.Provider {
     val appGraph by lazy { createGraphFactory<AppGraph.Factory>().create(this) }
 
-    fun appGraph(): AppGraph = appGraph
+    override val appComponentProviders: MetroAppComponentProviders
+        get() = appGraph
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(appGraph.workerFactory).build()
