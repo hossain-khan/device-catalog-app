@@ -385,6 +385,7 @@ private fun DeviceHeroCard(
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp),
+                        itemVerticalAlignment = Alignment.CenterVertically,
                     ) {
                         // Semantic Form Factor Pill
                         Surface(
@@ -406,13 +407,16 @@ private fun DeviceHeroCard(
                         // Clickable/copyable monospace codename pill
                         if (device.device.isNotBlank()) {
                             Surface(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        val clipData = ClipData.newPlainText("Codename", device.device)
-                                        clipboard.setClipEntry(ClipEntry(clipData))
-                                        snackbarHostState.showSnackbar("Copied codename '${device.device}'")
-                                    }
-                                },
+                                modifier =
+                                    Modifier
+                                        .clip(RoundedCornerShape(6.dp))
+                                        .clickable {
+                                            coroutineScope.launch {
+                                                val clipData = ClipData.newPlainText("Codename", device.device)
+                                                clipboard.setClipEntry(ClipEntry(clipData))
+                                                snackbarHostState.showSnackbar("Copied codename '${device.device}'")
+                                            }
+                                        },
                                 color = MaterialTheme.colorScheme.surfaceVariant,
                                 contentColor = MaterialTheme.colorScheme.onSurface,
                                 shape = RoundedCornerShape(6.dp),
