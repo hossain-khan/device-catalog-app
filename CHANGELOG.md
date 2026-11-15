@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Executed comprehensive "Developer Precision Console" UI/UX overhaul across all modules:
+  - **Core Design System (`:core:designsystem`)**: Replaced olive-green palette with Alabaster Slate (light) and Obsidian Carbon (dark) accented by Android Emerald; added `Plus Jakarta Sans`, `Inter`, and `JetBrains Mono` typography with tabular numerals (`tnum`); updated `DeviceCatalogCard` and `DeviceTypeColors` with `1.dp` hairline borders and semantic accent tokens
+  - **Device Browser (`:feature:devices`)**: Redesigned `DeviceCard` with top semantic form-factor accent bar, uppercase manufacturer eyebrow, monospace codename badge, and 4-pill hardware telemetry strip (`RAM`, `API`, `DPI`, `SoC/ABI`); replaced floating filter FAB with an integrated Developer Command Bar (`DeviceSearchBar` + filter badge button)
+  - **Device Details (`:feature:devicedetails`)**: Redesigned `DeviceHeroCard` onto a neutral bordered surface, added a 2×2 `KeySpecsBentoGrid` (`MEMORY`, `TARGET SDK`, `ARCHITECTURE`, `DISPLAY DENSITY`), made all spec sections expanded by default, and styled technical chips in monospace
+  - **Statistics & Stats Explorer (`:feature:statistics`, `:feature:statsexplorer`)**: Replaced full-bleed swipeable metric pager with a high-density 2×2 `StatsKpiGrid` bento layout and upgraded horizontal distribution charts with rank badges (`#1`, `#2`), tabular counts, percentage pills, and `6.dp` progress tracks
+  - **Quizzes, Comparison, About & Navigation (`:feature:devicecomparison`, `:feature:quizhub`, `:feature:aboutapp`, `:app`)**: Refined comparison matrix cells, `QuizTile` cards, `AboutUi` console identity card, and `AppNavigation` bars/rails with `1.dp` `outlineVariant` borders
+
 ## [1.13.0] - 2026-11-12
 
 ### Added

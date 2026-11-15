@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.feature.devicecomparison.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,14 +18,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
+import dev.hossain.devicecatalog.core.designsystem.theme.tabularNums
 import dev.hossain.devicecatalog.feature.devicecomparison.ComparisonRow
 
 /**
@@ -40,12 +46,16 @@ fun SpecRow(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 6.dp),
     ) {
         // Label
         Text(
-            text = row.label,
-            style = MaterialTheme.typography.labelMedium,
+            text = row.label.uppercase(),
+            style =
+                MaterialTheme.typography.labelSmall.copy(
+                    letterSpacing = 0.6.sp,
+                    fontWeight = FontWeight.SemiBold,
+                ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = 4.dp),
         )
@@ -63,7 +73,6 @@ fun SpecRow(
                     modifier = Modifier.weight(1f),
                 )
             }
-            // Add empty placeholders for remaining slots
             repeat(deviceCount - row.values.size) {
                 Spacer(modifier = Modifier.weight(1f))
             }
@@ -72,7 +81,7 @@ fun SpecRow(
 }
 
 /**
- * A single value cell in the comparison row.
+ * A single value cell in the comparison row styled as a monospace technical tile.
  */
 @Composable
 private fun SpecValue(
@@ -80,21 +89,32 @@ private fun SpecValue(
     isHighlighted: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier =
-            modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        color =
+            if (isHighlighted) {
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            },
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color =
                     if (isHighlighted) {
-                        MaterialTheme.colorScheme.primaryContainer
+                        MaterialTheme.colorScheme.primary
                     } else {
-                        MaterialTheme.colorScheme.surfaceContainerLow
+                        MaterialTheme.colorScheme.outlineVariant
                     },
-                ).padding(8.dp),
+            ),
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 10.dp),
         ) {
             if (isHighlighted) {
                 Row(
@@ -111,8 +131,13 @@ private fun SpecValue(
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = value.ifBlank { "—" },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        style =
+                            MaterialTheme.typography.bodySmall
+                                .copy(
+                                    fontFamily = monoFontFamily,
+                                    fontWeight = FontWeight.Bold,
+                                ).tabularNums,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -121,8 +146,13 @@ private fun SpecValue(
             } else {
                 Text(
                     text = value.ifBlank { "—" },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style =
+                        MaterialTheme.typography.bodySmall
+                            .copy(
+                                fontFamily = monoFontFamily,
+                                fontWeight = FontWeight.Medium,
+                            ).tabularNums,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
@@ -144,20 +174,24 @@ fun ComparisonSectionHeader(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 8.dp),
+                .padding(top = 18.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier =
                 Modifier
-                    .size(8.dp)
+                    .size(6.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary),
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
+            text = title.uppercase(),
+            style =
+                MaterialTheme.typography.labelMedium.copy(
+                    letterSpacing = 0.8.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
             color = MaterialTheme.colorScheme.primary,
         )
         Spacer(modifier = Modifier.width(8.dp))

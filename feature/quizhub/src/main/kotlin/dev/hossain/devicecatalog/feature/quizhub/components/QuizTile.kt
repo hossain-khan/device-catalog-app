@@ -1,5 +1,7 @@
 package dev.hossain.devicecatalog.feature.quizhub.components
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Memory
@@ -19,10 +22,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.feature.quizhub.QuizHubScreen
@@ -42,69 +47,111 @@ fun QuizTile(
         modifier =
             modifier
                 .fillMaxWidth()
-                .aspectRatio(0.85f),
-        colors =
-            CardDefaults.elevatedCardColors(
-                containerColor =
+                .aspectRatio(0.88f),
+        shape = RoundedCornerShape(12.dp),
+        border =
+            BorderStroke(
+                width = 1.dp,
+                color =
                     if (quizInfo.isAvailable) {
-                        MaterialTheme.colorScheme.primaryContainer
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)
                     } else {
-                        MaterialTheme.colorScheme.surfaceContainerLow
+                        MaterialTheme.colorScheme.outlineVariant
                     },
             ),
-        elevation =
-            CardDefaults.elevatedCardElevation(
-                defaultElevation = 4.dp,
-                pressedElevation = 8.dp,
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
+            // Top 2.5dp accent strip when available
+            if (quizInfo.isAvailable) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(2.5.dp)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .align(Alignment.TopCenter),
+                )
+            }
+
             Column(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 12.dp, vertical = 16.dp),
+                        .padding(horizontal = 14.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                Icon(
-                    imageVector = quizInfo.icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint =
+                Surface(
+                    modifier = Modifier.size(44.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    color =
                         if (quizInfo.isAvailable) {
-                            MaterialTheme.colorScheme.primary
+                            MaterialTheme.colorScheme.primaryContainer
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            MaterialTheme.colorScheme.surfaceVariant
                         },
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+                    border =
+                        BorderStroke(
+                            1.dp,
+                            if (quizInfo.isAvailable) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
+                            } else {
+                                MaterialTheme.colorScheme.outlineVariant
+                            },
+                        ),
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = quizInfo.icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint =
+                                if (quizInfo.isAvailable) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+                                },
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
                 Text(
                     text = quizInfo.title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style =
+                        MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                        ),
                     textAlign = TextAlign.Center,
                     color =
                         if (quizInfo.isAvailable) {
-                            MaterialTheme.colorScheme.onPrimaryContainer
+                            MaterialTheme.colorScheme.onSurface
                         } else {
                             MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                         },
                 )
+
                 Spacer(modifier = Modifier.height(4.dp))
+
                 Text(
                     text = quizInfo.description,
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     color =
                         if (quizInfo.isAvailable) {
-                            MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                            MaterialTheme.colorScheme.onSurfaceVariant
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
                         },
                 )
             }
 
-            // Coming Soon badge in top-right corner
             if (!quizInfo.isAvailable) {
                 ComingSoonBadge(
                     modifier =

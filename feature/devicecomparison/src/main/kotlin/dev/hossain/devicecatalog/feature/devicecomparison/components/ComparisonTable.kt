@@ -114,8 +114,8 @@ private fun DeviceCardsRow(
  */
 private fun getCategoryTitle(category: SpecCategory): String =
     when (category) {
-        SpecCategory.BASIC_INFO -> "Basic Info"
-        SpecCategory.HARDWARE -> "Hardware"
-        SpecCategory.DISPLAY -> "Display"
-        SpecCategory.PLATFORM -> "Platform"
+        SpecCategory.BASIC_INFO -> "BASIC INFO"
+        SpecCategory.HARDWARE -> "HARDWARE"
+        SpecCategory.DISPLAY -> "DISPLAY"
+        SpecCategory.PLATFORM -> "PLATFORM"
     }

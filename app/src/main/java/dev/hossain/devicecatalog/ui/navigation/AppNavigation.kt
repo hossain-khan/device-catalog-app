@@ -7,17 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -171,38 +175,52 @@ private fun AppNavigationDrawerContent(
     onNavigationDestinationClicked: (NavigationDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    PermanentDrawerSheet(
-        modifier = modifier.width(240.dp),
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
+    Row(modifier = modifier) {
+        PermanentDrawerSheet(
+            modifier = Modifier.width(240.dp),
+            drawerContainerColor = MaterialTheme.colorScheme.surface,
+            drawerTonalElevation = 0.dp,
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // App title/header
-        Text(
-            text = "Android Universe",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        NavigationDestination.destinations.forEach { destination ->
-            SideEffect {
-                Timber.d("Adding drawer item: ${destination.title} with icon: ${destination.icon}")
-            }
-            NavigationDrawerItem(
-                icon = {
-                    Icon(
-                        imageVector = destination.icon,
-                        contentDescription = destination.title,
-                    )
-                },
-                label = { Text(destination.title) },
-                selected = selectedDestination == destination,
-                onClick = { onNavigationDestinationClicked(destination) },
-                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+            // App title/header
+            Text(
+                text = "Android Universe",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp),
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            NavigationDestination.destinations.forEach { destination ->
+                SideEffect {
+                    Timber.d("Adding drawer item: ${destination.title} with icon: ${destination.icon}")
+                }
+                NavigationDrawerItem(
+                    icon = {
+                        Icon(
+                            imageVector = destination.icon,
+                            contentDescription = destination.title,
+                        )
+                    },
+                    label = { Text(destination.title) },
+                    selected = selectedDestination == destination,
+                    onClick = { onNavigationDestinationClicked(destination) },
+                    colors =
+                        NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        ),
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                )
+            }
         }
+        VerticalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
     }
 }
 
@@ -212,23 +230,37 @@ private fun AppNavigationRail(
     onNavigationDestinationClicked: (NavigationDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    NavigationRail(modifier = modifier) {
-        NavigationDestination.destinations.forEach { destination ->
-            SideEffect {
-                Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+    Row(modifier = modifier) {
+        NavigationRail(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ) {
+            NavigationDestination.destinations.forEach { destination ->
+                SideEffect {
+                    Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+                }
+                NavigationRailItem(
+                    selected = selectedDestination == destination,
+                    onClick = { onNavigationDestinationClicked(destination) },
+                    colors =
+                        NavigationRailItemDefaults.colors(
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    icon = {
+                        Icon(
+                            imageVector = destination.icon,
+                            contentDescription = destination.title,
+                        )
+                    },
+                    label = { Text(destination.title) },
+                )
             }
-            NavigationRailItem(
-                selected = selectedDestination == destination,
-                onClick = { onNavigationDestinationClicked(destination) },
-                icon = {
-                    Icon(
-                        imageVector = destination.icon,
-                        contentDescription = destination.title,
-                    )
-                },
-                label = { Text(destination.title) },
-            )
         }
+        VerticalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
     }
 }
 
@@ -238,22 +270,37 @@ private fun AppBottomNavigation(
     onNavigationDestinationClicked: (NavigationDestination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    NavigationBar(modifier = modifier) {
-        NavigationDestination.destinations.forEach { destination: NavigationDestination ->
-            SideEffect {
-                Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+    Column(modifier = modifier) {
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+        NavigationBar(
+            containerColor = MaterialTheme.colorScheme.surface,
+            tonalElevation = 0.dp,
+        ) {
+            NavigationDestination.destinations.forEach { destination: NavigationDestination ->
+                SideEffect {
+                    Timber.d("Adding navigation item: ${destination.title} with icon: ${destination.icon}")
+                }
+                NavigationBarItem(
+                    selected = selectedDestination == destination,
+                    onClick = { onNavigationDestinationClicked(destination) },
+                    colors =
+                        NavigationBarItemDefaults.colors(
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    icon = {
+                        Icon(
+                            imageVector = destination.icon,
+                            contentDescription = destination.title,
+                        )
+                    },
+                    label = { Text(destination.title) },
+                )
             }
-            NavigationBarItem(
-                selected = selectedDestination == destination,
-                onClick = { onNavigationDestinationClicked(destination) },
-                icon = {
-                    Icon(
-                        imageVector = destination.icon,
-                        contentDescription = destination.title,
-                    )
-                },
-                label = { Text(destination.title) },
-            )
         }
     }
 }

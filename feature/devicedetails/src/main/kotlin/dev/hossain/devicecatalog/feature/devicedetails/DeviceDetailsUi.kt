@@ -7,6 +7,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,14 +31,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -47,12 +46,10 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,30 +59,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
-import dev.hossain.devicecatalog.core.designsystem.R
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
-import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeBolderColors
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
+import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
+import dev.hossain.devicecatalog.core.designsystem.theme.tabularNums
 import dev.hossain.devicecatalog.core.ui.image.DeviceImage
 import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.launch
@@ -111,6 +105,7 @@ fun DeviceDetailsUi(
                     Text(
                         text = state.device?.modelName ?: "Device Details",
                         style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
                     )
                 },
                 navigationIcon = {
@@ -122,7 +117,6 @@ fun DeviceDetailsUi(
                     }
                 },
                 actions = {
-                    // Show share action in top app bar when device is loaded
                     if (state.device != null) {
                         IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
                             Icon(
@@ -176,10 +170,8 @@ private fun LoadingContent(modifier: Modifier = Modifier) {
                 .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // Skeleton for header card
+        SkeletonCard(height = 140.dp)
         SkeletonCard(height = 120.dp)
-
-        // Skeleton for info cards
         repeat(3) {
             SkeletonCard(height = 160.dp)
         }
@@ -196,10 +188,12 @@ private fun SkeletonCard(
             modifier
                 .fillMaxWidth()
                 .height(height),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
+        shape = RoundedCornerShape(12.dp),
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -228,7 +222,6 @@ private fun ErrorContent(
             verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier.padding(32.dp),
         ) {
-            // Error icon with background
             Surface(
                 modifier = Modifier.size(96.dp),
                 shape = RoundedCornerShape(48.dp),
@@ -244,7 +237,6 @@ private fun ErrorContent(
                 }
             }
 
-            // Error title
             Text(
                 text = "Oops! Something went wrong",
                 style = MaterialTheme.typography.headlineSmall,
@@ -253,7 +245,6 @@ private fun ErrorContent(
                 color = MaterialTheme.colorScheme.onSurface,
             )
 
-            // Error message
             Text(
                 text = errorMessage,
                 style = MaterialTheme.typography.bodyLarge,
@@ -261,7 +252,6 @@ private fun ErrorContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
-            // Retry button
             OutlinedButton(
                 onClick = onRetry,
                 modifier = Modifier.padding(top = 8.dp),
@@ -284,104 +274,328 @@ private fun DeviceDetailsContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        // Unified device hero card with image, model, and form factor
-        DeviceHeroCard(device = device)
+        // Redesigned neutral Hardware Identity Hero Card
+        DeviceHeroCard(device = device, snackbarHostState = snackbarHostState)
 
-        // Basic device information
+        // 4-Tile At-a-Glance Telemetry Bento Grid
+        KeySpecsBentoGrid(device = device)
+
+        // Basic device information (Expanded by default)
         BasicInfoCard(device = device, snackbarHostState = snackbarHostState)
 
-        // Technical specifications
+        // Technical specifications (Expanded by default)
         TechnicalSpecsCard(device = device, snackbarHostState = snackbarHostState)
 
-        // Screen information
+        // Screen information (Expanded by default)
         if (device.screenSizes.isNotEmpty() || device.screenDensities.isNotEmpty()) {
             ScreenInfoCard(device = device)
         }
 
-        // Platform information
+        // Platform information (Expanded by default)
         if (device.abis.isNotEmpty() || device.sdkVersions.isNotEmpty() || device.openGlEsVersions.isNotEmpty()) {
             PlatformInfoCard(device = device)
         }
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun DeviceHeroCard(device: AndroidDevice) {
+private fun DeviceHeroCard(
+    device: AndroidDevice,
+    snackbarHostState: SnackbarHostState,
+) {
     val deviceTypeColors = deviceTypeColors()
-    val deviceColor = deviceTypeColors.colorFor(device.formFactor)
-    val onDeviceColor = deviceTypeColors.onColorFor(device.formFactor)
+    val accentColor = deviceTypeColors.accentColorFor(device.formFactor)
+    val badgeColor = deviceTypeColors.colorFor(device.formFactor)
+    val onBadgeColor = deviceTypeColors.onColorFor(device.formFactor)
+    val clipboard = LocalClipboard.current
+    val coroutineScope = rememberCoroutineScope()
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors =
             CardDefaults.cardColors(
-                containerColor = deviceColor,
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ),
-        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(12.dp),
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            // Large device image showcase
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // 3dp semantic top accent bar
             Box(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                        .padding(12.dp),
-                contentAlignment = Alignment.Center,
+                        .height(3.dp)
+                        .background(accentColor),
+            )
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                DeviceImage(
-                    device = device,
-                    modifier = Modifier.fillMaxSize(),
-                    fallbackIconModifier = Modifier.size(64.dp),
-                    fallbackTint = onDeviceColor.copy(alpha = 0.8f),
-                )
+                // Clean 88dp device showcase thumbnail on surfaceVariant
+                Surface(
+                    modifier =
+                        Modifier
+                            .size(88.dp)
+                            .clip(RoundedCornerShape(10.dp)),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    shape = RoundedCornerShape(10.dp),
+                ) {
+                    DeviceImage(
+                        device = device,
+                        modifier = Modifier.padding(8.dp),
+                        fallbackIconModifier = Modifier.size(44.dp),
+                        fallbackTint = accentColor,
+                    )
+                }
+
+                // Identity & Badges
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(
+                        text = "${device.manufacturer} • ${device.brand}".uppercase(),
+                        style =
+                            MaterialTheme.typography.labelSmall.copy(
+                                letterSpacing = 0.8.sp,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Text(
+                        text = device.modelName,
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        // Semantic Form Factor Pill
+                        Surface(
+                            color = badgeColor,
+                            contentColor = onBadgeColor,
+                            shape = RoundedCornerShape(6.dp),
+                            border = BorderStroke(1.dp, accentColor.copy(alpha = 0.3f)),
+                        ) {
+                            Text(
+                                text = device.formFactor.value,
+                                style =
+                                    MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                    ),
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            )
+                        }
+
+                        // Clickable/copyable monospace codename pill
+                        if (device.device.isNotBlank()) {
+                            Surface(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        val clipData = ClipData.newPlainText("Codename", device.device)
+                                        clipboard.setClipEntry(ClipEntry(clipData))
+                                        snackbarHostState.showSnackbar("Copied codename '${device.device}'")
+                                    }
+                                },
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                                shape = RoundedCornerShape(6.dp),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
+                                    Text(
+                                        text = device.device,
+                                        style =
+                                            MaterialTheme.typography.labelMedium.copy(
+                                                fontFamily = monoFontFamily,
+                                                fontWeight = FontWeight.Medium,
+                                            ),
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.ContentCopy,
+                                        contentDescription = "Copy codename",
+                                        modifier = Modifier.size(13.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.height(16.dp))
+/**
+ * 2x2 At-a-Glance Hardware Telemetry Bento Grid.
+ */
+@Composable
+private fun KeySpecsBentoGrid(device: AndroidDevice) {
+    val formattedRam =
+        device.ram.takeIf { it.isNotBlank() }?.let { RamFormatter.formatRamToGb(it) } ?: "N/A"
+    val rawRamSublabel = device.ram.takeIf { it.isNotBlank() } ?: "Memory"
 
-            // Device title and subtitle with WCAG-compliant onDeviceColor
-            Text(
-                text = device.modelName,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                color = onDeviceColor,
-                textAlign = TextAlign.Center,
+    val sortedSdks = device.sdkVersions.filter { it > 0 }.sorted()
+    val maxSdk = sortedSdks.maxOrNull()
+    val targetSdkValue = maxSdk?.let { "API $it" } ?: "N/A"
+    val targetSdkSublabel =
+        when {
+            sortedSdks.size > 1 -> "API ${sortedSdks.first()}–${sortedSdks.last()}"
+            maxSdk != null -> androidReleaseNameForApi(maxSdk)
+            else -> "Target SDK"
+        }
+
+    val primaryAbi = device.abis.firstOrNull() ?: "N/A"
+    val archValue =
+        when {
+            primaryAbi.contains("64") -> "64-bit"
+            primaryAbi != "N/A" -> "32-bit"
+            else -> "N/A"
+        }
+
+    val primaryDensity = device.screenDensities.filter { it > 0 }.maxOrNull()
+    val densityValue = primaryDensity?.let { "$it dpi" } ?: "N/A"
+    val screenSublabel = device.screenSizes.firstOrNull() ?: "Display"
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TelemetryBentoTile(
+                eyebrow = "MEMORY (RAM)",
+                value = formattedRam,
+                sublabel = rawRamSublabel,
+                modifier = Modifier.weight(1f),
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "${device.manufacturer} • ${device.brand}",
-                style = MaterialTheme.typography.bodyLarge,
-                color = onDeviceColor.copy(alpha = 0.85f),
-                textAlign = TextAlign.Center,
+            TelemetryBentoTile(
+                eyebrow = "TARGET SDK",
+                value = targetSdkValue,
+                sublabel = targetSdkSublabel,
+                modifier = Modifier.weight(1f),
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = device.formFactor.value,
-                style = MaterialTheme.typography.bodyMedium,
-                color = onDeviceColor.copy(alpha = 0.75f),
-                textAlign = TextAlign.Center,
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TelemetryBentoTile(
+                eyebrow = "ARCHITECTURE",
+                value = archValue,
+                sublabel = primaryAbi,
+                modifier = Modifier.weight(1f),
+            )
+            TelemetryBentoTile(
+                eyebrow = "DISPLAY DENSITY",
+                value = densityValue,
+                sublabel = screenSublabel,
+                modifier = Modifier.weight(1f),
             )
         }
     }
 }
 
 @Composable
+private fun TelemetryBentoTile(
+    eyebrow: String,
+    value: String,
+    sublabel: String,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier,
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(10.dp),
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = eyebrow,
+                style =
+                    MaterialTheme.typography.labelSmall.copy(
+                        letterSpacing = 0.7.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = value,
+                style =
+                    MaterialTheme.typography.titleMedium
+                        .copy(
+                            fontFamily = monoFontFamily,
+                            fontWeight = FontWeight.Bold,
+                        ).tabularNums,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = sublabel,
+                style =
+                    MaterialTheme.typography.labelSmall
+                        .copy(fontFamily = monoFontFamily)
+                        .tabularNums,
+                color = MaterialTheme.colorScheme.primary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+private fun androidReleaseNameForApi(api: Int): String =
+    when (api) {
+        36 -> "Android 16"
+        35 -> "Android 15"
+        34 -> "Android 14"
+        33 -> "Android 13"
+        32 -> "Android 12L"
+        31 -> "Android 12"
+        30 -> "Android 11"
+        29 -> "Android 10"
+        28 -> "Android 9"
+        else -> "Android API $api"
+    }
+
+@Composable
 private fun BasicInfoCard(
     device: AndroidDevice,
     snackbarHostState: SnackbarHostState,
 ) {
-    ExpandableInfoCard(title = "Basic Information", defaultExpanded = true) {
-        InfoRow(label = "Codename", value = device.device, snackbarHostState = snackbarHostState)
+    ExpandableInfoCard(title = "BASIC INFORMATION", defaultExpanded = true) {
+        InfoRow(label = "Codename", value = device.device, snackbarHostState = snackbarHostState, isMono = true)
         InfoRow(label = "Manufacturer", value = device.manufacturer, snackbarHostState = snackbarHostState)
         InfoRow(label = "Brand", value = device.brand, snackbarHostState = snackbarHostState)
         InfoRow(label = "Model", value = device.modelName, snackbarHostState = snackbarHostState)
@@ -394,36 +608,47 @@ private fun TechnicalSpecsCard(
     device: AndroidDevice,
     snackbarHostState: SnackbarHostState,
 ) {
-    ExpandableInfoCard(title = "Technical Specifications", defaultExpanded = true) {
+    ExpandableInfoCard(title = "HARDWARE SPECIFICATIONS", defaultExpanded = true) {
         if (device.ram.isNotBlank()) {
             InfoRow(
                 label = "RAM",
                 value = "${RamFormatter.formatRamToGb(device.ram)} (${device.ram})",
                 snackbarHostState = snackbarHostState,
+                isMono = true,
             )
         }
         if (device.processorName.isNotBlank()) {
-            InfoRow(label = "Processor", value = device.processorName, snackbarHostState = snackbarHostState)
+            InfoRow(
+                label = "Processor (SoC)",
+                value = device.processorName,
+                snackbarHostState = snackbarHostState,
+                isMono = true,
+            )
         }
         if (device.gpu.isNotBlank()) {
-            InfoRow(label = "GPU", value = device.gpu, snackbarHostState = snackbarHostState)
+            InfoRow(
+                label = "GPU",
+                value = device.gpu,
+                snackbarHostState = snackbarHostState,
+                isMono = true,
+            )
         }
     }
 }
 
 @Composable
 private fun ScreenInfoCard(device: AndroidDevice) {
-    ExpandableInfoCard(title = "Screen Information", defaultExpanded = false) {
+    ExpandableInfoCard(title = "DISPLAY TELEMETRY", defaultExpanded = true) {
         if (device.screenSizes.isNotEmpty()) {
             ChipRow(
-                label = "Screen Sizes",
+                label = "Screen Resolutions / Sizes",
                 items = device.screenSizes,
             )
         }
         if (device.screenDensities.isNotEmpty()) {
             ChipRow(
-                label = "Screen Densities",
-                items = device.screenDensities.map { "${it}dpi" },
+                label = "Screen Densities (DPI)",
+                items = device.screenDensities.map { "$it dpi" },
             )
         }
     }
@@ -432,7 +657,7 @@ private fun ScreenInfoCard(device: AndroidDevice) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PlatformInfoCard(device: AndroidDevice) {
-    ExpandableInfoCard(title = "Platform Information", defaultExpanded = false) {
+    ExpandableInfoCard(title = "PLATFORM & ARCHITECTURE", defaultExpanded = true) {
         if (device.abis.isNotEmpty()) {
             ChipRow(
                 label = "Supported ABIs",
@@ -441,7 +666,7 @@ private fun PlatformInfoCard(device: AndroidDevice) {
         }
         if (device.sdkVersions.isNotEmpty()) {
             ChipRow(
-                label = "SDK Versions",
+                label = "SDK / API Versions",
                 items = device.sdkVersions.map { "API $it" },
             )
         }
@@ -458,7 +683,7 @@ private fun PlatformInfoCard(device: AndroidDevice) {
 private fun ExpandableInfoCard(
     title: String,
     modifier: Modifier = Modifier.fillMaxWidth(),
-    defaultExpanded: Boolean = false,
+    defaultExpanded: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     var expanded by remember { mutableStateOf(defaultExpanded) }
@@ -471,28 +696,32 @@ private fun ExpandableInfoCard(
         modifier = modifier,
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        shape = RoundedCornerShape(12.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // Header with expand/collapse button
             Row(
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .clickable { expanded = !expanded }
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 2.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            letterSpacing = 0.8.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.semantics { heading() },
                 )
@@ -504,46 +733,21 @@ private fun ExpandableInfoCard(
                 )
             }
 
-            // Content with animation
             AnimatedVisibility(
                 visible = expanded,
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically(),
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    content = content,
-                )
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                    )
+                    content()
+                }
             }
-        }
-    }
-}
-
-@Composable
-private fun InfoCard(
-    title: String,
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Card(
-        modifier = modifier,
-        colors =
-            CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            content()
         }
     }
 }
@@ -553,6 +757,7 @@ private fun InfoRow(
     label: String,
     value: String,
     snackbarHostState: SnackbarHostState,
+    isMono: Boolean = false,
 ) {
     val clipboard = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
@@ -571,10 +776,18 @@ private fun InfoRow(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
+            style =
+                if (isMono) {
+                    MaterialTheme.typography.bodyMedium
+                        .copy(
+                            fontFamily = monoFontFamily,
+                            fontWeight = FontWeight.Medium,
+                        ).tabularNums
+                } else {
+                    MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+                },
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(2f),
+            modifier = Modifier.weight(1.8f),
             textAlign = TextAlign.End,
         )
         IconButton(
@@ -585,7 +798,7 @@ private fun InfoRow(
                     snackbarHostState.showSnackbar("Copied to clipboard")
                 }
             },
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(36.dp),
             colors =
                 IconButtonDefaults.iconButtonColors(
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -594,7 +807,7 @@ private fun InfoRow(
             Icon(
                 imageVector = Icons.Default.ContentCopy,
                 contentDescription = "Copy $label",
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(16.dp),
             )
         }
     }
@@ -616,18 +829,26 @@ private fun ChipRow(
         )
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             items.forEach { item ->
-                SuggestionChip(
-                    onClick = { /* No action needed for display-only chips */ },
-                    label = {
-                        Text(
-                            text = item,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    },
-                )
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    shape = RoundedCornerShape(6.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                ) {
+                    Text(
+                        text = item,
+                        style =
+                            MaterialTheme.typography.labelMedium
+                                .copy(
+                                    fontFamily = monoFontFamily,
+                                    fontWeight = FontWeight.Medium,
+                                ).tabularNums,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    )
+                }
             }
         }
     }

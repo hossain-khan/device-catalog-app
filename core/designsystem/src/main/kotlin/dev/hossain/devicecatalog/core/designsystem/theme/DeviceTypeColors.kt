@@ -5,8 +5,8 @@ import androidx.compose.ui.graphics.Color
 import kotlin.math.pow
 
 /**
- * Color scheme for device type backgrounds and paired high-contrast text/icon colors.
- * Ensures WCAG 4.5:1+ contrast across both light and dark themes.
+ * Semantic color scheme for device form-factor badges, icon containers, and accent indicators.
+ * Ensures crisp contrast across Alabaster Slate (light) and Obsidian Carbon (dark) themes.
  */
 data class DeviceTypeColors(
     val phone: Color,
@@ -23,90 +23,111 @@ data class DeviceTypeColors(
     val onAutomotive: Color = Color.Unspecified,
     val onChromebook: Color = Color.Unspecified,
     val onGaming: Color = Color.Unspecified,
+    val accentPhone: Color = onPhone,
+    val accentTablet: Color = onTablet,
+    val accentTv: Color = onTv,
+    val accentWearable: Color = onWearable,
+    val accentAutomotive: Color = onAutomotive,
+    val accentChromebook: Color = onChromebook,
+    val accentGaming: Color = onGaming,
 )
 
 /**
- * Light theme device type colors - distinct pastel containers paired with high-contrast onColors
+ * Light theme device type colors - crisp semantic badge containers paired with vibrant accents
  */
 private val deviceTypeColorsLight =
     DeviceTypeColors(
-        phone = Color(0xFFB3E5D8), // Mint
-        tablet = Color(0xFFD4B3E5), // Lavender
-        tv = Color(0xFFFFB4B4), // Coral
-        wearable = Color(0xFFFDD9B3), // Peach
-        automotive = Color(0xFFB3D4E5), // Sky Blue
-        chromebook = Color(0xFFE5D4B3), // Tan
-        gaming = Color(0xFFE5B3D4), // Rose
-        onPhone = Color(0xFF00382F),
-        onTablet = Color(0xFF331245),
-        onTv = Color(0xFF55000A),
-        onWearable = Color(0xFF4C2700),
-        onAutomotive = Color(0xFF063346),
-        onChromebook = Color(0xFF3E2D04),
-        onGaming = Color(0xFF461234),
+        phone = Color(0xFFECFDF5), // Emerald 50
+        tablet = Color(0xFFEFF6FF), // Blue 50
+        tv = Color(0xFFF5F3FF), // Purple 50
+        wearable = Color(0xFFFFFBEB), // Amber 50
+        automotive = Color(0xFFFFF1F2), // Rose 50
+        chromebook = Color(0xFFECFEFF), // Cyan 50
+        gaming = Color(0xFFEEF2FF), // Indigo 50
+        onPhone = Color(0xFF059669), // Emerald 600
+        onTablet = Color(0xFF2563EB), // Blue 600
+        onTv = Color(0xFF7C3AED), // Purple 600
+        onWearable = Color(0xFFD97706), // Amber 600
+        onAutomotive = Color(0xFFE11D48), // Rose 600
+        onChromebook = Color(0xFF0891B2), // Cyan 600
+        onGaming = Color(0xFF4F46E5), // Indigo 600
+        accentPhone = Color(0xFF059669),
+        accentTablet = Color(0xFF2563EB),
+        accentTv = Color(0xFF7C3AED),
+        accentWearable = Color(0xFFD97706),
+        accentAutomotive = Color(0xFFE11D48),
+        accentChromebook = Color(0xFF0891B2),
+        accentGaming = Color(0xFF4F46E5),
     )
 
 /**
- * Dark theme device type colors - calibrated dark tonal containers paired with luminous onColors
+ * Dark theme device type colors - deep semantic badge containers paired with luminous accents
  */
 private val deviceTypeColorsDark =
     DeviceTypeColors(
-        phone = Color(0xFF2A5D52), // Dark Teal
-        tablet = Color(0xFF563366), // Dark Lavender
-        tv = Color(0xFF6E2D2D), // Dark Coral
-        wearable = Color(0xFF634019), // Dark Peach
-        automotive = Color(0xFF2B4E63), // Dark Sky Blue
-        chromebook = Color(0xFF544321), // Dark Tan
-        gaming = Color(0xFF5E2B4B), // Dark Rose
-        onPhone = Color(0xFFE6FAF4),
-        onTablet = Color(0xFFF7EDFC),
-        onTv = Color(0xFFFFEAEA),
-        onWearable = Color(0xFFFFEAD4),
-        onAutomotive = Color(0xFFE3F2FD),
-        onChromebook = Color(0xFFFBF0D9),
-        onGaming = Color(0xFFFCE8F3),
+        phone = Color(0xFF064E3B), // Emerald 900
+        tablet = Color(0xFF1E3A8A), // Blue 900
+        tv = Color(0xFF4C1D95), // Purple 900
+        wearable = Color(0xFF78350F), // Amber 900
+        automotive = Color(0xFF881337), // Rose 900
+        chromebook = Color(0xFF164E63), // Cyan 900
+        gaming = Color(0xFF312E81), // Indigo 900
+        onPhone = Color(0xFF34D399), // Emerald 400
+        onTablet = Color(0xFF60A5FA), // Blue 400
+        onTv = Color(0xFFC084FC), // Purple 400
+        onWearable = Color(0xFFFBBF24), // Amber 400
+        onAutomotive = Color(0xFFFB7185), // Rose 400
+        onChromebook = Color(0xFF22D3EE), // Cyan 400
+        onGaming = Color(0xFF818CF8), // Indigo 400
+        accentPhone = Color(0xFF34D399),
+        accentTablet = Color(0xFF60A5FA),
+        accentTv = Color(0xFFC084FC),
+        accentWearable = Color(0xFFFBBF24),
+        accentAutomotive = Color(0xFFFB7185),
+        accentChromebook = Color(0xFF22D3EE),
+        accentGaming = Color(0xFF818CF8),
     )
 
 /**
- * Light theme bolder/darker device type colors - for emphasis like icon backgrounds
+ * Light theme bolder/darker device type colors - for emphasis like icon backgrounds or accent bars
  */
 private val deviceTypeBolderColorsLight =
     DeviceTypeColors(
-        phone = Color(0xFF5FA894),
-        tablet = Color(0xFF9B5FB8),
-        tv = Color(0xFFFF6B6B),
-        wearable = Color(0xFFE5A85C),
-        automotive = Color(0xFF5F8FA8),
-        chromebook = Color(0xFFB89F5F),
-        gaming = Color(0xFFB85F8F),
-        onPhone = Color(0xFF00382F),
+        phone = Color(0xFF059669),
+        tablet = Color(0xFF2563EB),
+        tv = Color(0xFF7C3AED),
+        wearable = Color(0xFFD97706),
+        automotive = Color(0xFFE11D48),
+        chromebook = Color(0xFF0891B2),
+        gaming = Color(0xFF4F46E5),
+        onPhone = Color(0xFFFFFFFF),
         onTablet = Color(0xFFFFFFFF),
         onTv = Color(0xFFFFFFFF),
-        onWearable = Color(0xFF2E1500),
-        onAutomotive = Color(0xFF002A3B),
-        onChromebook = Color(0xFF2B1D00),
+        onWearable = Color(0xFFFFFFFF),
+        onAutomotive = Color(0xFFFFFFFF),
+        onChromebook = Color(0xFFFFFFFF),
         onGaming = Color(0xFFFFFFFF),
     )
 
 /**
- * Dark theme bolder device type colors - even more luminous for emphasis
+ * Dark theme bolder device type colors - luminous accents for emphasis
  */
 private val deviceTypeBolderColorsDark =
     DeviceTypeColors(
-        phone = Color(0xFF1E463E),
-        tablet = Color(0xFF432352),
-        tv = Color(0xFF572020),
-        wearable = Color(0xFF4C2F10),
-        automotive = Color(0xFF1E3A4D),
-        chromebook = Color(0xFF423415),
-        gaming = Color(0xFF4C1E3B),
-        onPhone = Color(0xFFE6FAF4),
-        onTablet = Color(0xFFF7EDFC),
-        onTv = Color(0xFFFFEAEA),
-        onWearable = Color(0xFFFFEAD4),
-        onAutomotive = Color(0xFFE3F2FD),
-        onChromebook = Color(0xFFFBF0D9),
-        onGaming = Color(0xFFFCE8F3),
+        phone = Color(0xFF10B981),
+        tablet = Color(0xFF3B82F6),
+        tv = Color(0xFF8B5CF6),
+        wearable = Color(0xFFF59E0B),
+        automotive = Color(0xFFF43F5E),
+        chromebook = Color(0xFF06B6D4),
+        gaming = Color(0xFF6366F1),
+        onPhone = Color(0xFF022C22),
+        onTablet = Color(0xFFF8FAFC),
+        onTv = Color(0xFFF8FAFC),
+        onWearable = Color(0xFF0F172A),
+        onAutomotive = Color(0xFFF8FAFC),
+        onChromebook = Color(0xFF0F172A),
+        onGaming = Color(0xFFF8FAFC),
     )
 
 /**
