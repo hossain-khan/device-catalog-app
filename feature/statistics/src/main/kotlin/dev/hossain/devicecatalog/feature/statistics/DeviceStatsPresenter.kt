@@ -2,8 +2,11 @@ package dev.hossain.devicecatalog.feature.statistics
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.core.common.AppVersionService
@@ -25,7 +28,11 @@ class DeviceStatsPresenter
     ) : Presenter<DeviceStatsScreen.State> {
         @Composable
         override fun present(): DeviceStatsScreen.State {
-            val stats by produceState<DeviceStats?>(initialValue = null) {
+            var refreshTrigger by rememberRetained { mutableIntStateOf(0) }
+            val stats by produceRetainedState<DeviceStats?>(
+                initialValue = null,
+                refreshTrigger,
+            ) {
                 deviceRepository.getDeviceStats().collect { deviceStats ->
                     Timber.d("Received device stats: ${deviceStats.totalDevices} devices, ${deviceStats.totalFormFactors} form factors")
                     value = deviceStats
@@ -41,7 +48,7 @@ class DeviceStatsPresenter
                 when (event) {
                     is DeviceStatsScreen.Event.RefreshStats -> {
                         Timber.d("Stats refresh requested")
-                        // Stats will automatically refresh via the Flow
+                        refreshTrigger++
                     }
 
                     is DeviceStatsScreen.Event.OpenStatsExplorer -> {

@@ -9,10 +9,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
-import kotlinx.parcelize.Parcelize
+import dev.zacsweers.metro.AppScope
 
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data object QuizHubScreen : Screen {
     data class State(
         val quizTypes: List<QuizTypeInfo>,

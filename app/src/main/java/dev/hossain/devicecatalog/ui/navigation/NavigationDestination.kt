@@ -1,6 +1,5 @@
 package dev.hossain.devicecatalog.ui.navigation
 
-import android.os.Parcelable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.Info
@@ -12,7 +11,6 @@ import dev.hossain.devicecatalog.feature.aboutapp.AboutScreen
 import dev.hossain.devicecatalog.feature.devices.DevicesScreen
 import dev.hossain.devicecatalog.feature.quizhub.QuizHubScreen
 import dev.hossain.devicecatalog.feature.statistics.DeviceStatsScreen
-import kotlinx.parcelize.Parcelize
 
 /**
  * Navigation destinations for the app with responsive bottom navigation and navigation rail.
@@ -22,8 +20,7 @@ sealed class NavigationDestination(
     val title: String,
     val icon: ImageVector,
     val screen: Screen,
-) : Parcelable {
-    @Parcelize
+) {
     data object Devices : NavigationDestination(
         route = "devices",
         title = "Devices",
@@ -31,7 +28,6 @@ sealed class NavigationDestination(
         screen = DevicesScreen,
     )
 
-    @Parcelize
     data object Quiz : NavigationDestination(
         route = "quiz",
         title = "Quiz",
@@ -39,7 +35,6 @@ sealed class NavigationDestination(
         screen = QuizHubScreen,
     )
 
-    @Parcelize
     data object About : NavigationDestination(
         route = "about",
         title = "About",
@@ -47,7 +42,6 @@ sealed class NavigationDestination(
         screen = AboutScreen,
     )
 
-    @Parcelize
     data object Stats : NavigationDestination(
         route = "stats",
         title = "Stats",

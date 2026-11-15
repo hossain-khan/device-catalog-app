@@ -4,10 +4,11 @@ import androidx.compose.runtime.Immutable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.devicecatalog.core.model.DeviceInfo
-import kotlinx.parcelize.Parcelize
+import dev.zacsweers.metro.AppScope
 
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data class DeviceComparisonScreen(
     val deviceIds: List<Long> = emptyList(),
 ) : Screen {

@@ -5,14 +5,15 @@ import androidx.paging.PagingData
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.model.DeviceInfo
+import dev.zacsweers.metro.AppScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data object DevicesScreen : Screen {
     /**
      * Performance: State is marked as @Immutable where appropriate to optimize recomposition.

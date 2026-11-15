@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Upgraded Slack Circuit from `0.36.1` to `0.39.0` and added `circuit-serialization` and `circuit-test`
+- Migrated all 14 `Screen` definitions from `@Parcelize`/`Parcelable` to `@CircuitSerializable(AppScope::class)` with `SerializableCircuitSaver` multibound via `CircuitProviders`
+- Migrated `AppNavigation` from `rememberSaveableBackStack` + `goTo()` tab switching to `rememberSaveableNavStack` + `Navigator.StateOptions.SaveAndRestore` (`resetRoot`), `rememberAndroidScreenAwareNavigator`, and `NavStack.rootRecord`-derived tab selection
+- Replaced direct `Context.startActivity` calls in `AboutPresenter` and `DeviceDetailsPresenter` with Circuit's `IntentScreen`
+- Updated presenters (`DevicesPresenter`, `DeviceDetailsPresenter`, `DeviceStatsPresenter`, `StatsExplorerPresenter`, `DeviceComparisonPresenter`, `DreamPhonePresenter`, `OnboardingPresenter`, `DeveloperSettingsPresenter`, `BrandChallengePresenter`, `QuizPresenter`, `ManufacturerSelectionPresenter`) to use `produceRetainedState` and `rememberRetained` for values instead of retaining raw `Flow`/`CoroutineScope` instances or losing state across configuration changes
+- Enabled `unitTests.isReturnDefaultValues = true` in `KotlinAndroid` convention plugin
+
+### Added
+- Added Circuit presenter unit tests (`QuizHubPresenterTest`, `QuizResultsPresenterTest`, `DeviceDetailsPresenterTest`, `DevicesPresenterTest`) using `circuit-test` (`Presenter.test`, `FakeNavigator`)
+
 ## [2.1.0] - 2026-11-15
 
 ### Fixed

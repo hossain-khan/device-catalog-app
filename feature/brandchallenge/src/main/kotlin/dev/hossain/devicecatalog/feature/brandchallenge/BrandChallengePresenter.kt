@@ -1,22 +1,19 @@
 package dev.hossain.devicecatalog.feature.brandchallenge
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AssistedInject
@@ -27,36 +24,32 @@ class BrandChallengePresenter(
 ) : Presenter<BrandChallengeScreen.State> {
     @Composable
     override fun present(): BrandChallengeScreen.State {
-        val scope = rememberCoroutineScope()
-        var questions by remember { mutableStateOf<List<BrandQuestion>>(emptyList()) }
-        var currentQuestionIndex by remember { mutableIntStateOf(screen.currentQuestion) }
-        var selectedAnswer by remember { mutableStateOf<String?>(null) }
-        var isAnswerRevealed by remember { mutableStateOf(false) }
-        val userAnswers = remember { mutableStateListOf<BrandAnswer>() }
-        var isLoading by remember { mutableStateOf(true) }
-        var error by remember { mutableStateOf<String?>(null) }
+        var currentQuestionIndex by rememberRetained { mutableIntStateOf(screen.currentQuestion) }
+        var selectedAnswer by rememberRetained { mutableStateOf<String?>(null) }
+        var isAnswerRevealed by rememberRetained { mutableStateOf(false) }
+        var userAnswers by rememberRetained { mutableStateOf<List<BrandAnswer>>(emptyList()) }
+        var retryTrigger by rememberRetained { mutableIntStateOf(0) }
 
-        // Generate quiz questions on first load
-        LaunchedEffect(Unit) {
+        val loadState by produceRetainedState<BrandQuizLoadState>(
+            initialValue = BrandQuizLoadState.Loading,
+            retryTrigger,
+        ) {
             Timber.d("BrandChallengePresenter: Generating quiz questions")
-            isLoading = true
-            error = null
-
-            scope.launch {
+            value = BrandQuizLoadState.Loading
+            value =
                 brandChallengeService.generateQuiz().fold(
                     onSuccess = { generatedQuestions ->
                         Timber.i("BrandChallengePresenter: Successfully generated ${generatedQuestions.size} questions")
-                        questions = generatedQuestions
-                        isLoading = false
+                        BrandQuizLoadState.Loaded(generatedQuestions)
                     },
                     onFailure = { exception ->
                         Timber.e(exception, "BrandChallengePresenter: Failed to generate quiz")
-                        error = exception.message ?: "Failed to generate quiz questions"
-                        isLoading = false
+                        BrandQuizLoadState.Error(exception.message ?: "Failed to generate quiz questions")
                     },
                 )
-            }
         }
+
+        val questions = (loadState as? BrandQuizLoadState.Loaded)?.questions ?: emptyList()
 
         return BrandChallengeScreen.State(
             questions = questions,
@@ -64,8 +57,8 @@ class BrandChallengePresenter(
             selectedAnswer = selectedAnswer,
             isAnswerRevealed = isAnswerRevealed,
             userAnswers = userAnswers,
-            isLoading = isLoading,
-            error = error,
+            isLoading = loadState is BrandQuizLoadState.Loading,
+            error = (loadState as? BrandQuizLoadState.Error)?.message,
             eventSink = { event ->
                 when (event) {
                     is BrandChallengeScreen.Event.SelectAnswer -> {
@@ -75,15 +68,16 @@ class BrandChallengePresenter(
 
                     is BrandChallengeScreen.Event.RevealAnswer -> {
                         Timber.d("BrandChallengePresenter: Revealing answer")
-                        if (selectedAnswer != null && questions.isNotEmpty()) {
+                        val answerChoice = selectedAnswer
+                        if (answerChoice != null && questions.isNotEmpty()) {
                             val currentQuestion = questions[currentQuestionIndex]
                             val answer =
                                 BrandAnswer(
                                     question = currentQuestion,
-                                    userAnswer = selectedAnswer!!,
-                                    isCorrect = selectedAnswer == currentQuestion.correctAnswer,
+                                    userAnswer = answerChoice,
+                                    isCorrect = answerChoice == currentQuestion.correctAnswer,
                                 )
-                            userAnswers.add(answer)
+                            userAnswers = userAnswers + answer
                             Timber.i(
                                 "BrandChallengePresenter: Answer recorded - correct: ${answer.isCorrect}",
                             )
@@ -116,30 +110,27 @@ class BrandChallengePresenter(
 
                     is BrandChallengeScreen.Event.RetryQuiz -> {
                         Timber.d("BrandChallengePresenter: Retrying quiz")
-                        // Reset state and regenerate questions
                         currentQuestionIndex = 0
                         selectedAnswer = null
                         isAnswerRevealed = false
-                        userAnswers.clear()
-                        isLoading = true
-                        error = null
-
-                        scope.launch {
-                            brandChallengeService.generateQuiz().fold(
-                                onSuccess = { generatedQuestions ->
-                                    questions = generatedQuestions
-                                    isLoading = false
-                                },
-                                onFailure = { exception ->
-                                    error = exception.message ?: "Failed to generate quiz questions"
-                                    isLoading = false
-                                },
-                            )
-                        }
+                        userAnswers = emptyList()
+                        retryTrigger++
                     }
                 }
             },
         )
+    }
+
+    private sealed interface BrandQuizLoadState {
+        data object Loading : BrandQuizLoadState
+
+        data class Loaded(
+            val questions: List<BrandQuestion>,
+        ) : BrandQuizLoadState
+
+        data class Error(
+            val message: String,
+        ) : BrandQuizLoadState
     }
 
     @CircuitInject(BrandChallengeScreen::class, AppScope::class)

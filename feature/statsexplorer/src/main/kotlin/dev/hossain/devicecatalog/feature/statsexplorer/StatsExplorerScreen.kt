@@ -3,7 +3,8 @@ package dev.hossain.devicecatalog.feature.statsexplorer
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import kotlinx.parcelize.Parcelize
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 
 /**
  * Categories for device statistics exploration.
@@ -31,7 +32,7 @@ data class StatData(
 /**
  * Stats Explorer screen for interactive data visualization.
  */
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data class StatsExplorerScreen(
     val initialCategory: StatCategory? = null,
 ) : Screen {

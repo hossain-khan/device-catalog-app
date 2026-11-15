@@ -26,17 +26,15 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.slack.circuit.backstack.rememberSaveableBackStack
 import com.slack.circuit.foundation.NavigableCircuitContent
+import com.slack.circuit.foundation.navstack.rememberSaveableNavStack
 import com.slack.circuit.foundation.rememberCircuitNavigator
+import com.slack.circuit.runtime.Navigator
+import com.slack.circuitx.android.rememberAndroidScreenAwareNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.devicecatalog.core.common.OnboardingManager
 import dev.hossain.devicecatalog.feature.onboarding.OnboardingScreen
@@ -59,12 +57,10 @@ fun AppNavigation(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val landingScreen: NavigationDestination = NavigationDestination.destinations.first()
-    val backStack = rememberSaveableBackStack(root = landingScreen.screen)
-    val navigator = rememberCircuitNavigator(backStack)
-    var selectedDestination: NavigationDestination by rememberSaveable {
-        mutableStateOf(landingScreen)
-    }
+    val landingDestination = NavigationDestination.destinations.first()
+    val navStack = rememberSaveableNavStack(root = landingDestination.screen)
+    val circuitNavigator = rememberCircuitNavigator(navStack)
+    val navigator = rememberAndroidScreenAwareNavigator(circuitNavigator, context)
 
     // Check if user needs onboarding
     LaunchedEffect(Unit) {
@@ -74,16 +70,22 @@ fun AppNavigation(
         }
     }
 
-    val currentScreen = backStack.topRecord?.screen
-    val currentDestination = NavigationDestination.destinations.firstOrNull { it.screen == currentScreen }
-    val isTopLevelDestination = currentDestination != null
+    val currentScreen = navStack.topRecord?.screen
+    val selectedDestination =
+        NavigationDestination.destinations.firstOrNull { it.screen == navStack.rootRecord?.screen }
+            ?: landingDestination
+    val isTopLevelDestination = NavigationDestination.destinations.any { it.screen == currentScreen }
 
-    // Keep selectedDestination in sync with backstack when top-level destination is reached
-    LaunchedEffect(currentDestination) {
-        if (currentDestination != null && currentDestination != selectedDestination) {
-            selectedDestination = currentDestination
-        }
+    val onDestinationSelected: (NavigationDestination) -> Unit = { destination ->
+        navigator.resetRoot(
+            newRoot = destination.screen,
+            options = Navigator.StateOptions.SaveAndRestore,
+        )
     }
+    val decoratorFactory =
+        remember(navigator) {
+            GestureNavigationDecorationFactory()
+        }
 
     // Determine navigation type based on window size class
     val navigationType = windowSizeClass.toNavigationType()
@@ -97,21 +99,15 @@ fun AppNavigation(
                 drawerContent = {
                     AppNavigationDrawerContent(
                         selectedDestination = selectedDestination,
-                        onNavigationDestinationClicked = { destination ->
-                            selectedDestination = destination
-                            navigator.goTo(destination.screen)
-                        },
+                        onNavigationDestinationClicked = onDestinationSelected,
                     )
                 },
             ) {
                 NavigableCircuitContent(
                     navigator = navigator,
-                    backStack = backStack,
+                    navStack = navStack,
                     modifier = Modifier.fillMaxSize(),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory()
-                        },
+                    decoratorFactory = decoratorFactory,
                 )
             }
         }
@@ -121,19 +117,13 @@ fun AppNavigation(
             Row(modifier = modifier.fillMaxSize()) {
                 AppNavigationRail(
                     selectedDestination = selectedDestination,
-                    onNavigationDestinationClicked = { destination ->
-                        selectedDestination = destination
-                        navigator.goTo(destination.screen)
-                    },
+                    onNavigationDestinationClicked = onDestinationSelected,
                 )
                 NavigableCircuitContent(
                     navigator = navigator,
-                    backStack = backStack,
+                    navStack = navStack,
                     modifier = Modifier.weight(1f),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory()
-                        },
+                    decoratorFactory = decoratorFactory,
                 )
             }
         }
@@ -144,20 +134,14 @@ fun AppNavigation(
             Column(modifier = modifier.fillMaxSize()) {
                 NavigableCircuitContent(
                     navigator = navigator,
-                    backStack = backStack,
+                    navStack = navStack,
                     modifier = Modifier.weight(1f),
-                    decoratorFactory =
-                        remember(navigator) {
-                            GestureNavigationDecorationFactory()
-                        },
+                    decoratorFactory = decoratorFactory,
                 )
                 if (isTopLevelDestination) {
                     AppBottomNavigation(
                         selectedDestination = selectedDestination,
-                        onNavigationDestinationClicked = { destination ->
-                            selectedDestination = destination
-                            navigator.goTo(destination.screen)
-                        },
+                        onNavigationDestinationClicked = onDestinationSelected,
                     )
                 }
             }

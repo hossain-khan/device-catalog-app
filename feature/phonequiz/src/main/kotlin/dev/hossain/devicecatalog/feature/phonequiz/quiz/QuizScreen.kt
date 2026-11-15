@@ -3,9 +3,10 @@ package dev.hossain.devicecatalog.feature.phonequiz.quiz
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.devicecatalog.feature.phonequiz.QuizAnswer
 import dev.hossain.devicecatalog.feature.phonequiz.QuizQuestion
-import kotlinx.parcelize.Parcelize
+import dev.zacsweers.metro.AppScope
 
 /**
  * Screen for taking the quiz.
@@ -13,7 +14,7 @@ import kotlinx.parcelize.Parcelize
  * @property manufacturer The manufacturer for this quiz
  * @property currentQuestion The current question index (0-4)
  */
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data class QuizScreen(
     val manufacturer: String,
     val currentQuestion: Int = 0,

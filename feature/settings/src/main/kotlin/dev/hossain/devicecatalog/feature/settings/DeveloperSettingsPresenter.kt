@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.core.common.FeatureFlags
@@ -28,8 +28,8 @@ class DeveloperSettingsPresenter(
     override fun present(): DeveloperSettingsScreenCircuit.State {
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
-        var featureFlags by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
-        var onboardingCompleted by remember { mutableStateOf(false) }
+        var featureFlags by rememberRetained { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+        var onboardingCompleted by rememberRetained { mutableStateOf(false) }
 
         // Load initial state
         LaunchedEffect(Unit) {

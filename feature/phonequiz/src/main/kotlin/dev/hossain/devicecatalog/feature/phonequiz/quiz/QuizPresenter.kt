@@ -1,14 +1,13 @@
 package dev.hossain.devicecatalog.feature.phonequiz.quiz
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.feature.phonequiz.QuizAnswer
@@ -32,34 +31,35 @@ class QuizPresenter(
 ) : Presenter<QuizScreen.State> {
     @Composable
     override fun present(): QuizScreen.State {
-        var questions by remember { mutableStateOf(emptyList<QuizQuestion>()) }
-        var currentQuestionIndex by remember { mutableIntStateOf(screen.currentQuestion) }
-        var selectedAnswer by remember { mutableStateOf<String?>(null) }
-        var isAnswerRevealed by remember { mutableStateOf(false) }
-        val userAnswers = remember { mutableStateListOf<QuizAnswer>() }
-        var isLoading by remember { mutableStateOf(true) }
-        var error by remember { mutableStateOf<String?>(null) }
+        var currentQuestionIndex by rememberRetained { mutableIntStateOf(screen.currentQuestion) }
+        var selectedAnswer by rememberRetained { mutableStateOf<String?>(null) }
+        var isAnswerRevealed by rememberRetained { mutableStateOf(false) }
+        var userAnswers by rememberRetained { mutableStateOf<List<QuizAnswer>>(emptyList()) }
 
-        LaunchedEffect(screen.manufacturer) {
+        val loadState by produceRetainedState<QuizLoadState>(
+            initialValue = QuizLoadState.Loading,
+            screen.manufacturer,
+        ) {
             Timber.d("Loading quiz for manufacturer: ${screen.manufacturer}")
-            try {
-                val result = quizService.generateQuiz(screen.manufacturer)
-                result
-                    .onSuccess { generatedQuestions ->
-                        questions = generatedQuestions
-                        isLoading = false
-                        Timber.i("Successfully generated ${generatedQuestions.size} questions")
-                    }.onFailure { e ->
-                        Timber.e(e, "Failed to generate quiz")
-                        error = "Failed to generate quiz: ${e.message}"
-                        isLoading = false
-                    }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to load quiz")
-                error = "Failed to load quiz: ${e.message}"
-                isLoading = false
-            }
+            value =
+                try {
+                    quizService.generateQuiz(screen.manufacturer).fold(
+                        onSuccess = { generatedQuestions ->
+                            Timber.i("Successfully generated ${generatedQuestions.size} questions")
+                            QuizLoadState.Loaded(generatedQuestions)
+                        },
+                        onFailure = { e ->
+                            Timber.e(e, "Failed to generate quiz")
+                            QuizLoadState.Error("Failed to generate quiz: ${e.message}")
+                        },
+                    )
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to load quiz")
+                    QuizLoadState.Error("Failed to load quiz: ${e.message}")
+                }
         }
+
+        val questions = (loadState as? QuizLoadState.Loaded)?.questions ?: emptyList()
 
         return QuizScreen.State(
             manufacturer = screen.manufacturer,
@@ -67,9 +67,9 @@ class QuizPresenter(
             currentQuestionIndex = currentQuestionIndex,
             selectedAnswer = selectedAnswer,
             isAnswerRevealed = isAnswerRevealed,
-            userAnswers = userAnswers.toList(),
-            isLoading = isLoading,
-            error = error,
+            userAnswers = userAnswers,
+            isLoading = loadState is QuizLoadState.Loading,
+            error = (loadState as? QuizLoadState.Error)?.message,
             eventSink = { event ->
                 when (event) {
                     is QuizScreen.Event.SelectAnswer -> {
@@ -80,17 +80,18 @@ class QuizPresenter(
                     }
 
                     QuizScreen.Event.RevealAnswer -> {
-                        if (selectedAnswer != null && !isAnswerRevealed) {
+                        val answerChoice = selectedAnswer
+                        if (answerChoice != null && !isAnswerRevealed) {
                             Timber.d("Revealing answer")
                             isAnswerRevealed = true
                             val currentQuestion = questions[currentQuestionIndex]
                             val answer =
                                 QuizAnswer(
                                     question = currentQuestion,
-                                    userAnswer = selectedAnswer!!,
-                                    isCorrect = selectedAnswer == currentQuestion.correctModelName,
+                                    userAnswer = answerChoice,
+                                    isCorrect = answerChoice == currentQuestion.correctModelName,
                                 )
-                            userAnswers.add(answer)
+                            userAnswers = userAnswers + answer
                             Timber.d("Answer recorded: correct=${answer.isCorrect}")
                         }
                     }
@@ -104,30 +105,14 @@ class QuizPresenter(
                                 isAnswerRevealed = false
                             } else {
                                 Timber.d("Quiz completed, navigating to results")
-                                val score = quizService.calculateScore(userAnswers)
-                                val resultsScreen =
-                                    QuizResultsScreen(
-                                        manufacturer = screen.manufacturer,
-                                        score = score,
-                                        totalQuestions = questions.size,
-                                    )
-                                resultsScreen.answers = userAnswers.toList()
-                                navigator.goTo(resultsScreen)
+                                navigateToResults(questions.size, userAnswers)
                             }
                         }
                     }
 
                     QuizScreen.Event.FinishQuiz -> {
                         Timber.d("User finished quiz early")
-                        val score = quizService.calculateScore(userAnswers)
-                        val resultsScreen =
-                            QuizResultsScreen(
-                                manufacturer = screen.manufacturer,
-                                score = score,
-                                totalQuestions = questions.size,
-                            )
-                        resultsScreen.answers = userAnswers.toList()
-                        navigator.goTo(resultsScreen)
+                        navigateToResults(questions.size, userAnswers)
                     }
 
                     QuizScreen.Event.NavigateBack -> {
@@ -137,6 +122,34 @@ class QuizPresenter(
                 }
             },
         )
+    }
+
+    private fun navigateToResults(
+        totalQuestions: Int,
+        answers: List<QuizAnswer>,
+    ) {
+        val score = quizService.calculateScore(answers)
+        val resultsScreen =
+            QuizResultsScreen(
+                manufacturer = screen.manufacturer,
+                score = score,
+                totalQuestions = totalQuestions,
+            ).apply {
+                this.answers = answers
+            }
+        navigator.goTo(resultsScreen)
+    }
+
+    private sealed interface QuizLoadState {
+        data object Loading : QuizLoadState
+
+        data class Loaded(
+            val questions: List<QuizQuestion>,
+        ) : QuizLoadState
+
+        data class Error(
+            val message: String,
+        ) : QuizLoadState
     }
 
     @CircuitInject(QuizScreen::class, AppScope::class)

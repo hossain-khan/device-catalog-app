@@ -24,12 +24,14 @@ internal fun Project.configureKotlinAndroid(
             extension.defaultConfig.minSdk = 28
             extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+            extension.testOptions.unitTests.isReturnDefaultValues = true
         }
         is LibraryExtension -> {
             extension.compileSdk = 37
             extension.defaultConfig.minSdk = 28
             extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+            extension.testOptions.unitTests.isReturnDefaultValues = true
         }
     }
 

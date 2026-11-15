@@ -3,10 +3,11 @@ package dev.hossain.devicecatalog.feature.devicedetails
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.android.catalogparser.models.AndroidDevice
-import kotlinx.parcelize.Parcelize
+import dev.zacsweers.metro.AppScope
 
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data class DeviceDetailsScreen(
     val deviceId: Long,
 ) : Screen {

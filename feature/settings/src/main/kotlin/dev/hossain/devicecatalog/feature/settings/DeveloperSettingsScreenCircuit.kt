@@ -3,9 +3,10 @@ package dev.hossain.devicecatalog.feature.settings
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import kotlinx.parcelize.Parcelize
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data object DeveloperSettingsScreenCircuit : Screen {
     data class State(
         val featureFlags: Map<String, Boolean>,

@@ -3,13 +3,14 @@ package dev.hossain.devicecatalog.feature.phonequiz.selection
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.devicecatalog.core.data.ManufacturerQuizInfo
-import kotlinx.parcelize.Parcelize
+import dev.zacsweers.metro.AppScope
 
 /**
  * Screen for selecting a manufacturer to start a quiz.
  */
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data object ManufacturerSelectionScreen : Screen {
     /**
      * UI state for the manufacturer selection screen.

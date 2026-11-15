@@ -2,12 +2,13 @@ package dev.hossain.devicecatalog.feature.devicecomparison
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
@@ -29,34 +30,41 @@ class DeviceComparisonPresenter(
 ) : Presenter<DeviceComparisonScreen.State> {
     @Composable
     override fun present(): DeviceComparisonScreen.State {
-        var selectedDevices by remember { mutableStateOf<List<DeviceInfo>>(emptyList()) }
-        var isLoading by remember { mutableStateOf(true) }
-        var showDeviceSelector by remember { mutableStateOf(false) }
-        var searchQuery by remember { mutableStateOf("") }
+        var selectedDevices by rememberRetained { mutableStateOf<List<DeviceInfo>>(emptyList()) }
+        var initializedFromScreen by rememberRetained(screen.deviceIds) { mutableStateOf(false) }
+        var isLoading by rememberRetained(screen.deviceIds) { mutableStateOf(screen.deviceIds.isNotEmpty()) }
+        var showDeviceSelector by rememberRetained { mutableStateOf(false) }
+        var searchQuery by rememberRetained { mutableStateOf("") }
 
-        // Get all devices for selection
-        val allDevicesFlow =
-            remember(searchQuery) {
+        // Observe available devices inside produceRetainedState so raw Flows are never retained
+        val allDevices by produceRetainedState<List<DeviceInfo>>(
+            initialValue = emptyList(),
+            searchQuery,
+        ) {
+            val flow =
                 if (searchQuery.isBlank()) {
                     repository.getAllDevices()
                 } else {
                     repository.searchDevices(searchQuery)
                 }
-            }
-        val allDevices by allDevicesFlow.collectAsState(initial = emptyList())
+            flow.collect { value = it }
+        }
 
-        // Load devices passed via screen parameter
+        // Load initial devices passed via screen parameter once per screen arguments
         LaunchedEffect(screen.deviceIds) {
-            if (screen.deviceIds.isNotEmpty()) {
-                Timber.d("Loading ${screen.deviceIds.size} devices from screen parameter")
-                val devices =
-                    screen.deviceIds.mapNotNull { deviceId ->
-                        repository.getDeviceById(deviceId)
-                    }
-                selectedDevices = devices
-                Timber.d("Loaded ${devices.size} devices for comparison")
+            if (!initializedFromScreen) {
+                if (screen.deviceIds.isNotEmpty()) {
+                    Timber.d("Loading ${screen.deviceIds.size} devices from screen parameter")
+                    val devices =
+                        screen.deviceIds.mapNotNull { deviceId ->
+                            repository.getDeviceById(deviceId)
+                        }
+                    selectedDevices = devices
+                    Timber.d("Loaded ${devices.size} devices for comparison")
+                }
+                isLoading = false
+                initializedFromScreen = true
             }
-            isLoading = false
         }
 
         // Generate comparison data

@@ -1,6 +1,6 @@
 plugins {
     id("devicecatalog.android.feature")
-    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinter)
 }
 
@@ -21,6 +21,8 @@ dependencies {
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)
+    implementation(libs.circuit.serialization)
+    implementation(libs.circuitx.android)
     ksp(libs.circuit.codegen)
 
     implementation(libs.timber)

@@ -3,11 +3,11 @@ package dev.hossain.devicecatalog.feature.onboarding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.core.common.OnboardingManager
@@ -30,7 +30,7 @@ class OnboardingPresenter(
     override fun present(): OnboardingScreen.State {
         val context = LocalContext.current
         val coroutineScope = rememberCoroutineScope()
-        var currentPage by remember { mutableIntStateOf(0) }
+        var currentPage by rememberRetained { mutableIntStateOf(0) }
         val totalPages = 3
 
         return OnboardingScreen.State(
