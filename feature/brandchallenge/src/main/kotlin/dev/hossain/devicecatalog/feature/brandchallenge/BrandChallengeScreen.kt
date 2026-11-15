@@ -3,14 +3,15 @@ package dev.hossain.devicecatalog.feature.brandchallenge
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import kotlinx.parcelize.Parcelize
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 
 /**
  * Screen for taking the brand challenge quiz.
  *
  * @property currentQuestion The current question index (0-4)
  */
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data class BrandChallengeScreen(
     val currentQuestion: Int = 0,
 ) : Screen {

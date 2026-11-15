@@ -4,13 +4,14 @@ import androidx.compose.runtime.Immutable
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
-import kotlinx.parcelize.Parcelize
+import com.slack.circuit.serialization.CircuitSerializable
+import dev.zacsweers.metro.AppScope
 
 /**
  * Onboarding screen for first-time users.
  * Shows a multi-page introduction to the app's features and capabilities.
  */
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data object OnboardingScreen : Screen {
     /**
      * State for the onboarding screen.

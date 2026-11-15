@@ -6,6 +6,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.paging.PagingData
@@ -13,7 +14,7 @@ import androidx.paging.cachedIn
 import androidx.paging.filter
 import androidx.paging.map
 import com.slack.circuit.codegen.annotations.CircuitInject
-import com.slack.circuit.retained.collectAsRetainedState
+import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
@@ -26,10 +27,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -52,12 +50,7 @@ class DevicesPresenter(
 
         // Debounced search query to avoid excessive queries
         var debouncedSearchQuery by rememberRetained { mutableStateOf("") }
-
-        // Retained CoroutineScope so PagingData remains cached across backstack navigation
-        val pagingScope =
-            rememberRetained {
-                CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-            }
+        val pagingScope = rememberCoroutineScope()
 
         // Performance: Use LaunchedEffect with snapshotFlow for debouncing to reduce recompositions
         LaunchedEffect(Unit) {
@@ -81,24 +74,26 @@ class DevicesPresenter(
             }
         }
 
-        // Get devices based on search query and filters
-        // Performance: Use rememberRetained to keep flow and collected items across backstack navigation
+        // Collect devices inside produceRetainedState so raw Flows are never retained
         var errorMessage by rememberRetained { mutableStateOf<String?>(null) }
-        val devicesFlow =
-            rememberRetained(debouncedSearchQuery) {
-                try {
+        val allDevices by produceRetainedState<List<DeviceInfo>>(
+            initialValue = emptyList(),
+            debouncedSearchQuery,
+        ) {
+            errorMessage = null
+            try {
+                val flow =
                     if (debouncedSearchQuery.isBlank()) {
                         deviceRepository.getAllDevicesLatestFirst()
                     } else {
                         deviceRepository.searchDevicesLatestFirst(debouncedSearchQuery)
                     }
-                } catch (e: Exception) {
-                    Timber.e(e, "Failed to get devices")
-                    errorMessage = "Failed to load devices: ${e.message}"
-                    kotlinx.coroutines.flow.flowOf(emptyList())
-                }
+                flow.collect { value = it }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to get devices")
+                errorMessage = "Failed to load devices: ${e.message}"
             }
-        val allDevices by devicesFlow.collectAsRetainedState(initial = emptyList())
+        }
 
         // Apply filters to the devices
         // Performance: Use rememberRetained with explicit keys to only recalculate when dependencies change
@@ -125,9 +120,8 @@ class DevicesPresenter(
             }
 
         // Get paged devices with search and filter
-        // Performance: Use rememberRetained + cachedIn so PagingData survives navigating to DeviceDetailsScreen
         val pagedDevices: Flow<PagingData<DeviceInfo>> =
-            rememberRetained(debouncedSearchQuery, activeFilters) {
+            remember(debouncedSearchQuery, activeFilters, pagingScope) {
                 Timber.tag("DevicesPresenter:Paging").d(
                     "Creating paged flow: query='$debouncedSearchQuery', hasFilters=${activeFilters.hasActiveFilters()}",
                 )

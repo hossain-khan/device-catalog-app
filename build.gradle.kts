@@ -15,6 +15,7 @@ plugins {
     // Applies the Kotlin Parcelize plugin.
     // Project: https://developer.android.com/kotlin/parcelize
     alias(libs.plugins.kotlin.parcelize) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
 
     // Applies the Kotlin KAPT (Kotlin Annotation Processing Tool) plugin.
     // Project: https://kotlinlang.org/docs/kapt.html

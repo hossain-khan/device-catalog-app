@@ -2,11 +2,12 @@ package dev.hossain.devicecatalog.feature.statsexplorer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
@@ -25,13 +26,15 @@ class StatsExplorerPresenter
     ) : Presenter<StatsExplorerScreen.State> {
         @Composable
         override fun present(): StatsExplorerScreen.State {
-            var selectedCategory by remember {
+            var selectedCategory by rememberRetained {
                 mutableStateOf(screen.initialCategory ?: StatCategory.RAM)
             }
+            var refreshTrigger by rememberRetained { mutableIntStateOf(0) }
 
-            val statData by produceState<StatData?>(
+            val statData by produceRetainedState<StatData?>(
                 initialValue = null,
-                key1 = selectedCategory,
+                selectedCategory,
+                refreshTrigger,
             ) {
                 Timber.d("Loading stats for category: $selectedCategory")
                 try {
@@ -145,6 +148,7 @@ class StatsExplorerPresenter
 
                     is StatsExplorerScreen.Event.Refresh -> {
                         Timber.d("Refresh requested")
+                        refreshTrigger++
                     }
 
                     is StatsExplorerScreen.Event.BackClicked -> {

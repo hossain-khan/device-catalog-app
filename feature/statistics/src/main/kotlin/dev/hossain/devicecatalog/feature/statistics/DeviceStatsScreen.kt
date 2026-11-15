@@ -3,10 +3,11 @@ package dev.hossain.devicecatalog.feature.statistics
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
 import com.slack.circuit.runtime.screen.Screen
+import com.slack.circuit.serialization.CircuitSerializable
 import dev.hossain.devicecatalog.core.data.DeviceStats
-import kotlinx.parcelize.Parcelize
+import dev.zacsweers.metro.AppScope
 
-@Parcelize
+@CircuitSerializable(AppScope::class)
 data object DeviceStatsScreen : Screen {
     data class State(
         val stats: DeviceStats?,

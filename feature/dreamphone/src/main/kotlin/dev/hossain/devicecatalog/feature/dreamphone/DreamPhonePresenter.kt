@@ -2,12 +2,13 @@ package dev.hossain.devicecatalog.feature.dreamphone
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
+import com.slack.circuit.retained.produceRetainedState
+import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.android.catalogparser.models.FormFactor
@@ -29,15 +30,16 @@ class DreamPhonePresenter(
     @Composable
     override fun present(): DreamPhoneScreen.State {
         val questions = remember { SurveyQuestion.getAllQuestions() }
-        var currentQuestionIndex by remember { mutableStateOf(screen.step) }
-        var answers by remember { mutableStateOf<Map<QuestionId, Answer>>(emptyMap()) }
-        var recommendations by remember { mutableStateOf<List<DeviceMatch>?>(null) }
+        var currentQuestionIndex by rememberRetained { mutableStateOf(screen.step) }
+        var answers by rememberRetained { mutableStateOf<Map<QuestionId, Answer>>(emptyMap()) }
+        var recommendations by rememberRetained { mutableStateOf<List<DeviceMatch>?>(null) }
         var isLoading by remember { mutableStateOf(false) }
-        var showResults by remember { mutableStateOf(screen.step == -1) }
+        var showResults by rememberRetained { mutableStateOf(screen.step == -1) }
 
-        // Get all devices for matching
-        val allDevicesFlow = remember { deviceRepository.getAllDevices() }
-        val allDevices by allDevicesFlow.collectAsState(initial = emptyList())
+        // Observe all devices inside produceRetainedState for matching
+        val allDevices by produceRetainedState<List<DeviceInfo>>(initialValue = emptyList()) {
+            deviceRepository.getAllDevices().collect { value = it }
+        }
 
         // Calculate recommendations when showing results
         LaunchedEffect(showResults, allDevices) {
