@@ -4,24 +4,25 @@ This module provides shared dependency injection infrastructure for the device c
 
 ## Purpose
 
-The `:core:di` module centralizes DI annotations and utilities that are used across multiple modules, following the multi-module DI pattern from [CatchUp](https://github.com/ZacSweers/CatchUp).
+The `:core:di` module centralizes DI annotations and re-exports `dev.zacsweers.metro:metrox-android` for Android app component injection (`MetroAppComponentFactory`, `MetroAppComponentProviders`, `MetroApplication`, `@ActivityKey`, etc.).
 
 ## Components
 
-### MapKey Annotations
+### `metrox-android` Re-exports
 
-#### `ActivityKey`
-Type-safe map key for binding Activities in the dependency graph.
+- `ActivityKey` (`dev.zacsweers.metrox.android.ActivityKey`): Uses `@MapKey(implicitClassKey = true)` to bind Activities into `MetroAppComponentProviders.activityProviders`.
+- `MetroAppComponentFactory` & `MetroAppComponentProviders`: Constructor-injects `Activity`, `Service`, `BroadcastReceiver`, and `ContentProvider` classes on API 28+.
 
 ```kotlin
-@ActivityKey(MainActivity::class)
+@ActivityKey
 @ContributesIntoMap(AppScope::class, binding = binding<Activity>())
 @Inject
 class MainActivity(private val circuit: Circuit) : ComponentActivity()
 ```
 
-#### `WorkerKey`
-Map key for binding WorkManager workers.
+### `WorkerKey`
+
+Map key for binding WorkManager workers via `AppWorkerFactory`.
 
 ```kotlin
 @WorkerKey(DeviceSyncWorker::class)
@@ -30,49 +31,8 @@ Map key for binding WorkManager workers.
 abstract class Factory : WorkerInstanceFactory<DeviceSyncWorker>
 ```
 
-### Multibinding Interfaces
-
-#### `UiMultibindings`
-Declares multibindings for UI components. Uses `@ContributesTo(AppScope::class)` so it's automatically discovered by Metro.
-
-```kotlin
-@ContributesTo(AppScope::class)
-interface UiMultibindings {
-    @Multibinds
-    fun activityProviders(): Map<KClass<out Activity>, Provider<Activity>>
-}
-```
-
-## Usage
-
-### In App Module
-
-The app module includes this module and uses the defined keys:
-
-```kotlin
-dependencies {
-    implementation(project(":core:di"))
-}
-```
-
-### In Feature Modules
-
-Feature modules can import DI infrastructure as needed:
-
-```kotlin
-import dev.hossain.devicecatalog.core.di.ActivityKey
-import dev.hossain.devicecatalog.core.di.WorkerKey
-```
-
-## Best Practices
-
-1. **Centralized DI Infrastructure**: All DI-related keys and multibinding interfaces live here
-2. **@ContributesTo Pattern**: Use for automatic discovery by Metro
-3. **Type Safety**: MapKey annotations provide compile-time type safety
-4. **Multi-Module Support**: Enables feature modules to contribute bindings independently
-
 ## References
 
 - [Metro Documentation](https://zacsweers.github.io/metro/)
 - [Metro Multibindings](https://zacsweers.github.io/metro/multibindings/)
-- [CatchUp DI Setup](https://github.com/ZacSweers/CatchUp/tree/main/libraries/di)
+- [Metro Circuit Integration](https://zacsweers.github.io/metro/latest/circuit/)

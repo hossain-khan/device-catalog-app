@@ -1,30 +1,20 @@
 package dev.hossain.devicecatalog.di
 
-import android.app.Activity
 import android.content.Context
 import androidx.work.WorkManager
 import com.slack.circuit.foundation.Circuit
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
-import dev.zacsweers.metro.Provider
 import dev.zacsweers.metro.Provides
-import dev.zacsweers.metro.SingleIn
-import kotlin.reflect.KClass
+import dev.zacsweers.metrox.android.MetroAppComponentProviders
 
 /**
- * Metro dependency graph for the application, which includes all necessary bindings and providers.
+ * Metro dependency graph for the application, which includes all contributed bindings and providers.
  *
  * See https://zacsweers.github.io/metro/
  */
-@DependencyGraph(
-    scope = AppScope::class,
-    bindingContainers = [
-        DatabaseBindings::class,
-    ],
-)
-@SingleIn(AppScope::class)
-interface AppGraph {
-    val activityProviders: Map<KClass<out Activity>, () -> Activity>
+@DependencyGraph(AppScope::class)
+interface AppGraph : MetroAppComponentProviders {
     val circuit: Circuit
     val workManager: WorkManager
     val workerFactory: AppWorkerFactory
@@ -34,7 +24,7 @@ interface AppGraph {
 
     // https://zacsweers.github.io/metro/dependency-graphs/#provides
     @DependencyGraph.Factory
-    interface Factory {
+    fun interface Factory {
         fun create(
             @Provides context: Context,
         ): AppGraph

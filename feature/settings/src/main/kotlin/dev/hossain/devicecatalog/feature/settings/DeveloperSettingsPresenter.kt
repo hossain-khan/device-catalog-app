@@ -68,7 +68,7 @@ class DeveloperSettingsPresenter(
 
     @CircuitInject(DeveloperSettingsScreenCircuit::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(navigator: Navigator): DeveloperSettingsPresenter
     }
 }

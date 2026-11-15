@@ -19,7 +19,6 @@ dependencies {
     implementation(libs.circuit.foundation)
     implementation(libs.circuit.serialization)
     implementation(libs.circuitx.android)
-    ksp(libs.circuit.codegen)
 
     // Coil for image loading
     implementation(libs.coil.compose)
@@ -30,8 +29,4 @@ dependencies {
     testImplementation(libs.circuit.test)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(project(":core:testing"))
-}
-
-ksp {
-    arg("circuit.codegen.mode", "metro")
 }

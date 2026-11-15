@@ -9,4 +9,5 @@ android {
 
 dependencies {
     api(libs.androidx.work)
+    api(libs.metrox.android)
 }

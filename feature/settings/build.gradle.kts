@@ -17,11 +17,6 @@ dependencies {
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)
     implementation(libs.circuit.serialization)
-    ksp(libs.circuit.codegen)
 
     implementation(libs.timber)
-}
-
-ksp {
-    arg("circuit.codegen.mode", "metro")
 }

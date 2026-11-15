@@ -43,7 +43,7 @@ class AboutPresenter(
 
     @CircuitInject(AboutScreen::class, AppScope::class)
     @AssistedFactory
-    interface Factory {
+    fun interface Factory {
         fun create(navigator: Navigator): AboutPresenter
     }
 }

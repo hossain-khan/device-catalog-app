@@ -97,10 +97,9 @@ android {
     }
 
     lint {
-        // Disable Instantiatable lint rule because we use a custom AppComponentFactory
-        // (ComposeAppComponentFactory) for dependency injection. Activities are injected
-        // via constructor parameters and instantiated by our DI framework (Metro) rather
-        // than the Android system's default no-arg constructor mechanism.
+        // Disable Instantiatable lint rule because we use Metro's MetroAppComponentFactory
+        // for dependency injection. Activities are injected via constructor parameters and
+        // instantiated by Metro rather than the Android system's default no-arg constructor.
         disable += "Instantiatable"
     }
 }
@@ -119,6 +118,7 @@ dependencies {
     implementation(project(":feature:aboutapp"))
     implementation(project(":feature:devices"))
     implementation(project(":feature:devicedetails"))
+    implementation(project(":feature:devicecomparison"))
     implementation(project(":feature:dreamphone"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:statistics"))
@@ -148,7 +148,6 @@ dependencies {
     implementation(libs.circuitx.effects)
     implementation(libs.circuitx.gestureNav)
     implementation(libs.circuitx.overlays)
-    ksp(libs.circuit.codegen)
 
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
@@ -156,7 +155,6 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.room.paging)
-    implementation(libs.javax.inject)
 
     implementation(libs.androidx.work)
 
@@ -203,15 +201,15 @@ dependencies {
     testImplementation(libs.junit)
 }
 
-ksp {
-    // Circuit-KSP configuration for Metro DI integration
-    // See https://slackhq.github.io/circuit/code-gen/
-    arg("circuit.codegen.mode", "metro")
-}
-
 metro {
-    // Enable Metro debug mode for better logging and debugging support
-    // When enabled, Metro will emit detailed debug information about the dependency graph
+    // Enable Metro's native Circuit compiler-plugin codegen & automatic hidden-dependency checks
+    // Pass -Pmetro.debug=true when debugging generated IR pseudocode
     // See https://zacsweers.github.io/metro/latest/
-    debug.set(true)
+    @OptIn(dev.zacsweers.metro.gradle.ExperimentalMetroGradleApi::class)
+    enableCircuitCodegen.set(true)
+
+    @OptIn(dev.zacsweers.metro.gradle.ExperimentalMetroGradleApi::class)
+    hiddenDependencies {
+        checkOnCompile.set(true)
+    }
 }

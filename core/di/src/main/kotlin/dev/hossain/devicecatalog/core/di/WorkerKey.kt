@@ -5,20 +5,18 @@ import dev.zacsweers.metro.MapKey
 import kotlin.reflect.KClass
 
 /**
- * A [MapKey] annotation for binding Worker in a multibinding map.
+ * A [MapKey] annotation for binding WorkManager workers into a multibinding map.
  * Used for WorkManager integration with Metro DI.
  *
  * Example usage:
  * ```
  * @WorkerKey(SyncWorker::class)
- * @ContributesIntoMap(AppScope::class, binding = binding<ListenableWorker>())
- * @Inject
- * class SyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params)
+ * @ContributesIntoMap(AppScope::class, binding = binding<WorkerInstanceFactory<*>>())
+ * @AssistedFactory
+ * interface Factory : WorkerInstanceFactory<SyncWorker>
  * ```
  */
 @MapKey
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY)
-@Retention(AnnotationRetention.RUNTIME)
 annotation class WorkerKey(
     val value: KClass<out ListenableWorker>,
 )

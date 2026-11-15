@@ -20,15 +20,10 @@ dependencies {
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)
     implementation(libs.circuit.serialization)
-    ksp(libs.circuit.codegen)
 
     implementation(libs.timber)
 
     testImplementation(libs.junit)
     testImplementation(libs.circuit.test)
     testImplementation(libs.kotlinx.coroutines.test)
-}
-
-ksp {
-    arg("circuit.codegen.mode", "metro")
 }

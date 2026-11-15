@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- Upgraded Metro DI from `1.4.1` to `1.5.2` and adopted official `metrox-android` (`MetroAppComponentFactory`, `MetroAppComponentProviders`, `MetroApplication`, implicit `@ActivityKey`) in place of custom `ComposeAppComponentFactory`, `ActivityKey`, and `UiMultibindings`
+- Replaced Circuit's KSP code generator (`circuit-codegen`) with Metro's built-in compiler-plugin Circuit codegen (`enableCircuitCodegen.set(true)`) across `:app` and all feature modules via `AndroidFeatureConventionPlugin`, removing KSP from `:feature:*`, `:core:common`, and `:core:data`
+- Enabled automatic Metro hidden-dependency validation (`hiddenDependencies.checkOnCompile.set(true)`) and added missing direct `:feature:devicecomparison` dependency to `:app`
+- Converted `CircuitProviders` and `AppWorkerFactory.Bindings` to `@ContributesTo(AppScope::class) @BindingContainer` with `@Multibinds(allowEmpty = true)`, converted graph and presenter `@AssistedFactory` declarations to `fun interface Factory`, cleaned up redundant `AppGraph` annotations/container declarations and unused `DataMultibindings` / `javax.inject` leftovers
 - Upgraded Slack Circuit from `0.36.1` to `0.39.0` and added `circuit-serialization` and `circuit-test`
 - Migrated all 14 `Screen` definitions from `@Parcelize`/`Parcelable` to `@CircuitSerializable(AppScope::class)` with `SerializableCircuitSaver` multibound via `CircuitProviders`
 - Migrated `AppNavigation` from `rememberSaveableBackStack` + `goTo()` tab switching to `rememberSaveableNavStack` + `Navigator.StateOptions.SaveAndRestore` (`resetRoot`), `rememberAndroidScreenAwareNavigator`, and `NavStack.rootRecord`-derived tab selection
