@@ -1,4 +1,4 @@
-[![Android CI](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml) [![Post Merge Check](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml) [![Android Release Build](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml)
+[![Android CI](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml) [![Post Merge Check](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml) [![Android Release Build](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml) [![Downloads for dev.hossain.devicecatalog](https://playbadges.pavi2410.com/badge/downloads?id=dev.hossain.devicecatalog&pretty)](https://play.google.com/store/apps/details?id=dev.hossain.devicecatalog&pcampaignid=web_share)
 
 # 📱 Android Device Universe
 
@@ -54,6 +54,7 @@ Android Device Universe is a mobile app that brings the official Android Device 
 
 ## 🔗 Related Resources
 - 📋 [Device Catalog Data Parser](https://github.com/hossain-khan/android-device-catalog-parser) - The data-processing tool behind-the-scenes
+- 🌐 [Device Catalog Website](https://github.com/hossain-khan/device-catalog-webapp) - Android device catalog web application using same catalog data
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
