@@ -132,12 +132,11 @@ Shared utilities and common code
 
 #### `:core:di`
 Dependency injection infrastructure for multi-module setup
-- `ActivityKey.kt` - MapKey for type-safe Activity injection
 - `WorkerKey.kt` - MapKey for WorkManager integration
-- `UiMultibindings.kt` - Multibinding interface for UI components
+- `build.gradle.kts` - Re-exports `dev.zacsweers.metro:metrox-android` (`ActivityKey`, `MetroAppComponentProviders`, `MetroApplication`, `MetroAppComponentFactory`) via `api(libs.metrox.android)`
 - Centralizes DI annotations and utilities used across modules
 - **Location**: `core/di/src/main/kotlin/dev/hossain/devicecatalog/core/di/`
-- **Best Practice**: Use `@ContributesTo` interfaces for multibindings, similar to [CatchUp](https://github.com/ZacSweers/CatchUp)
+- **Best Practice**: Use `metrox-android` for Android component injection and `@ContributesTo` + `@BindingContainer` interfaces for multibindings and providers, similar to [CatchUp](https://github.com/ZacSweers/CatchUp)
 
 #### `:core:ui`
 Common UI components and utilities (currently being populated)
@@ -161,10 +160,19 @@ Device details screen showing full specifications
 - `DeviceDetailsUi.kt` - Composable UI
 - **Location**: `feature/devicedetails/src/main/kotlin/dev/hossain/devicecatalog/feature/devicedetails/`
 
+#### `:feature:aboutapp`
+About application screen and developer info
+- `AboutScreen.kt`, `AboutPresenter.kt`, `AboutUi.kt`
+- **Location**: `feature/aboutapp/src/main/kotlin/dev/hossain/devicecatalog/feature/aboutapp/`
+
+#### `:feature:onboarding`
+First-launch onboarding flow
+- `OnboardingScreen.kt`, `OnboardingPresenter.kt`, `OnboardingUi.kt`
+- **Location**: `feature/onboarding/src/main/kotlin/dev/hossain/devicecatalog/feature/onboarding/`
+
 #### `:feature:statistics`
-Statistics and about screens
+Device catalog statistics screen
 - `DeviceStatsScreen.kt`, `DeviceStatsPresenter.kt`, `DeviceStatsUi.kt` - Statistics screen
-- `AboutScreen.kt`, `AboutPresenter.kt`, `AboutUi.kt` - About screen
 - `components/` - Feature-specific components
 - **Location**: `feature/statistics/src/main/kotlin/dev/hossain/devicecatalog/feature/statistics/`
 
@@ -271,10 +279,9 @@ The app uses [Metro](https://zacsweers.github.io/metro/), a compile-time depende
 
 #### Core DI Setup
 
-1. **`:core:di` Module**: Centralized DI infrastructure
-   - `ActivityKey` and `WorkerKey`: MapKey annotations for type-safe multibinding
-   - `UiMultibindings`: Interface for UI component multibindings
-   - Import from `dev.hossain.devicecatalog.core.di.*` in all modules
+1. **`:core:di` & `metrox-android`**: Centralized DI infrastructure
+   - `dev.zacsweers.metrox.android`: Provides `ActivityKey` (`@MapKey(implicitClassKey = true)`), `MetroAppComponentFactory`, `MetroAppComponentProviders` (implemented by `AppGraph`), and `MetroApplication` (implemented by `DeviceCatalogApp`)
+   - `dev.hossain.devicecatalog.core.di.WorkerKey`: MapKey annotation for WorkManager multibinding
 
 2. **Constructor Injection** (Preferred):
    ```kotlin
@@ -290,14 +297,23 @@ The app uses [Metro](https://zacsweers.github.io/metro/), a compile-time depende
    class DevicesPresenter(
        @Assisted private val navigator: Navigator,
        private val deviceRepository: AndroidDeviceRepository,
-   ) : Presenter<DevicesScreen.State>
+   ) : Presenter<DevicesScreen.State> {
+       @CircuitInject(DevicesScreen::class, AppScope::class)
+       @AssistedFactory
+       fun interface Factory {
+           fun create(navigator: Navigator): DevicesPresenter
+       }
+   }
    ```
 
-4. **Circuit Integration** (for screens):
+4. **Circuit Integration** (compiler-plugin codegen via Metro `enableCircuitCodegen.set(true)`):
    ```kotlin
-   @CircuitInject(DevicesScreen::class, AppScope::class)
-   class DevicesPresenter(...)
-   
+   @CircuitSerializable(AppScope::class)
+   @Serializable
+   data object DevicesScreen : Screen {
+       data class State(...) : CircuitUiState
+   }
+
    @CircuitInject(DevicesScreen::class, AppScope::class)
    @Composable
    fun DevicesUi(state: DevicesScreen.State, modifier: Modifier = Modifier)
@@ -305,18 +321,25 @@ The app uses [Metro](https://zacsweers.github.io/metro/), a compile-time depende
 
 #### Multi-Module DI Patterns
 
-1. **@ContributesTo Pattern**: Use for multibindings in shared modules
+1. **@ContributesTo + @BindingContainer Pattern**: Use for multibindings and providers in graphs/shared modules
    ```kotlin
    @ContributesTo(AppScope::class)
-   interface DataMultibindings {
-       @Multibinds
-       fun repositories(): Set<Repository>
+   @BindingContainer
+   interface CircuitProviders {
+       @Multibinds(allowEmpty = true)
+       fun presenterFactories(): Set<Presenter.Factory>
+
+       companion object {
+           @Provides
+           @SingleIn(AppScope::class)
+           fun provideCircuit(...): Circuit = ...
+       }
    }
    ```
 
 2. **Activity Contribution**:
    ```kotlin
-   @ActivityKey(MainActivity::class)
+   @ActivityKey
    @ContributesIntoMap(AppScope::class, binding = binding<Activity>())
    @Inject
    class MainActivity(private val circuit: Circuit) : ComponentActivity()
@@ -330,7 +353,7 @@ The app uses [Metro](https://zacsweers.github.io/metro/), a compile-time depende
    abstract class Factory : WorkerInstanceFactory<DeviceSyncWorker>
    ```
 
-4. **BindingContainer** (for app module):
+4. **Object BindingContainer** (for app module):
    ```kotlin
    @BindingContainer
    @ContributesTo(AppScope::class)
@@ -346,21 +369,24 @@ The app uses [Metro](https://zacsweers.github.io/metro/), a compile-time depende
 - `@Inject`: Constructor injection for regular classes
 - `@AssistedInject`: Inject with some runtime parameters
 - `@Assisted`: Mark runtime parameters in assisted injection
-- `@CircuitInject`: Circuit-specific injection (generates Factory)
-- `@ContributesTo(scope)`: Contribute bindings to a scope automatically
+- `@AssistedFactory`: Nested `fun interface Factory` for creating assisted-injected types
+- `@CircuitInject`: Circuit-specific injection (processed natively by Metro compiler plugin when `enableCircuitCodegen` is enabled)
+- `@CircuitSerializable(scope)`: Auto-registers `@Serializable` Circuit `Screen` types into `Set<CircuitSerializerRegistration>` for `SerializableCircuitSaver`
+- `@ContributesTo(scope)`: Contribute bindings or `@BindingContainer`s to a scope automatically
 - `@ContributesIntoMap(scope, binding)`: Contribute to a multibinding map
-- `@Multibinds`: Declare an empty multibinding
+- `@Multibinds(allowEmpty = true)`: Declare an empty-safe multibinding
 - `@SingleIn(scope)`: Scope a binding to a lifecycle
-- `@Provides`: Provide a dependency (in interfaces or objects)
-- `@BindingContainer`: Mark a class/object as a binding container
+- `@Provides`: Provide a dependency (in objects or `@BindingContainer` companion objects)
+- `@BindingContainer`: Mark a class/object/interface as a binding container (no graph supertype generation)
 
 #### DI Guidelines
 
-1. **No @Module or @Component**: Metro uses `@DependencyGraph` and auto-discovery
+1. **No @Module or @Component**: Metro uses `@DependencyGraph` (`AppGraph`) and auto-discovery via `@ContributesTo`
 2. **Prefer Constructor Injection**: Simpler and more testable
-3. **Use @SingleIn wisely**: Only for true singletons (Database, WorkManager, etc.)
-4. **Multibindings in core modules**: Define interfaces with `@ContributesTo` in shared modules
-5. **Feature Independence**: Feature modules contribute independently without knowing about each other
+3. **Prefer `@BindingContainer` with `@ContributesTo`**: Avoid plain `@ContributesTo` interfaces that only expose `@Provides`/`@Binds`/`@Multibinds` declarations
+4. **Use @SingleIn wisely**: Only for true singletons (`AppDatabase`, `Circuit`, `CircuitSaver`, etc.)
+5. **Direct Dependencies for Graph Modules**: Every module contributing bindings into `AppScope` (such as `:feature:*`) must be declared directly in `:app`'s `dependencies` (verified by `metro.hiddenDependencies.checkOnCompile` / `:app:checkDebugMetroHiddenDependencies`)
+6. **Feature Independence**: Feature modules contribute independently without knowing about each other (except explicit navigation targets)
 
 ### Adding New Features
 
@@ -368,13 +394,14 @@ When adding new features, follow the multi-module architecture:
 
 1. **Create Feature Module**: Create a new module under `feature/` directory
    - Use `:feature:featurename` naming convention
-   - Apply `devicecatalog.android.feature` convention plugin in `build.gradle.kts`
-   - Add dependencies to required core modules
+   - Apply `devicecatalog.android.feature` convention plugin (and `libs.plugins.kotlin.serialization` + `libs.plugins.kotlinter`) in `build.gradle.kts`
+   - Add dependencies to required core modules (`circuit-serialization`, `circuit-foundation`, `circuit-codegen-annotations`)
+   - Declare `implementation(project(":feature:featurename"))` directly in `:app/build.gradle.kts`
 
 2. **Implement Circuit Screen**: Follow the Screen/Presenter/UI pattern
-   - `FeatureScreen.kt` - Define the screen with `@Parcelize` and `@CircuitInject`
-   - `FeaturePresenter.kt` - Implement business logic and state management
-   - `FeatureUi.kt` - Implement the composable UI
+   - `FeatureScreen.kt` - Define `@CircuitSerializable(AppScope::class)` + `@Serializable` screen implementing `Screen`
+   - `FeaturePresenter.kt` - Implement business logic with `produceRetainedState`/`rememberRetained` and a nested `@CircuitInject(FeatureScreen::class, AppScope::class) @AssistedFactory fun interface Factory`
+   - `FeatureUi.kt` - Implement `@CircuitInject(FeatureScreen::class, AppScope::class)` `@Composable` UI
    - See existing features like `:feature:devices` as reference
 
 3. **Use Design System**: Always use components from `:core:designsystem`
@@ -387,17 +414,15 @@ When adding new features, follow the multi-module architecture:
    - Add migrations if needed (auto-migrations are configured)
    - Update repository in `:core:data` if needed
 
-5. **Add to Navigation**: Register screen in app module's Circuit configuration
+5. **Add to Navigation**: Update `AppNavigation` in `:app` (which uses `rememberSaveableNavStack`, `rememberAndroidScreenAwareNavigator`, `Navigator.StateOptions.SaveAndRestore`, and `NavStack.rootRecord`) if adding a top-level tab or deep link
 
 6. **Testing**: 
    - Use Room's testing utilities for database tests
-   - Use Circuit's `circuit-test` library with `FakeNavigator` for screen tests
+   - Use Circuit's `circuit-test` library (`Presenter.test` + `FakeNavigator`) for presenter tests
    - Use fake implementations over mocks
 
 #### Example template files
 The app module contains example/sample files for reference implementations:
-* `app/src/main/java/dev/hossain/devicecatalog/circuit/ExampleEmailDetailsScreen.kt` - Example Circuit screen
-* `app/src/main/java/dev/hossain/devicecatalog/circuit/ExampleInboxScreen.kt` - Example Circuit screen with navigation
 * `app/src/main/java/dev/hossain/devicecatalog/circuit/overlay/AppInfoOverlay.kt` - Example bottomsheet using Circuit overlay
 * `app/src/main/java/dev/hossain/devicecatalog/work/SampleWorker.kt` - Example WorkManager worker for background tasks
 
@@ -546,8 +571,8 @@ Card(colors = CardDefaults.cardColors(containerColor = Color.Blue)) {
 ### Multi-Module Architecture
 The project uses a multi-module architecture with the following structure:
 - **`:app`** - Main application module
-- **`:core:*`** - Core/foundation modules (common, data, database, designsystem, model, ui)
-- **`:feature:*`** - Feature modules (devices, devicedetails, statistics, settings)
+- **`:core:*`** - Core/foundation modules (`common`, `data`, `database`, `designsystem`, `di`, `model`, `testing`, `ui`)
+- **`:feature:*`** - Feature modules (`aboutapp`, `brandchallenge`, `devicecomparison`, `devicedetails`, `devices`, `dreamphone`, `onboarding`, `phonequiz`, `quizhub`, `settings`, `statistics`, `statsexplorer`)
 - **`:build-logic`** - Convention plugins for build configuration
 
 ### Convention Plugins (`build-logic/convention`)
@@ -568,7 +593,7 @@ All modules use convention plugins for consistent configuration. Available plugi
    - Can generate Compose metrics and reports
 
 4. **`devicecatalog.android.feature`** - Configure feature modules
-   - Combines library + compose + Metro DI configuration
+   - Combines library + compose + Metro DI configuration with native Circuit compiler-plugin codegen (`enableCircuitCodegen.set(true)`)
    - Standard setup for all feature modules
    - Used by `:feature:*` modules
 
@@ -579,11 +604,9 @@ All modules use convention plugins for consistent configuration. Available plugi
 In your module's `build.gradle.kts`:
 ```kotlin
 plugins {
-    id("devicecatalog.android.feature")  // For feature modules
-    // or
-    id("devicecatalog.android.library")  // For core modules
-    // Add other plugins as needed
-    alias(libs.plugins.ksp)
+    id("devicecatalog.android.feature")  // For feature modules (Metro + Circuit codegen included)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlinter)
 }
 ```
 
@@ -596,9 +619,10 @@ All dependencies are managed through the version catalog. When adding new depend
 
 ### Key Gradle Plugins
 - `androidx.room` - Room compiler and schema export
-- `ksp` - Kotlin Symbol Processing for Room and Circuit code generation
+- `ksp` - Kotlin Symbol Processing for Room (`:core:database`, `:app`)
 - `kotlin.compose` - Compose compiler
-- `metro` - Metro dependency injection code generation
+- `kotlin.serialization` - Kotlinx Serialization compiler plugin (used with `@CircuitSerializable`)
+- `metro` - Metro dependency injection and Circuit compiler-plugin code generation (`enableCircuitCodegen`, `hiddenDependencies.checkOnCompile`)
 - `kotlinter` - Kotlin linting and formatting
 
 ## Common Patterns
@@ -648,8 +672,8 @@ val pagedDevices = repository.getPagedDevices()
 
 ### Build Issues
 1. Clean and rebuild after schema changes
-2. Check KSP generated code in `build/generated/ksp/`
-3. Verify version catalog references
+2. Check Room KSP generated code in `build/generated/ksp/`
+3. Verify version catalog references and direct `:app` feature dependencies (`./gradlew :app:checkDebugMetroHiddenDependencies`)
 
 ## Dependencies to Avoid
 
@@ -909,9 +933,9 @@ This maintains consistency with the project's versioning scheme and ensures comp
   - If the section header already exists, **add your entry to the existing section** rather than creating a duplicate header
   - Only create a new section header if it doesn't already exist in `[Unreleased]`
 - Use [Semantic Versioning](https://semver.org/) for version numbers (MAJOR.MINOR.PATCH)
-- Use Metro DI with constructor injection (via `@Inject` constructor parameters)
-- **Import DI infrastructure from `:core:di`** module (`ActivityKey`, `WorkerKey`, etc.)
-- Use `@ContributesTo` pattern for multibindings in shared modules
+- Use Metro DI with constructor injection (via `@Inject` / `@AssistedInject` constructor parameters)
+- **Use `:core:di` & `metrox-android`** (`dev.zacsweers.metrox.android.ActivityKey`, `WorkerKey`, `MetroAppComponentProviders`)
+- Use `@ContributesTo` + `@BindingContainer` (with `@Multibinds(allowEmpty = true)`) for shared multibindings and providers
 - Write comprehensive unit tests for new features using JUnit assertions
 - Follow the **multi-module architecture**: Create feature modules under `feature/`, use core modules for shared code
 - Use **convention plugins** from `build-logic` for consistent build configuration
