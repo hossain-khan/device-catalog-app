@@ -1,65 +1,44 @@
 [![Android CI](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android.yml) [![Post Merge Check](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-lint.yml) [![Android Release Build](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml/badge.svg)](https://github.com/hossain-khan/device-catalog-app/actions/workflows/android-release.yml) [![Downloads for dev.hossain.devicecatalog](https://playbadges.pavi2410.com/badge/downloads?id=dev.hossain.devicecatalog&pretty)](https://play.google.com/store/apps/details?id=dev.hossain.devicecatalog&pcampaignid=web_share)
 
-# 📱 Android Device Universe
+# Android Device Universe
 
-<img src="project-resources/app-icon/catalog-icon-vibrant.svg" width=250 height=250 align="right" alt="Android Device Universe App Icon">
+<img src="project-resources/app-icon/catalog-icon-vibrant.svg" width="180" height="180" align="right" alt="Android Device Universe App Icon">
 
-Your comprehensive guide to exploring the world of Android devices! Browse, search, and discover detailed specifications of thousands of Android devices - from smartphones and tablets to wearables and more.
+An offline Android app for browsing, searching, comparing, and exploring technical specifications from the official Google Play Android Device Catalog.
 
-## ✨ What is Android Device Universe?
+## Features
 
-Android Device Universe is a mobile app that brings the official Android Device Catalog right to your fingertips. Whether you're a tech enthusiast researching your next phone, a developer checking device compatibility, or simply curious about Android's evolution, this app makes exploring device specifications effortless and enjoyable.
+- **Device Catalog**: Paged browsing with live search and filtering by manufacturer, form factor, RAM, and SDK version.
+- **Device Specifications**: Hardware specs (ABI, OpenGL ES, screen densities/sizes, SDK targets, RAM) with shareable device summaries and deep links.
+- **Statistics & Explorer**: Ecosystem breakdowns across manufacturers, form factors, RAM tiers, and Android versions.
+- **Comparison & Quizzes**: Side-by-side device comparison, brand challenge, phone quiz, and preference-based device matcher.
 
-## 🎯 Key Features
+## Architecture & Tech Stack
 
-### 📚 Browse Complete Device Catalog
-- **Explore thousands of Android devices** from all major manufacturers
-- **Smooth scrolling** through a comprehensive, up-to-date device database
-- **Beautiful Material Design** with light and dark themes that adapt to your preference
-- **Pull-to-refresh** to stay current with the latest device additions
+- **Modularization**: Multi-module Gradle setup (`:app`, `:core:*`, `:feature:*`, and `:build-logic` convention plugins).
+- **UI**: Jetpack Compose with Material 3 (`:core:designsystem`), adaptive navigation (`NavigationBar` / `NavigationRail`), and Coil 3.
+- **Screen Architecture**: [Circuit](https://slackhq.github.io/circuit/) (`Presenter`/`Ui` UDF, `@CircuitSerializable` screens, `rememberSaveableNavStack`, `circuit-test`).
+- **Dependency Injection**: [Metro](https://zacsweers.github.io/metro/) (`metrox-android`, `@BindingContainer` aggregation, and native Circuit compiler-plugin codegen).
+- **Data**: Pre-populated Room database with one-to-many entity relations, Paging 3, DataStore Preferences, and WorkManager.
 
-### 🔍 Powerful Search & Filtering
-- **Instant search** by device name, manufacturer, or brand
-- **Smart filters** for form factor, RAM capacity, and Android versions
-- **Real-time results** as you type - find what you need in seconds
-- **Clear filter indicators** so you always know what you're viewing
+## Build & Checks
 
-### 📊 Market Insights & Statistics
-- **Interactive dashboards** showing device distribution by manufacturer
-- **Visual charts** for form factors, RAM ranges, and Android version adoption
-- **Market trends** that help you understand the Android ecosystem
-- **Swipeable cards** for easy navigation through different metrics
+```bash
+# Format & lint Kotlin
+./gradlew formatKotlin
+./gradlew lintKotlin
 
-### 📖 Detailed Device Specifications
-- **Complete technical details** for every device in one place
-- **Organized sections** for display, performance, connectivity, and more
-- **Easy-to-read layout** optimized for mobile viewing
-- **Share capabilities** to quickly send device info to others
+# Run unit tests, Android lint, and debug APK build
+./gradlew testDebugUnitTest lintDebug assembleDebug
+```
 
-### 🎮 Interactive Learning
-- **Device quizzes** to test your Android knowledge
-- **Brand challenges** to recognize devices by their design
-- **Compare devices** side-by-side to make informed decisions
-- **Build your dream phone** by exploring ideal specifications
+Requires JDK 21+ and Android SDK 37 (`minSdk` 28).
 
-## 🌟 Why Choose Android Device Universe?
+## Related Projects
 
-- **📴 Works Offline**: Browse your device catalog even without an internet connection
-- **🎨 Modern Design**: Beautiful Material 3 interface that feels native to Android
-- **⚡ Lightning Fast**: Optimized performance with smooth animations and transitions
-- **♿ Accessible**: Built with accessibility in mind, supporting TalkBack and system font scaling
-- **📱 Adaptive**: Responsive design that looks great on phones, tablets, and foldables
+- [Device Catalog Data Parser](https://github.com/hossain-khan/android-device-catalog-parser) — CSV parser used to process the catalog dataset
+- [Device Catalog Website](https://github.com/hossain-khan/device-catalog-webapp) — Web companion built on the same catalog data
 
----
+## License
 
-## 🔗 Related Resources
-- 📋 [Device Catalog Data Parser](https://github.com/hossain-khan/android-device-catalog-parser) - The data-processing tool behind-the-scenes
-- 🌐 [Device Catalog Website](https://github.com/hossain-khan/device-catalog-webapp) - Android device catalog web application using same catalog data
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-### For Developers
-Interested in contributing or building the app yourself? Visit the [GitHub repository](https://github.com/hossain-khan/device-catalog-app) for source code, technical documentation, and contribution guidelines.
+Licensed under the MIT License. See [LICENSE](LICENSE) for details.
