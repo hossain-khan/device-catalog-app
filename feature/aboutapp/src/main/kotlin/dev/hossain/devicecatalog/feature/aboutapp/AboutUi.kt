@@ -287,7 +287,31 @@ fun AboutUi(
                     ),
             ) {
                 ListItem(
-                    supportingContent = { Text("Official Google Play supported devices dataset") },
+                    supportingContent = {
+                        Column(
+                            modifier = Modifier.padding(top = 6.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
+                            ) {
+                                Text(
+                                    text = "23,000+ devices",
+                                    style =
+                                        MaterialTheme.typography.labelSmall
+                                            .copy(
+                                                fontFamily = monoFontFamily,
+                                                fontWeight = FontWeight.SemiBold,
+                                            ).tabularNums,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                )
+                            }
+                            Text("Official Google Play supported devices dataset")
+                        }
+                    },
                     leadingContent = {
                         Surface(
                             color = MaterialTheme.colorScheme.secondaryContainer,
@@ -299,25 +323,6 @@ fun AboutUi(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier.padding(8.dp),
-                            )
-                        }
-                    },
-                    trailingContent = {
-                        Surface(
-                            shape = RoundedCornerShape(6.dp),
-                            color = MaterialTheme.colorScheme.secondaryContainer,
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
-                        ) {
-                            Text(
-                                text = "23,000+ devices",
-                                style =
-                                    MaterialTheme.typography.labelSmall
-                                        .copy(
-                                            fontFamily = monoFontFamily,
-                                            fontWeight = FontWeight.SemiBold,
-                                        ).tabularNums,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             )
                         }
                     },
