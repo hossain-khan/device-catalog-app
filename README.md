@@ -54,6 +54,7 @@ Android Device Universe is a mobile app that brings the official Android Device 
 
 ## 🔗 Related Resources
 - 📋 [Device Catalog Data Parser](https://github.com/hossain-khan/android-device-catalog-parser) - The data-processing tool behind-the-scenes
+- 🌐 [Device Catalog Website](https://github.com/hossain-khan/device-catalog-webapp) - Android device catalog web application using same catalog data
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
