@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-11-15
+
 ### Changed
-- Executed comprehensive "Developer Precision Console" UI/UX overhaul across all modules:
+- Executed comprehensive "Developer Precision Console" UI/UX overhaul across all modules (#233, #234):
   - **Core Design System (`:core:designsystem`)**: Replaced olive-green palette with Alabaster Slate (light) and Obsidian Carbon (dark) accented by Android Emerald; added `Plus Jakarta Sans`, `Inter`, and `JetBrains Mono` typography with tabular numerals (`tnum`); updated `DeviceCatalogCard` and `DeviceTypeColors` with `1.dp` hairline borders and semantic accent tokens
   - **Device Browser (`:feature:devices`)**: Redesigned `DeviceCard` with top semantic form-factor accent bar, uppercase manufacturer eyebrow, monospace codename badge, and 4-pill hardware telemetry strip (`RAM`, `API`, `DPI`, `SoC/ABI`); replaced floating filter FAB with an integrated Developer Command Bar (`DeviceSearchBar` + filter badge button)
   - **Device Details (`:feature:devicedetails`)**: Redesigned `DeviceHeroCard` onto a neutral bordered surface, added a 2×2 `KeySpecsBentoGrid` (`MEMORY`, `TARGET SDK`, `ARCHITECTURE`, `DISPLAY DENSITY`), made all spec sections expanded by default, and styled technical chips in monospace
@@ -408,7 +410,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/1.13.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.13.0...2.0.0
 [1.13.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.12.0...1.13.0
 [1.12.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.11.0...1.12.0
 [1.11.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.10.0...1.11.0
