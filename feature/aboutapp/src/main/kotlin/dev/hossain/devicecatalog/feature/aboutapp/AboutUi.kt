@@ -1,9 +1,13 @@
 package dev.hossain.devicecatalog.feature.aboutapp
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,12 +36,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
+import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
+import dev.hossain.devicecatalog.core.designsystem.theme.tabularNums
 import dev.zacsweers.metro.AppScope
 import dev.hossain.devicecatalog.core.designsystem.R as DesignSystemR
 
@@ -54,7 +62,12 @@ fun AboutUi(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             LargeTopAppBar(
-                title = { Text("About") },
+                title = {
+                    Text(
+                        text = "About Console",
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
                 scrollBehavior = scrollBehavior,
             )
         },
@@ -65,65 +78,134 @@ fun AboutUi(
                     .fillMaxSize()
                     .padding(innerPadding)
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // App icon
-            Image(
-                painter = painterResource(id = DesignSystemR.drawable.android_universe_icon),
-                contentDescription = "Android Universe Icon",
-                modifier =
-                    Modifier
-                        .size(120.dp)
-                        .padding(top = 8.dp, bottom = 4.dp),
-            )
-
-            Text(
-                text = "Android Device Universe",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-            )
-
-            Surface(
-                shape = MaterialTheme.shapes.small,
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            // Compact Console Identity Header Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
             ) {
-                Text(
-                    text = "Version ${state.appVersion}",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                )
-            }
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(3.dp)
+                                .background(MaterialTheme.colorScheme.primary),
+                    )
 
-            Text(
-                text =
-                    "A comprehensive Android app for browsing, analyzing, and exploring " +
-                        "Android devices from the official Google Play device catalog.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(64.dp),
+                                shape = RoundedCornerShape(14.dp),
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                            ) {
+                                Image(
+                                    painter = painterResource(id = DesignSystemR.drawable.android_universe_icon),
+                                    contentDescription = "Android Universe Icon",
+                                    modifier = Modifier.padding(10.dp),
+                                )
+                            }
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                                Text(
+                                    text = "DEVELOPER PRECISION CONSOLE",
+                                    style =
+                                        MaterialTheme.typography.labelSmall.copy(
+                                            letterSpacing = 0.8.sp,
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+
+                                Text(
+                                    text = "Android Device Universe",
+                                    style =
+                                        MaterialTheme.typography.titleLarge.copy(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+
+                                Surface(
+                                    shape = RoundedCornerShape(6.dp),
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                ) {
+                                    Text(
+                                        text = "v${state.appVersion}",
+                                        style =
+                                            MaterialTheme.typography.labelSmall.copy(
+                                                fontFamily = monoFontFamily,
+                                                fontWeight = FontWeight.SemiBold,
+                                            ),
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                    )
+                                }
+                            }
+                        }
+
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                        )
+
+                        Text(
+                            text =
+                                "High-density hardware telemetry browser and analytics console for inspecting " +
+                                    "SDK/API levels, RAM tiers, SoCs, ABIs, and screen densities across the official Google Play Device Catalog.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
 
             // Project links & developer settings card
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 colors =
                     CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                        containerColor = MaterialTheme.colorScheme.surface,
                     ),
             ) {
                 ListItem(
-                    supportingContent = { Text("View project repository on GitHub") },
+                    supportingContent = { Text("View open-source repository on GitHub") },
                     leadingContent = {
-                        Icon(
-                            imageVector = DeviceCatalogIcons.Code,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
+                        Surface(
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.size(36.dp),
+                        ) {
+                            Icon(
+                                imageVector = DeviceCatalogIcons.Code,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier.padding(8.dp),
+                            )
+                        }
                     },
                     trailingContent = {
                         Icon(
@@ -134,30 +216,40 @@ fun AboutUi(
                     },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                            containerColor = MaterialTheme.colorScheme.surface,
                         ),
                     modifier =
                         Modifier.clickable {
                             state.eventSink(AboutScreen.Event.OpenSourceInfo)
                         },
                 ) {
-                    Text("Source Code")
+                    Text(
+                        text = "Source Code",
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
 
                 if (BuildConfig.DEBUG) {
                     HorizontalDivider(
                         modifier = Modifier.padding(horizontal = 16.dp),
-                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
                     )
 
                     ListItem(
                         supportingContent = { Text("Feature flags, diagnostics & tools") },
                         leadingContent = {
-                            Icon(
-                                imageVector = DeviceCatalogIcons.BugReport,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.tertiary,
-                            )
+                            Surface(
+                                color = MaterialTheme.colorScheme.tertiaryContainer,
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.size(36.dp),
+                            ) {
+                                Icon(
+                                    imageVector = DeviceCatalogIcons.BugReport,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    modifier = Modifier.padding(8.dp),
+                                )
+                            }
                         },
                         trailingContent = {
                             Icon(
@@ -168,14 +260,17 @@ fun AboutUi(
                         },
                         colors =
                             ListItemDefaults.colors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                                containerColor = MaterialTheme.colorScheme.surface,
                             ),
                         modifier =
                             Modifier.clickable {
                                 state.eventSink(AboutScreen.Event.OpenDeveloperSettings)
                             },
                     ) {
-                        Text("Developer Settings")
+                        Text(
+                            text = "Developer Settings",
+                            fontWeight = FontWeight.SemiBold,
+                        )
                     }
                 }
             }
@@ -183,28 +278,44 @@ fun AboutUi(
             // Catalog database info card
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 colors =
                     CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                        containerColor = MaterialTheme.colorScheme.surface,
                     ),
             ) {
                 ListItem(
-                    supportingContent = { Text("Google Play supported devices data") },
+                    supportingContent = { Text("Official Google Play supported devices dataset") },
                     leadingContent = {
-                        Icon(
-                            imageVector = DeviceCatalogIcons.Info,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.secondary,
-                        )
+                        Surface(
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            shape = RoundedCornerShape(8.dp),
+                            modifier = Modifier.size(36.dp),
+                        ) {
+                            Icon(
+                                imageVector = DeviceCatalogIcons.Info,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                                modifier = Modifier.padding(8.dp),
+                            )
+                        }
                     },
                     trailingContent = {
                         Surface(
-                            shape = MaterialTheme.shapes.extraSmall,
+                            shape = RoundedCornerShape(6.dp),
                             color = MaterialTheme.colorScheme.secondaryContainer,
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
                         ) {
                             Text(
                                 text = "23,000+ devices",
-                                style = MaterialTheme.typography.labelSmall,
+                                style =
+                                    MaterialTheme.typography.labelSmall
+                                        .copy(
+                                            fontFamily = monoFontFamily,
+                                            fontWeight = FontWeight.SemiBold,
+                                        ).tabularNums,
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                             )
@@ -212,10 +323,13 @@ fun AboutUi(
                     },
                     colors =
                         ListItemDefaults.colors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                            containerColor = MaterialTheme.colorScheme.surface,
                         ),
                 ) {
-                    Text("Device Catalog Database")
+                    Text(
+                        text = "Device Catalog Database",
+                        fontWeight = FontWeight.SemiBold,
+                    )
                 }
             }
 

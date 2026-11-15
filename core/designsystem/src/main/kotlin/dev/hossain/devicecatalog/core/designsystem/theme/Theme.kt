@@ -116,8 +116,8 @@ private val DarkColorScheme =
 @Composable
 fun DeviceCatalogAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color enabled on Android 12+ per Material You design guidelines
-    dynamicColor: Boolean = true,
+    // Dynamic color disabled by default for consistent Developer Precision Console palette
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =

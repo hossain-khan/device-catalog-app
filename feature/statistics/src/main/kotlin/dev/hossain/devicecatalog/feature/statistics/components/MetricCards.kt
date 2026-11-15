@@ -1,129 +1,141 @@
 package dev.hossain.devicecatalog.feature.statistics.components
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
+import dev.hossain.devicecatalog.core.designsystem.theme.tabularNums
 
 /**
- * Swipeable metric cards for mobile-optimized dashboard.
+ * High-density 2x2 KPI Bento Grid for the Developer Precision Console analytics dashboard.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun SwipeableMetricCards(
+fun StatsKpiGrid(
     metrics: List<MetricCardData>,
     modifier: Modifier = Modifier,
 ) {
-    val pagerState = rememberPagerState(pageCount = { metrics.size })
-
-    Column(modifier = modifier) {
-        HorizontalPager(
-            state = pagerState,
-            contentPadding = PaddingValues(horizontal = 32.dp),
-            pageSpacing = 16.dp,
-        ) { page ->
-            MetricCard(
-                metric = metrics[page],
+    val displayMetrics = metrics.take(4)
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        displayMetrics.chunked(2).forEach { rowItems ->
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-            )
-        }
-
-        // Page indicator
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            repeat(metrics.size) { index ->
-                PageIndicator(
-                    isSelected = pagerState.currentPage == index,
-                )
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                rowItems.forEach { metric ->
+                    MetricCard(
+                        metric = metric,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                if (rowItems.size == 1) {
+                    Box(modifier = Modifier.weight(1f))
+                }
             }
         }
     }
 }
 
 /**
- * Individual metric card.
+ * Backwards-compatible wrapper that renders [StatsKpiGrid].
+ */
+@Composable
+fun SwipeableMetricCards(
+    metrics: List<MetricCardData>,
+    modifier: Modifier = Modifier,
+) {
+    StatsKpiGrid(metrics = metrics, modifier = modifier)
+}
+
+/**
+ * Individual KPI Bento Card with a 1.dp hairline border, top semantic accent bar, and tabular monospace numeral.
  */
 @Composable
 fun MetricCard(
     metric: MetricCardData,
     modifier: Modifier = Modifier,
 ) {
-    val defaultBackgroundColor = MaterialTheme.colorScheme.primaryContainer
-    val defaultTextColor = MaterialTheme.colorScheme.onPrimaryContainer
-
-    val backgroundColor = metric.backgroundColor ?: defaultBackgroundColor
-    val textColor = metric.textColor ?: defaultTextColor
+    val accentColor = metric.backgroundColor ?: MaterialTheme.colorScheme.primary
 
     Card(
         modifier = modifier,
-        shape = MaterialTheme.shapes.extraLarge,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = backgroundColor,
+                containerColor = MaterialTheme.colorScheme.surface,
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ),
     ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = metric.title.uppercase(),
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = textColor.copy(alpha = 0.9f),
-                textAlign = TextAlign.Center,
-                letterSpacing = 1.sp,
+        Column(modifier = Modifier.fillMaxWidth()) {
+            // Top 2.5dp semantic accent indicator
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(2.5.dp)
+                        .background(accentColor),
             )
 
-            Text(
-                text = metric.value,
-                style = MaterialTheme.typography.displayMedium,
-                fontWeight = FontWeight.Bold,
-                color = textColor,
-                modifier = Modifier.padding(vertical = 12.dp),
-            )
-
-            if (metric.subtitle != null) {
+            Column(
+                modifier = Modifier.padding(14.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 Text(
-                    text = metric.subtitle,
-                    style = MaterialTheme.typography.labelMedium,
-                    // Slightly reduced alpha (0.85f) for subtitle to distinguish from main text
-                    // while maintaining good readability on vibrant backgrounds
-                    color = textColor.copy(alpha = 0.85f),
-                    textAlign = TextAlign.Center,
+                    text = metric.title.uppercase(),
+                    style =
+                        MaterialTheme.typography.labelSmall.copy(
+                            letterSpacing = 0.8.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+
+                Text(
+                    text = metric.value,
+                    style =
+                        MaterialTheme.typography.headlineMedium
+                            .copy(
+                                fontFamily = monoFontFamily,
+                                fontWeight = FontWeight.Bold,
+                            ).tabularNums,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                if (metric.subtitle != null) {
+                    Text(
+                        text = metric.subtitle,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = accentColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
     }
@@ -139,36 +151,3 @@ data class MetricCardData(
     val backgroundColor: Color? = null,
     val textColor: Color? = null,
 )
-
-/**
- * Material 3 animated pill page indicator.
- */
-@Composable
-private fun PageIndicator(
-    isSelected: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val width by animateDpAsState(
-        targetValue = if (isSelected) 24.dp else 8.dp,
-        label = "indicator_width",
-    )
-    val color by animateColorAsState(
-        targetValue =
-            if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
-            },
-        label = "indicator_color",
-    )
-
-    Box(
-        modifier =
-            modifier
-                .padding(horizontal = 4.dp)
-                .height(8.dp)
-                .width(width)
-                .clip(CircleShape)
-                .background(color),
-    )
-}

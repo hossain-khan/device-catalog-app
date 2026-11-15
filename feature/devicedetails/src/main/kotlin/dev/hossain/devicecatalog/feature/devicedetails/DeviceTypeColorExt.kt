@@ -33,3 +33,17 @@ fun DeviceTypeColors.onColorFor(formFactor: FormFactor): Color =
         FormFactor.CHROMEBOOK -> onChromebook
         FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> onGaming
     }
+
+/**
+ * Extension function to get the vibrant semantic accent color (for 2-3.dp accent bars and indicators).
+ */
+fun DeviceTypeColors.accentColorFor(formFactor: FormFactor): Color =
+    when (formFactor) {
+        FormFactor.PHONE -> accentPhone
+        FormFactor.TABLET -> accentTablet
+        FormFactor.TV -> accentTv
+        FormFactor.WEARABLE -> accentWearable
+        FormFactor.ANDROID_AUTOMOTIVE -> accentAutomotive
+        FormFactor.CHROMEBOOK -> accentChromebook
+        FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> accentGaming
+    }

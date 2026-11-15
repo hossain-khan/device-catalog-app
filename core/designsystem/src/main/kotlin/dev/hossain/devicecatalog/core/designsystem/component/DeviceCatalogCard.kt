@@ -1,6 +1,6 @@
 package dev.hossain.devicecatalog.core.designsystem.component
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 
 /**
- * Device Catalog card component with Material 3 styling.
- * Provides a consistent card design across the app.
+ * Device Catalog card component with Developer Precision Console styling.
+ * Uses neutral surfaceContainerLow container, 0.dp tonal boost, and a crisp 1.dp hairline border.
  *
  * @param modifier Modifier to be applied to the card
  * @param onClick Optional click handler. If provided, the card becomes clickable
@@ -31,21 +31,25 @@ fun DeviceCatalogCard(
     shape: Shape = RoundedCornerShape(12.dp),
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    val colors =
+        CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        )
+
     if (onClick != null) {
         Card(
             onClick = onClick,
             modifier = modifier,
             shape = shape,
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+            border = border,
+            colors = colors,
             elevation =
                 CardDefaults.cardElevation(
-                    defaultElevation = 1.dp,
-                    pressedElevation = 3.dp,
-                    hoveredElevation = 2.dp,
+                    defaultElevation = 0.dp,
+                    pressedElevation = 1.dp,
+                    hoveredElevation = 1.dp,
                 ),
             content = content,
         )
@@ -53,14 +57,11 @@ fun DeviceCatalogCard(
         Card(
             modifier = modifier,
             shape = shape,
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+            border = border,
+            colors = colors,
             elevation =
                 CardDefaults.cardElevation(
-                    defaultElevation = 1.dp,
+                    defaultElevation = 0.dp,
                 ),
             content = content,
         )
@@ -69,7 +70,7 @@ fun DeviceCatalogCard(
 
 /**
  * Device Catalog elevated card component.
- * Similar to DeviceCatalogCard but with higher elevation for emphasis.
+ * Similar to DeviceCatalogCard with subtle border and slight elevation for emphasis.
  */
 @Composable
 fun DeviceCatalogElevatedCard(
@@ -78,21 +79,25 @@ fun DeviceCatalogElevatedCard(
     shape: Shape = RoundedCornerShape(12.dp),
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+    val colors =
+        CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        )
+
     if (onClick != null) {
         Card(
             onClick = onClick,
             modifier = modifier,
             shape = shape,
-            colors =
-                CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+            border = border,
+            colors = colors,
             elevation =
                 CardDefaults.elevatedCardElevation(
-                    defaultElevation = 6.dp,
-                    pressedElevation = 8.dp,
-                    hoveredElevation = 7.dp,
+                    defaultElevation = 2.dp,
+                    pressedElevation = 4.dp,
+                    hoveredElevation = 3.dp,
                 ),
             content = content,
         )
@@ -100,14 +105,11 @@ fun DeviceCatalogElevatedCard(
         Card(
             modifier = modifier,
             shape = shape,
-            colors =
-                CardDefaults.elevatedCardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+            border = border,
+            colors = colors,
             elevation =
                 CardDefaults.elevatedCardElevation(
-                    defaultElevation = 6.dp,
+                    defaultElevation = 2.dp,
                 ),
             content = content,
         )

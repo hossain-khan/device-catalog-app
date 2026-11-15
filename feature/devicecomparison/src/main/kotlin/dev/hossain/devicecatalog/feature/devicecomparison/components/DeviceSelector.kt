@@ -57,10 +57,12 @@ fun AddDeviceCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(104.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
     ) {
         Column(
@@ -71,13 +73,13 @@ fun AddDeviceCard(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add device",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(28.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Add Device",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -99,10 +101,12 @@ fun SelectedDeviceCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(104.dp),
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
     ) {
         Row(
@@ -116,31 +120,34 @@ fun SelectedDeviceCard(
                 device = device.androidDevice,
                 modifier = Modifier.size(44.dp),
                 fallbackIconModifier = Modifier.size(24.dp),
-                fallbackTint = MaterialTheme.colorScheme.onPrimaryContainer,
+                fallbackTint = MaterialTheme.colorScheme.primary,
             )
             Spacer(modifier = Modifier.width(8.dp))
             Column(
                 modifier = Modifier.weight(1f),
             ) {
                 Text(
-                    text = device.androidDevice.manufacturer,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    text = device.androidDevice.manufacturer.uppercase(),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
                     text = device.androidDevice.modelName,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = RamFormatter.formatRamToGb(device.androidDevice.ram),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    style =
+                        MaterialTheme.typography.labelSmall.copy(
+                            fontFamily = dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily,
+                        ),
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
             IconButton(
@@ -150,7 +157,7 @@ fun SelectedDeviceCard(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Remove device",
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(16.dp),
                 )
             }

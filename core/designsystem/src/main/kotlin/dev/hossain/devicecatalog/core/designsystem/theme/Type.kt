@@ -1,9 +1,12 @@
 package dev.hossain.devicecatalog.core.designsystem.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.googlefonts.Font
 import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.unit.sp
 import dev.hossain.devicecatalog.core.designsystem.R
 
 val provider =
@@ -16,7 +19,7 @@ val provider =
 val bodyFontFamily =
     FontFamily(
         Font(
-            googleFont = GoogleFont("Lato"),
+            googleFont = GoogleFont("Inter"),
             fontProvider = provider,
         ),
     )
@@ -24,10 +27,39 @@ val bodyFontFamily =
 val displayFontFamily =
     FontFamily(
         Font(
-            googleFont = GoogleFont("Lato"),
+            googleFont = GoogleFont("Plus Jakarta Sans"),
             fontProvider = provider,
         ),
     )
+
+/**
+ * Technical monospace font family for hardware codenames, ABIs, screen densities, and API levels.
+ */
+val monoFontFamily =
+    FontFamily(
+        Font(
+            googleFont = GoogleFont("JetBrains Mono"),
+            fontProvider = provider,
+        ),
+    )
+
+/**
+ * Applies OpenType tabular numerals (`tnum`) so numerical metrics and columns align vertically.
+ */
+val TextStyle.tabularNums: TextStyle
+    get() = copy(fontFeatureSettings = "tnum")
+
+/**
+ * Monospace technical code badge style for codenames, ABIs, DPI, and API levels.
+ */
+val Typography.monoCode: TextStyle
+    get() =
+        labelMedium.copy(
+            fontFamily = monoFontFamily,
+            fontWeight = FontWeight.Medium,
+            letterSpacing = 0.sp,
+            fontFeatureSettings = "tnum",
+        )
 
 // Default Material 3 typography values
 val baseline = Typography()

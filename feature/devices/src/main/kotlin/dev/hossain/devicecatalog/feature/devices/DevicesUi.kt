@@ -1,8 +1,5 @@
 package dev.hossain.devicecatalog.feature.devices
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +12,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -159,32 +151,6 @@ fun DevicesUi(
             }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            if (!isSearchExpanded) {
-                BadgedBox(
-                    badge = {
-                        AnimatedVisibility(
-                            visible = state.activeFilters.hasActiveFilters(),
-                            enter = fadeIn(),
-                            exit = fadeOut(),
-                        ) {
-                            Badge {
-                                Text(text = "${state.activeFilters.activeFilterCount()}")
-                            }
-                        }
-                    },
-                ) {
-                    FloatingActionButton(
-                        onClick = { state.eventSink(DevicesScreen.Event.ShowFilterSheet) },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.FilterList,
-                            contentDescription = "Filter devices",
-                        )
-                    }
-                }
-            }
-        },
     ) { innerPadding ->
         Column(
             modifier =
@@ -192,7 +158,7 @@ fun DevicesUi(
                     .fillMaxSize()
                     .padding(innerPadding),
         ) {
-            // Search bar
+            // Unified Developer Command Bar (Search + Integrated Filters Button)
             DeviceSearchBar(
                 query = state.searchQuery,
                 onQueryChange = { query ->
@@ -204,6 +170,10 @@ fun DevicesUi(
                 resultCount = state.searchResultCount,
                 expanded = isSearchExpanded,
                 onExpandedChange = { isSearchExpanded = it },
+                activeFilterCount = state.activeFilters.activeFilterCount(),
+                onFilterClick = {
+                    state.eventSink(DevicesScreen.Event.ShowFilterSheet)
+                },
                 modifier =
                     if (isSearchExpanded) {
                         Modifier.fillMaxWidth()

@@ -3,10 +3,12 @@ package dev.hossain.devicecatalog.feature.statistics
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -23,6 +26,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
@@ -38,10 +42,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.devicecatalog.core.data.AbiCount
 import dev.hossain.devicecatalog.core.data.DeviceStats
@@ -61,7 +65,7 @@ import dev.hossain.devicecatalog.feature.statistics.components.LineChartData
 import dev.hossain.devicecatalog.feature.statistics.components.MetricCardData
 import dev.hossain.devicecatalog.feature.statistics.components.PieChart
 import dev.hossain.devicecatalog.feature.statistics.components.PieChartData
-import dev.hossain.devicecatalog.feature.statistics.components.SwipeableMetricCards
+import dev.hossain.devicecatalog.feature.statistics.components.StatsKpiGrid
 import dev.zacsweers.metro.AppScope
 import java.util.Locale
 
@@ -79,7 +83,12 @@ fun DeviceStatsUi(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             LargeTopAppBar(
-                title = { Text("Device Statistics") },
+                title = {
+                    Text(
+                        text = "Catalog Telemetry",
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
                 actions = {
                     IconButton(
                         onClick = { state.eventSink(DeviceStatsScreen.Event.OpenStatsExplorer) },
@@ -127,71 +136,49 @@ private fun DeviceStatsContent(
     stats: DeviceStats,
     modifier: Modifier = Modifier,
 ) {
+    val chartColors = MaterialTheme.chartColors
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding =
-            androidx.compose.foundation.layout
-                .PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        contentPadding = PaddingValues(16.dp),
     ) {
-        // Swipeable metric cards
+        // 2x2 High-Density KPI Bento Grid
         item {
-            val chartColors = MaterialTheme.chartColors
-            // Using Color.White for text because chartColors are vibrant backgrounds
-            // designed with white text in mind for high contrast in both light/dark modes
-
-            // Safe color access with fallback to primary color scheme
-            val colorForTotalDevices = chartColors.getOrElse(0) { MaterialTheme.colorScheme.primary }
-            val colorForManufacturers = chartColors.getOrElse(1) { MaterialTheme.colorScheme.secondary }
-            val colorForFormFactors = chartColors.getOrElse(2) { MaterialTheme.colorScheme.tertiary }
-            val colorForRamVariants = chartColors.getOrElse(3) { MaterialTheme.colorScheme.primaryContainer }
-            val colorForSdkVersions = chartColors.getOrElse(4) { MaterialTheme.colorScheme.secondaryContainer }
-
             val metricCards =
                 listOf(
                     MetricCardData(
                         title = "Total Devices",
                         value = String.format(Locale.US, "%,d", stats.totalDevices),
-                        subtitle = "Android devices in catalog",
-                        backgroundColor = colorForTotalDevices,
-                        textColor = Color.White,
+                        subtitle = "Play Catalog Dataset",
+                        backgroundColor = chartColors.getOrElse(0) { MaterialTheme.colorScheme.primary },
                     ),
                     MetricCardData(
                         title = "Manufacturers",
                         value = String.format(Locale.US, "%,d", stats.totalManufacturers),
-                        subtitle = "Unique device manufacturers",
-                        backgroundColor = colorForManufacturers,
-                        textColor = Color.White,
+                        subtitle = "Active OEMs",
+                        backgroundColor = chartColors.getOrElse(1) { MaterialTheme.colorScheme.secondary },
                     ),
                     MetricCardData(
                         title = "Form Factors",
                         value = String.format(Locale.US, "%,d", stats.totalFormFactors),
-                        subtitle = "Different device types",
-                        backgroundColor = colorForFormFactors,
-                        textColor = Color.White,
+                        subtitle = "Hardware Classes",
+                        backgroundColor = chartColors.getOrElse(2) { MaterialTheme.colorScheme.tertiary },
                     ),
                     MetricCardData(
-                        title = "RAM Variants",
-                        value = String.format(Locale.US, "%,d", stats.ramDistribution.size),
-                        subtitle = "Memory configurations",
-                        backgroundColor = colorForRamVariants,
-                        textColor = Color.White,
-                    ),
-                    MetricCardData(
-                        title = "SDK Versions",
-                        value = String.format(Locale.US, "%,d", stats.sdkVersionDistribution.size),
-                        subtitle = "Supported Android versions",
-                        backgroundColor = colorForSdkVersions,
-                        textColor = Color.White,
+                        title = "SDK / RAM Tiers",
+                        value = "${stats.sdkVersionDistribution.size} / ${stats.ramDistribution.size}",
+                        subtitle = "API & Memory Profiles",
+                        backgroundColor = chartColors.getOrElse(3) { MaterialTheme.colorScheme.primary },
                     ),
                 )
-            SwipeableMetricCards(metrics = metricCards)
+            StatsKpiGrid(metrics = metricCards)
         }
 
         // Form Factor Distribution
         item {
             CollapsibleCard(
-                title = "Form Factor Distribution",
+                title = "FORM FACTOR DISTRIBUTION",
                 defaultExpanded = true,
             ) {
                 FormFactorDistributionContent(
@@ -204,7 +191,7 @@ private fun DeviceStatsContent(
         // Top Manufacturers
         item {
             CollapsibleCard(
-                title = "Top 10 Manufacturers",
+                title = "TOP 10 MANUFACTURERS",
                 defaultExpanded = true,
             ) {
                 ManufacturerDistributionContent(
@@ -214,49 +201,11 @@ private fun DeviceStatsContent(
             }
         }
 
-        // RAM Distribution
-        item {
-            CollapsibleCard(
-                title = "RAM Distribution",
-                defaultExpanded = false,
-            ) {
-                RamDistributionContent(
-                    ramDistribution = stats.ramDistribution.take(10),
-                    totalDevices = stats.totalDevices,
-                )
-            }
-        }
-
-        // SDK Version Adoption
-        item {
-            CollapsibleCard(
-                title = "SDK Version Adoption",
-                defaultExpanded = false,
-            ) {
-                SdkVersionAdoptionContent(
-                    sdkVersions = stats.sdkVersionDistribution.take(15),
-                )
-            }
-        }
-
-        // Screen Density Distribution
-        item {
-            CollapsibleCard(
-                title = "Screen Density Distribution",
-                defaultExpanded = false,
-            ) {
-                ScreenDensityContent(
-                    densities = stats.screenDensityDistribution.take(10),
-                    totalDevices = stats.totalDevices,
-                )
-            }
-        }
-
         // ABI Support
         item {
             CollapsibleCard(
-                title = "ABI Support",
-                defaultExpanded = false,
+                title = "ABI ARCHITECTURE SUPPORT",
+                defaultExpanded = true,
             ) {
                 AbiSupportContent(
                     abis = stats.abiDistribution,
@@ -265,10 +214,49 @@ private fun DeviceStatsContent(
             }
         }
 
+        // SDK Version Adoption
+        item {
+            CollapsibleCard(
+                title = "SDK / API VERSION ADOPTION",
+                defaultExpanded = true,
+            ) {
+                SdkVersionAdoptionContent(
+                    sdkVersions = stats.sdkVersionDistribution.take(12),
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // RAM Distribution
+        item {
+            CollapsibleCard(
+                title = "MEMORY (RAM) DISTRIBUTION",
+                defaultExpanded = true,
+            ) {
+                RamDistributionContent(
+                    ramDistribution = stats.ramDistribution.take(10),
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
+        // Screen Density Distribution
+        item {
+            CollapsibleCard(
+                title = "DISPLAY DENSITY (DPI) DISTRIBUTION",
+                defaultExpanded = true,
+            ) {
+                ScreenDensityContent(
+                    densities = stats.screenDensityDistribution.take(10),
+                    totalDevices = stats.totalDevices,
+                )
+            }
+        }
+
         // GPU Distribution
         item {
             CollapsibleCard(
-                title = "Top 10 GPUs",
+                title = "TOP 10 GPU ARCHITECTURES",
                 defaultExpanded = false,
             ) {
                 GpuDistributionContent(
@@ -278,7 +266,6 @@ private fun DeviceStatsContent(
             }
         }
 
-        // Add bottom padding
         item {
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -286,22 +273,25 @@ private fun DeviceStatsContent(
 }
 
 /**
- * Collapsible card component for organizing statistics sections.
+ * Bordered console card component for organizing statistics sections.
  */
 @Composable
 private fun CollapsibleCard(
     title: String,
     modifier: Modifier = Modifier,
-    defaultExpanded: Boolean = false,
+    defaultExpanded: Boolean = true,
     content: @Composable () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(defaultExpanded) }
 
     Card(
         modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                containerColor = MaterialTheme.colorScheme.surface,
             ),
     ) {
         Column {
@@ -310,20 +300,28 @@ private fun CollapsibleCard(
                     Modifier
                         .fillMaxWidth()
                         .clickable { expanded = !expanded }
-                        .padding(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
+                    style =
+                        MaterialTheme.typography.labelMedium.copy(
+                            letterSpacing = 0.8.sp,
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    color = MaterialTheme.colorScheme.primary,
                 )
 
-                IconButton(onClick = { expanded = !expanded }) {
+                IconButton(
+                    onClick = { expanded = !expanded },
+                    modifier = Modifier.height(28.dp),
+                ) {
                     Icon(
                         imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = if (expanded) "Collapse" else "Expand",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -334,8 +332,16 @@ private fun CollapsibleCard(
                 exit = shrinkVertically(),
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
+                    )
                     content()
                 }
             }
@@ -343,29 +349,14 @@ private fun CollapsibleCard(
     }
 }
 
-/**
- * Form factor distribution with pie chart and legend.
- */
 @Composable
 private fun FormFactorDistributionContent(
     formFactors: List<FormFactorCount>,
     totalDevices: Int,
 ) {
-    // Use vibrant, distinct colors for better differentiation in pie chart
-    val chartColors =
-        listOf(
-            Color(0xFF2E7D32), // Vibrant Green
-            Color(0xFF0277BD), // Vibrant Blue
-            Color(0xFFD84315), // Vibrant Orange-Red
-            Color(0xFF7B1FA2), // Vibrant Purple
-            Color(0xFFEF6C00), // Vibrant Deep Orange
-            Color(0xFF00838F), // Vibrant Cyan
-            Color(0xFFC62828), // Vibrant Red
-            Color(0xFF5E35B1), // Vibrant Deep Purple
-        )
+    val chartColors = MaterialTheme.chartColors
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        // Pie chart
         if (formFactors.isNotEmpty()) {
             PieChart(
                 data =
@@ -380,13 +371,14 @@ private fun FormFactorDistributionContent(
             )
         }
 
-        // Legend with percentages
         ChartLegend(
             items =
                 formFactors.mapIndexed { index, ff ->
                     LegendItem(
                         label = ff.formFactor.value,
-                        value = "${ff.count} (${String.format("%.1f", ff.percentage(totalDevices))}%)",
+                        value =
+                            "${String.format(Locale.US, "%,d", ff.count)} " +
+                                "(${String.format(Locale.US, "%.1f", ff.percentage(totalDevices))}%)",
                         color = chartColors[index % chartColors.size],
                     )
                 },
@@ -394,64 +386,52 @@ private fun FormFactorDistributionContent(
     }
 }
 
-/**
- * Manufacturer distribution with horizontal bar chart.
- */
 @Composable
 private fun ManufacturerDistributionContent(
     manufacturers: List<ManufacturerCount>,
     totalDevices: Int,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        HorizontalBarChart(
-            data =
-                manufacturers.map { manufacturer ->
-                    BarChartData(
-                        label = manufacturer.manufacturer.take(15),
-                        value = manufacturer.count.toFloat(),
-                        valueLabel = "${manufacturer.count} (${String.format("%.1f", manufacturer.percentage(totalDevices))}%)",
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                },
-        )
-    }
+    HorizontalBarChart(
+        data =
+            manufacturers.map { manufacturer ->
+                BarChartData(
+                    label = manufacturer.manufacturer,
+                    value = manufacturer.count.toFloat(),
+                    valueLabel =
+                        "${String.format(Locale.US, "%,d", manufacturer.count)} " +
+                            "(${String.format(Locale.US, "%.1f", manufacturer.percentage(totalDevices))}%)",
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            },
+    )
 }
 
-/**
- * RAM distribution content.
- */
 @Composable
 private fun RamDistributionContent(
-    ramDistribution: List<dev.hossain.devicecatalog.core.data.RamCount>,
+    ramDistribution: List<RamCount>,
     totalDevices: Int,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        HorizontalBarChart(
-            data =
-                ramDistribution.map { ram ->
-                    BarChartData(
-                        label = ram.ram.take(10),
-                        value = ram.count.toFloat(),
-                        valueLabel = "${ram.count} (${String.format("%.1f", ram.percentage(totalDevices))}%)",
-                        color = MaterialTheme.colorScheme.secondary,
-                    )
-                },
-        )
-    }
+    HorizontalBarChart(
+        data =
+            ramDistribution.map { ram ->
+                BarChartData(
+                    label = ram.ram,
+                    value = ram.count.toFloat(),
+                    valueLabel =
+                        "${String.format(Locale.US, "%,d", ram.count)} " +
+                            "(${String.format(Locale.US, "%.1f", ram.percentage(totalDevices))}%)",
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            },
+    )
 }
 
-/**
- * SDK version adoption with line chart.
- */
 @Composable
-private fun SdkVersionAdoptionContent(sdkVersions: List<dev.hossain.devicecatalog.core.data.SdkVersionCount>) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(
-            text = "Device count by SDK version",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
+private fun SdkVersionAdoptionContent(
+    sdkVersions: List<SdkVersionCount>,
+    totalDevices: Int,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         LineChart(
             data =
                 sdkVersions.map { sdk ->
@@ -463,99 +443,81 @@ private fun SdkVersionAdoptionContent(sdkVersions: List<dev.hossain.devicecatalo
             modifier = Modifier.fillMaxWidth(),
         )
 
-        // SDK version details
-        Column(
-            modifier = Modifier.padding(top = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            sdkVersions.take(10).forEach { sdk ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = "API ${sdk.sdkVersion}",
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                    Text(
-                        text = "${sdk.count} devices",
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium,
+        HorizontalBarChart(
+            data =
+                sdkVersions.take(10).map { sdk ->
+                    val pct = if (totalDevices > 0) (sdk.count.toFloat() / totalDevices * 100f) else 0f
+                    BarChartData(
+                        label = "API ${sdk.sdkVersion}",
+                        value = sdk.count.toFloat(),
+                        valueLabel =
+                            "${String.format(Locale.US, "%,d", sdk.count)} " +
+                                "(${String.format(Locale.US, "%.1f", pct)}%)",
                         color = MaterialTheme.colorScheme.primary,
                     )
-                }
-            }
-        }
+                },
+        )
     }
 }
 
-/**
- * Screen density distribution content.
- */
 @Composable
 private fun ScreenDensityContent(
-    densities: List<dev.hossain.devicecatalog.core.data.ScreenDensityCount>,
+    densities: List<ScreenDensityCount>,
     totalDevices: Int,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        HorizontalBarChart(
-            data =
-                densities.map { density ->
-                    BarChartData(
-                        label = "${density.density} dpi",
-                        value = density.count.toFloat(),
-                        valueLabel = "${density.count} (${String.format("%.1f", density.percentage(totalDevices))}%)",
-                        color = MaterialTheme.colorScheme.tertiary,
-                    )
-                },
-        )
-    }
+    HorizontalBarChart(
+        data =
+            densities.map { density ->
+                BarChartData(
+                    label = "${density.density} dpi",
+                    value = density.count.toFloat(),
+                    valueLabel =
+                        "${String.format(Locale.US, "%,d", density.count)} " +
+                            "(${String.format(Locale.US, "%.1f", density.percentage(totalDevices))}%)",
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+            },
+    )
 }
 
-/**
- * ABI support content.
- */
 @Composable
 private fun AbiSupportContent(
-    abis: List<dev.hossain.devicecatalog.core.data.AbiCount>,
+    abis: List<AbiCount>,
     totalDevices: Int,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        HorizontalBarChart(
-            data =
-                abis.map { abi ->
-                    BarChartData(
-                        label = abi.abi,
-                        value = abi.count.toFloat(),
-                        valueLabel = "${abi.count} (${String.format("%.1f", abi.percentage(totalDevices))}%)",
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                },
-        )
-    }
+    HorizontalBarChart(
+        data =
+            abis.map { abi ->
+                BarChartData(
+                    label = abi.abi,
+                    value = abi.count.toFloat(),
+                    valueLabel =
+                        "${String.format(Locale.US, "%,d", abi.count)} " +
+                            "(${String.format(Locale.US, "%.1f", abi.percentage(totalDevices))}%)",
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            },
+    )
 }
 
-/**
- * GPU distribution content.
- */
 @Composable
 private fun GpuDistributionContent(
-    gpus: List<dev.hossain.devicecatalog.core.data.GpuCount>,
+    gpus: List<GpuCount>,
     totalDevices: Int,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        HorizontalBarChart(
-            data =
-                gpus.map { gpu ->
-                    BarChartData(
-                        label = gpu.gpu.take(15),
-                        value = gpu.count.toFloat(),
-                        valueLabel = "${gpu.count} (${String.format("%.1f", gpu.percentage(totalDevices))}%)",
-                        color = MaterialTheme.colorScheme.error,
-                    )
-                },
-        )
-    }
+    HorizontalBarChart(
+        data =
+            gpus.map { gpu ->
+                BarChartData(
+                    label = gpu.gpu,
+                    value = gpu.count.toFloat(),
+                    valueLabel =
+                        "${String.format(Locale.US, "%,d", gpu.count)} " +
+                            "(${String.format(Locale.US, "%.1f", gpu.percentage(totalDevices))}%)",
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            },
+    )
 }
 
 // ==================== Previews ====================
