@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.1] - 2026-11-16
+
 ### Fixed
-- Fixed `Failed to load devices: The coroutine scope left the composition` snackbar shown when returning from `DeviceDetailsScreen` by rethrowing `CancellationException` in `produceRetainedState` and `LaunchedEffect` coroutine catch blocks across presenters (#247)
+- Fixed `Failed to load devices: The coroutine scope left the composition` snackbar shown when returning from `DeviceDetailsScreen` by rethrowing `CancellationException` in `produceRetainedState` and `LaunchedEffect` coroutine catch blocks across presenters (#247, #248)
 
 ## [2.2.0] - 2026-11-15
 
@@ -443,7 +445,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.1...HEAD
+[2.2.1]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.13.0...2.0.0
