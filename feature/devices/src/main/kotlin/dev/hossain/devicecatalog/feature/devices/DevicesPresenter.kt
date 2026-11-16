@@ -27,6 +27,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
@@ -89,6 +90,8 @@ class DevicesPresenter(
                         deviceRepository.searchDevicesLatestFirst(debouncedSearchQuery)
                     }
                 flow.collect { value = it }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Failed to get devices")
                 errorMessage = "Failed to load devices: ${e.message}"

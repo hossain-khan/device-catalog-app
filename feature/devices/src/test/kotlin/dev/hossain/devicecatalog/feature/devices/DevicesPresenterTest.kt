@@ -4,13 +4,19 @@ import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.core.database.AndroidDeviceDao
+import dev.hossain.devicecatalog.core.database.AndroidDeviceWithRelations
 import dev.hossain.devicecatalog.core.testing.FakeAndroidDeviceDao
 import dev.hossain.devicecatalog.core.testing.TestDeviceFactory
 import dev.hossain.devicecatalog.feature.devicedetails.DeviceDetailsScreen
 import dev.hossain.devicecatalog.feature.dreamphone.DreamPhoneScreen
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -98,6 +104,52 @@ class DevicesPresenterTest {
 
                 state.eventSink(DevicesScreen.Event.OpenDreamPhoneSurvey)
                 assertEquals(DreamPhoneScreen(step = 0), navigator.awaitNextScreen())
+            }
+        }
+
+    @Test
+    fun `cancellation exception does not populate errorMessage`() =
+        runTest {
+            val cancellingDao =
+                object : AndroidDeviceDao by FakeAndroidDeviceDao() {
+                    override fun getAllDevicesWithRelationsLatestFirst(): Flow<List<AndroidDeviceWithRelations>> =
+                        flow {
+                            throw CancellationException("The coroutine scope left the composition")
+                        }
+                }
+            val presenter =
+                DevicesPresenter(
+                    navigator = FakeNavigator(DevicesScreen),
+                    deviceRepository = AndroidDeviceRepository(cancellingDao),
+                )
+
+            presenter.test {
+                val state = awaitItem()
+                assertNull(state.errorMessage)
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
+
+    @Test
+    fun `repository failure still populates errorMessage`() =
+        runTest {
+            val failingDao =
+                object : AndroidDeviceDao by FakeAndroidDeviceDao() {
+                    override fun getAllDevicesWithRelationsLatestFirst(): Flow<List<AndroidDeviceWithRelations>> =
+                        flow {
+                            throw IllegalStateException("Database unavailable")
+                        }
+                }
+            val presenter =
+                DevicesPresenter(
+                    navigator = FakeNavigator(DevicesScreen),
+                    deviceRepository = AndroidDeviceRepository(failingDao),
+                )
+
+            presenter.test {
+                awaitItem()
+                val errorState = awaitItem()
+                assertEquals("Failed to load devices: Database unavailable", errorState.errorMessage)
             }
         }
 }
