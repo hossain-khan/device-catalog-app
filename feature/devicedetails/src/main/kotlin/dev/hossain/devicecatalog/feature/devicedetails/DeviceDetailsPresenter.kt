@@ -18,6 +18,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CancellationException
 import timber.log.Timber
 
 @AssistedInject
@@ -87,6 +88,8 @@ class DeviceDetailsPresenter(
                 Timber.w("Device not found with ID: $deviceId")
                 DeviceLoadState.Error("Device not found")
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             Timber.e(e, "Failed to load device with ID: $deviceId")
             DeviceLoadState.Error("Failed to load device: ${e.message}")

@@ -20,6 +20,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CancellationException
 import timber.log.Timber
 
 /**
@@ -55,6 +56,8 @@ class QuizPresenter(
                             QuizLoadState.Error("Failed to generate quiz: ${e.message}")
                         },
                     )
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to load quiz")
                     QuizLoadState.Error("Failed to load quiz: ${e.message}")

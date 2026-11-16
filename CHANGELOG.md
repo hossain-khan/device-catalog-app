@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed `Failed to load devices: The coroutine scope left the composition` snackbar shown when returning from `DeviceDetailsScreen` by rethrowing `CancellationException` in `produceRetainedState` and `LaunchedEffect` coroutine catch blocks across presenters (#247)
+
 ## [2.2.0] - 2026-11-15
 
 ### Fixed

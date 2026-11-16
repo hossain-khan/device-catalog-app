@@ -13,6 +13,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CancellationException
 import timber.log.Timber
 
 /**
@@ -34,6 +35,8 @@ class ManufacturerSelectionPresenter(
                     val result = repository.getManufacturersWithMinDevices(minCount = 5)
                     Timber.i("Loaded ${result.size} manufacturers for quiz")
                     ManufacturersLoadState.Loaded(result)
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to load manufacturers")
                     ManufacturersLoadState.Error("Failed to load manufacturers: ${e.message}")

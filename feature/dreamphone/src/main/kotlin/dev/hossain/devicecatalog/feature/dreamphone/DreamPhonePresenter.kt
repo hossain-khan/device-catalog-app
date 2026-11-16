@@ -19,6 +19,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
+import kotlinx.coroutines.CancellationException
 import timber.log.Timber
 
 @AssistedInject
@@ -49,6 +50,8 @@ class DreamPhonePresenter(
                     val surveyAnswers = convertToSurveyAnswers(answers)
                     recommendations = findMatches(allDevices, surveyAnswers)
                     Timber.d("Found ${recommendations?.size} device matches")
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     Timber.e(e, "Failed to calculate recommendations")
                 } finally {
