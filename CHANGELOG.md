@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0] - 2026-11-15
+
 ### Fixed
-- Fixed phone quiz back navigation so pressing Back (top bar or system gesture) from `QuizResultsScreen` returns directly to `QuizHubScreen` instead of returning to completed quiz questions, and prevented `PlayAgain` / `ChooseManufacturer` from stacking duplicate screens
+- Fixed phone quiz back navigation so pressing Back (top bar or system gesture) from `QuizResultsScreen` returns directly to `QuizHubScreen` instead of returning to completed quiz questions, and prevented `PlayAgain` / `ChooseManufacturer` from stacking duplicate screens (#244)
 
 ### Changed
-- Updated [.github/copilot-instructions.md](.github/copilot-instructions.md) to reflect Circuit `0.39.0` and Metro `1.5.2` conventions (`metrox-android`, `@BindingContainer`, `@CircuitSerializable`, native Circuit codegen, and direct `:app` feature dependencies)
+- Updated Gradle (`9.6.0`), Android Gradle Plugin (`9.5.1`), Kotlin (`2.4.21`), KSP (`2.3.13`), AndroidX Paging (`3.5.3`), DataStore (`1.3.0`), Room (`2.8.5`), and `kotlinx.serialization` (`1.13.0`) (#245)
+- Tidied `README.md` and updated `.github/copilot-instructions.md` for Circuit `0.39.0` and Metro `1.5.2` conventions (#242, #243)
 - Upgraded Metro DI from `1.4.1` to `1.5.2` and adopted official `metrox-android` (`MetroAppComponentFactory`, `MetroAppComponentProviders`, `MetroApplication`, implicit `@ActivityKey`) in place of custom `ComposeAppComponentFactory`, `ActivityKey`, and `UiMultibindings`
 - Replaced Circuit's KSP code generator (`circuit-codegen`) with Metro's built-in compiler-plugin Circuit codegen (`enableCircuitCodegen.set(true)`) across `:app` and all feature modules via `AndroidFeatureConventionPlugin`, removing KSP from `:feature:*`, `:core:common`, and `:core:data`
 - Enabled automatic Metro hidden-dependency validation (`hiddenDependencies.checkOnCompile.set(true)`) and added missing direct `:feature:devicecomparison` dependency to `:app`
@@ -24,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled `unitTests.isReturnDefaultValues = true` in `KotlinAndroid` convention plugin
 
 ### Added
-- Added Circuit presenter unit tests (`QuizHubPresenterTest`, `QuizResultsPresenterTest`, `DeviceDetailsPresenterTest`, `DevicesPresenterTest`) using `circuit-test` (`Presenter.test`, `FakeNavigator`)
+- Added Circuit presenter unit tests (`QuizHubPresenterTest`, `QuizPresenterTest`, `QuizResultsPresenterTest`, `DeviceDetailsPresenterTest`, `DevicesPresenterTest`) using `circuit-test` (`Presenter.test`, `FakeNavigator`) (#239, #244)
 
 ## [2.1.0] - 2026-11-15
 
@@ -437,7 +440,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.1.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.0...HEAD
+[2.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.0.0...2.1.0
 [2.0.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.13.0...2.0.0
 [1.13.0]: https://github.com/hossain-khan/device-catalog-app/compare/1.12.0...1.13.0
