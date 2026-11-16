@@ -13,7 +13,9 @@ import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.feature.phonequiz.QuizAnswer
 import dev.hossain.devicecatalog.feature.phonequiz.QuizQuestion
 import dev.hossain.devicecatalog.feature.phonequiz.QuizService
+import dev.hossain.devicecatalog.feature.phonequiz.popWhileAndGoTo
 import dev.hossain.devicecatalog.feature.phonequiz.results.QuizResultsScreen
+import dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -137,7 +139,9 @@ class QuizPresenter(
             ).apply {
                 this.answers = answers
             }
-        navigator.goTo(resultsScreen)
+        navigator.popWhileAndGoTo(destination = resultsScreen) { backStackScreen ->
+            backStackScreen is QuizScreen || backStackScreen is ManufacturerSelectionScreen
+        }
     }
 
     private sealed interface QuizLoadState {

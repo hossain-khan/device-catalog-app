@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed phone quiz back navigation so pressing Back (top bar or system gesture) from `QuizResultsScreen` returns directly to `QuizHubScreen` instead of returning to completed quiz questions, and prevented `PlayAgain` / `ChooseManufacturer` from stacking duplicate screens
+
 ### Changed
 - Updated [.github/copilot-instructions.md](.github/copilot-instructions.md) to reflect Circuit `0.39.0` and Metro `1.5.2` conventions (`metrox-android`, `@BindingContainer`, `@CircuitSerializable`, native Circuit codegen, and direct `:app` feature dependencies)
 - Upgraded Metro DI from `1.4.1` to `1.5.2` and adopted official `metrox-android` (`MetroAppComponentFactory`, `MetroAppComponentProviders`, `MetroApplication`, implicit `@ActivityKey`) in place of custom `ComposeAppComponentFactory`, `ActivityKey`, and `UiMultibindings`

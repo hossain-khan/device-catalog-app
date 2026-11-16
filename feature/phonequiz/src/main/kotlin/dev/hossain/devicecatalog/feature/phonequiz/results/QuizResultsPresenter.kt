@@ -6,6 +6,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
 import dev.hossain.devicecatalog.feature.devicedetails.DeviceDetailsScreen
 import dev.hossain.devicecatalog.feature.phonequiz.QuizService
+import dev.hossain.devicecatalog.feature.phonequiz.popWhileAndGoTo
 import dev.hossain.devicecatalog.feature.phonequiz.quiz.QuizScreen
 import dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen
 import dev.zacsweers.metro.AppScope
@@ -41,17 +42,20 @@ class QuizResultsPresenter(
                 when (event) {
                     QuizResultsScreen.Event.PlayAgain -> {
                         Timber.d("Playing again with manufacturer: ${screen.manufacturer}")
-                        navigator.goTo(
-                            QuizScreen(
-                                manufacturer = screen.manufacturer,
-                                currentQuestion = 0,
-                            ),
-                        )
+                        navigator.popWhileAndGoTo(
+                            destination =
+                                QuizScreen(
+                                    manufacturer = screen.manufacturer,
+                                    currentQuestion = 0,
+                                ),
+                        ) { it is QuizResultsScreen }
                     }
 
                     QuizResultsScreen.Event.ChooseManufacturer -> {
                         Timber.d("Choosing different manufacturer")
-                        navigator.goTo(ManufacturerSelectionScreen)
+                        navigator.popWhileAndGoTo(destination = ManufacturerSelectionScreen) {
+                            it is QuizResultsScreen
+                        }
                     }
 
                     is QuizResultsScreen.Event.ViewDeviceDetails -> {

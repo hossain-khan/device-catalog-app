@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.feature.phonequiz.results
 
+import com.slack.circuit.runtime.screen.Screen
 import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
@@ -73,4 +74,94 @@ class QuizResultsPresenterTest {
                 navigator.awaitPop()
             }
         }
+
+    @Test
+    fun `play again replaces results screen above hub root`() =
+        runTest {
+            val screen = createResultsScreen()
+            val navigator = FakeNavigator(root = TestQuizRootScreen, screen)
+            val presenter =
+                QuizResultsPresenter(
+                    screen = screen,
+                    navigator = navigator,
+                    quizService = QuizService(AndroidDeviceRepository(FakeAndroidDeviceDao())),
+                )
+
+            presenter.test {
+                val state = awaitItem()
+                state.eventSink(QuizResultsScreen.Event.PlayAgain)
+
+                navigator.awaitPop()
+                navigator.assertPopIsEmpty()
+                val expectedQuizScreen = QuizScreen(manufacturer = "Google", currentQuestion = 0)
+                assertEquals(expectedQuizScreen, navigator.awaitNextScreen())
+                assertEquals(listOf(expectedQuizScreen, TestQuizRootScreen), navigator.peekBackStack())
+            }
+        }
+
+    @Test
+    fun `choose manufacturer replaces results screen above hub root`() =
+        runTest {
+            val screen = createResultsScreen()
+            val navigator = FakeNavigator(root = TestQuizRootScreen, screen)
+            val presenter =
+                QuizResultsPresenter(
+                    screen = screen,
+                    navigator = navigator,
+                    quizService = QuizService(AndroidDeviceRepository(FakeAndroidDeviceDao())),
+                )
+
+            presenter.test {
+                val state = awaitItem()
+                state.eventSink(QuizResultsScreen.Event.ChooseManufacturer)
+
+                navigator.awaitPop()
+                navigator.assertPopIsEmpty()
+                assertEquals(ManufacturerSelectionScreen, navigator.awaitNextScreen())
+                assertEquals(listOf(ManufacturerSelectionScreen, TestQuizRootScreen), navigator.peekBackStack())
+            }
+        }
+
+    @Test
+    fun `navigate back returns from results screen directly to hub root`() =
+        runTest {
+            val screen = createResultsScreen()
+            val navigator = FakeNavigator(root = TestQuizRootScreen, screen)
+            val presenter =
+                QuizResultsPresenter(
+                    screen = screen,
+                    navigator = navigator,
+                    quizService = QuizService(AndroidDeviceRepository(FakeAndroidDeviceDao())),
+                )
+
+            presenter.test {
+                val state = awaitItem()
+                state.eventSink(QuizResultsScreen.Event.NavigateBack)
+
+                navigator.awaitPop()
+                assertEquals(listOf(TestQuizRootScreen), navigator.peekBackStack())
+            }
+        }
+
+    private fun createResultsScreen(): QuizResultsScreen {
+        val device = TestDeviceFactory.createDeviceInfo(id = 42L)
+        val question =
+            QuizQuestion(
+                questionNumber = 1,
+                deviceCodename = device.androidDevice.device,
+                correctModelName = device.androidDevice.modelName,
+                deviceDetails = device,
+                options = listOf("Pixel 5", "Pixel 6", "Pixel 7", "Pixel 8"),
+                manufacturer = "Google",
+            )
+        return QuizResultsScreen(
+            manufacturer = "Google",
+            score = 1,
+            totalQuestions = 1,
+        ).apply {
+            answers = listOf(QuizAnswer(question = question, userAnswer = "Pixel 5", isCorrect = true))
+        }
+    }
+
+    private data object TestQuizRootScreen : Screen
 }
