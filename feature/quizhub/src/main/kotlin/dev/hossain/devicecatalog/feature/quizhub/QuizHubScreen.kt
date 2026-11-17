@@ -4,7 +4,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.slack.circuit.runtime.CircuitUiEvent
 import com.slack.circuit.runtime.CircuitUiState
@@ -31,7 +30,6 @@ data object QuizHubScreen : Screen {
         BRAND_CHALLENGE,
         DEVICE_COMPARE,
         SPEC_MASTER,
-        TIMELINE_CHALLENGE,
     }
 
     data class QuizTypeInfo(
@@ -74,13 +72,6 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
             title = "Spec Master",
             description = "Guess specs from images",
             icon = Icons.Default.Memory,
-            isAvailable = false,
-        ),
-        QuizHubScreen.QuizTypeInfo(
-            type = QuizHubScreen.QuizType.TIMELINE_CHALLENGE,
-            title = "Timeline Challenge",
-            description = "Order devices by release date",
-            icon = Icons.Default.Timeline,
             isAvailable = false,
         ),
     )

@@ -17,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Psychology
-import androidx.compose.material.icons.filled.Timeline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -254,10 +253,10 @@ private fun QuizTilePreviewComingSoonDark() {
         QuizTile(
             quizInfo =
                 QuizHubScreen.QuizTypeInfo(
-                    type = QuizHubScreen.QuizType.TIMELINE_CHALLENGE,
-                    title = "Timeline Challenge",
-                    description = "Order devices by release date",
-                    icon = Icons.Default.Timeline,
+                    type = QuizHubScreen.QuizType.SPEC_MASTER,
+                    title = "Spec Master",
+                    description = "Guess device specs",
+                    icon = Icons.Default.Memory,
                     isAvailable = false,
                 ),
             onQuizSelected = {},
