@@ -39,14 +39,6 @@ class QuizHubPresenter(
                                 )
                             }
 
-                            QuizHubScreen.QuizType.DREAM_PHONE -> {
-                                Timber.i("Dream Phone Finder selected - navigating to dream phone finder")
-                                navigator.goTo(
-                                    dev.hossain.devicecatalog.feature.dreamphone
-                                        .DreamPhoneScreen(),
-                                )
-                            }
-
                             QuizHubScreen.QuizType.DEVICE_COMPARE -> {
                                 Timber.i("Device Compare selected - navigating to device comparison")
                                 navigator.goTo(DeviceComparisonScreen())

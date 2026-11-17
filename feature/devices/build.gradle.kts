@@ -16,9 +16,8 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:ui"))
 
-    // Cross-feature navigation (devices navigates to devicedetails and dreamphone)
+    // Cross-feature navigation (devices navigates to devicedetails)
     implementation(project(":feature:devicedetails"))
-    implementation(project(":feature:dreamphone"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)

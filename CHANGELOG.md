@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- Removed Dream Phone Finder (`:feature:dreamphone`) and its entry points in `QuizHub` and `DevicesScreen` because the Play Console dataset lacks pricing, camera, battery, and display panel/refresh-rate specs needed for reliable recommendations
+
 ## [2.2.1] - 2026-11-16
 
 ### Fixed

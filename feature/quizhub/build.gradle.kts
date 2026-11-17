@@ -15,7 +15,6 @@ dependencies {
     implementation(project(":feature:phonequiz"))
     implementation(project(":feature:brandchallenge"))
     implementation(project(":feature:devicecomparison"))
-    implementation(project(":feature:dreamphone"))
 
     implementation(libs.circuit.codegen.annotations)
     implementation(libs.circuit.foundation)
