@@ -58,6 +58,13 @@ private const val TOP_MANUFACTURERS_COUNT = 10
  * @param onClearFilters Callback when filters are cleared
  * @param modifier Modifier for the bottom sheet
  */
+private const val DEFAULT_MIN_RAM_MB = 512
+private const val DEFAULT_MAX_RAM_MB = 16384
+private const val DEFAULT_MIN_DPI = 120
+private const val DEFAULT_MAX_DPI = 640
+private const val DEFAULT_MIN_SDK = 21
+private const val DEFAULT_MAX_SDK = 35
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun FilterBottomSheet(
@@ -74,28 +81,28 @@ fun FilterBottomSheet(
     val ramSliderState =
         remember {
             RangeSliderState(
-                startValue = currentFilters.minRamMb?.toFloat() ?: 512f,
-                endValue = currentFilters.maxRamMb?.toFloat() ?: 16384f,
+                startValue = (currentFilters.minRamMb ?: DEFAULT_MIN_RAM_MB).toFloat(),
+                endValue = (currentFilters.maxRamMb ?: DEFAULT_MAX_RAM_MB).toFloat(),
                 steps = 30,
-                trackRange = 512f..16384f,
+                trackRange = DEFAULT_MIN_RAM_MB.toFloat()..DEFAULT_MAX_RAM_MB.toFloat(),
             )
         }
     val dpiSliderState =
         remember {
             RangeSliderState(
-                startValue = currentFilters.minScreenDpi?.toFloat() ?: 120f,
-                endValue = currentFilters.maxScreenDpi?.toFloat() ?: 640f,
+                startValue = (currentFilters.minScreenDpi ?: DEFAULT_MIN_DPI).toFloat(),
+                endValue = (currentFilters.maxScreenDpi ?: DEFAULT_MAX_DPI).toFloat(),
                 steps = 12,
-                trackRange = 120f..640f,
+                trackRange = DEFAULT_MIN_DPI.toFloat()..DEFAULT_MAX_DPI.toFloat(),
             )
         }
     val sdkSliderState =
         remember {
             RangeSliderState(
-                startValue = currentFilters.minSdkVersion?.toFloat() ?: 21f,
-                endValue = currentFilters.maxSdkVersion?.toFloat() ?: 35f,
+                startValue = (currentFilters.minSdkVersion ?: DEFAULT_MIN_SDK).toFloat(),
+                endValue = (currentFilters.maxSdkVersion ?: DEFAULT_MAX_SDK).toFloat(),
                 steps = 13,
-                trackRange = 21f..35f,
+                trackRange = DEFAULT_MIN_SDK.toFloat()..DEFAULT_MAX_SDK.toFloat(),
             )
         }
 
@@ -326,12 +333,12 @@ fun FilterBottomSheet(
                         onClick = {
                             formFactors = emptySet()
                             manufacturers = emptySet()
-                            ramSliderState.startValue = 512f
-                            ramSliderState.endValue = 16384f
-                            dpiSliderState.startValue = 120f
-                            dpiSliderState.endValue = 640f
-                            sdkSliderState.startValue = 21f
-                            sdkSliderState.endValue = 35f
+                            ramSliderState.startValue = DEFAULT_MIN_RAM_MB.toFloat()
+                            ramSliderState.endValue = DEFAULT_MAX_RAM_MB.toFloat()
+                            dpiSliderState.startValue = DEFAULT_MIN_DPI.toFloat()
+                            dpiSliderState.endValue = DEFAULT_MAX_DPI.toFloat()
+                            sdkSliderState.startValue = DEFAULT_MIN_SDK.toFloat()
+                            sdkSliderState.endValue = DEFAULT_MAX_SDK.toFloat()
                             onClearFilters()
                         },
                         modifier = Modifier.weight(1f),
@@ -341,16 +348,28 @@ fun FilterBottomSheet(
 
                     Button(
                         onClick = {
+                            val minRam = ramSliderState.startValue.toInt()
+                            val maxRam = ramSliderState.endValue.toInt()
+                            val isRamChanged = minRam > DEFAULT_MIN_RAM_MB || maxRam < DEFAULT_MAX_RAM_MB
+
+                            val minDpi = dpiSliderState.startValue.toInt()
+                            val maxDpi = dpiSliderState.endValue.toInt()
+                            val isDpiChanged = minDpi > DEFAULT_MIN_DPI || maxDpi < DEFAULT_MAX_DPI
+
+                            val minSdk = sdkSliderState.startValue.toInt()
+                            val maxSdk = sdkSliderState.endValue.toInt()
+                            val isSdkChanged = minSdk > DEFAULT_MIN_SDK || maxSdk < DEFAULT_MAX_SDK
+
                             val filters =
                                 DevicesScreen.FilterState(
                                     formFactors = formFactors,
                                     manufacturers = manufacturers,
-                                    minRamMb = ramSliderState.startValue.toInt(),
-                                    maxRamMb = ramSliderState.endValue.toInt(),
-                                    minScreenDpi = dpiSliderState.startValue.toInt(),
-                                    maxScreenDpi = dpiSliderState.endValue.toInt(),
-                                    minSdkVersion = sdkSliderState.startValue.toInt(),
-                                    maxSdkVersion = sdkSliderState.endValue.toInt(),
+                                    minRamMb = if (isRamChanged) minRam else null,
+                                    maxRamMb = if (isRamChanged) maxRam else null,
+                                    minScreenDpi = if (isDpiChanged) minDpi else null,
+                                    maxScreenDpi = if (isDpiChanged) maxDpi else null,
+                                    minSdkVersion = if (isSdkChanged) minSdk else null,
+                                    maxSdkVersion = if (isSdkChanged) maxSdk else null,
                                 )
                             onApplyFilters(filters)
                         },

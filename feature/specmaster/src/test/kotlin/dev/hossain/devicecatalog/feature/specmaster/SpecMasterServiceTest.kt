@@ -6,6 +6,7 @@ import dev.hossain.devicecatalog.core.testing.FakeAndroidDeviceDao
 import dev.hossain.devicecatalog.core.testing.TestDeviceFactory
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -121,6 +122,35 @@ class SpecMasterServiceTest {
                         }
                     }
                 }
+            }
+        }
+
+    @Test
+    fun `does not repeat manufacturer when modelName already starts with it`() =
+        runTest {
+            val fakeDao = FakeAndroidDeviceDao()
+            fakeDao.setDevices(
+                (1..5).map { idx ->
+                    TestDeviceFactory.createDeviceWithRelations(
+                        id = idx.toLong(),
+                        manufacturer = "Blaupunkt",
+                        modelName = "Blaupunkt $idx",
+                        ram = "${idx * 2} GB",
+                        processorName = "SoC $idx",
+                        gpu = "GPU $idx",
+                        formFactor = FormFactor.PHONE.value,
+                        sdkVersions = listOf(35),
+                    )
+                },
+            )
+            val service = SpecMasterService(AndroidDeviceRepository(fakeDao))
+            val questions = service.generateQuiz().getOrThrow()
+
+            questions.forEach { question ->
+                assertFalse(
+                    "Unexpected repeated manufacturer in '${question.deviceName}'",
+                    question.deviceName.startsWith("Blaupunkt Blaupunkt", ignoreCase = true),
+                )
             }
         }
 }
