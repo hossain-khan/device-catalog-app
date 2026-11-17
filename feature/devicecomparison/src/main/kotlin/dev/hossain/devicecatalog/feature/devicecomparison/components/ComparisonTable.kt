@@ -36,7 +36,7 @@ fun ComparisonTable(
             selectedDevices = selectedDevices,
             onRemoveDevice = onRemoveDevice,
             onDeviceClick = onDeviceClick,
-            modifier = Modifier.padding(bottom = 12.dp),
+            modifier = Modifier.padding(top = 8.dp, bottom = 12.dp),
         )
 
         if (selectedDevices.size == 1 && selectedDevices.size < maxDevices) {
