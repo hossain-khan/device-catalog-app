@@ -125,6 +125,7 @@ dependencies {
     implementation(project(":feature:quizhub"))
     implementation(project(":feature:phonequiz"))
     implementation(project(":feature:brandchallenge"))
+    implementation(project(":feature:specmaster"))
     implementation(project(":feature:statsexplorer"))
 
     implementation(platform(libs.androidx.compose.bom))

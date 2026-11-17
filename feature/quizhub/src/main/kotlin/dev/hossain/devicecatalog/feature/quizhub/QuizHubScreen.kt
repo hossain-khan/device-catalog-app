@@ -70,8 +70,8 @@ fun getAvailableQuizzes(): List<QuizHubScreen.QuizTypeInfo> =
         QuizHubScreen.QuizTypeInfo(
             type = QuizHubScreen.QuizType.SPEC_MASTER,
             title = "Spec Master",
-            description = "Guess specs from images",
+            description = "Guess processor, RAM, and GPU specs",
             icon = Icons.Default.Memory,
-            isAvailable = false,
+            isAvailable = true,
         ),
     )

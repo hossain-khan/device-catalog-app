@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Implemented and enabled **Spec Master** (`:feature:specmaster`) quiz in `QuizHub` ("Guess the specs" for Processor/SoC, RAM, and GPU backed by real device catalog fields)
 - Enabled **Device Compare** (`:feature:devicecomparison`) in `QuizHub` with aligned 1:1 device header and spec columns, top-bar add action, improved device selector bottom sheet, fixed RAM range comparison (`11-12GB`), and `DeviceComparisonPresenterTest`
 
 ### Fixed

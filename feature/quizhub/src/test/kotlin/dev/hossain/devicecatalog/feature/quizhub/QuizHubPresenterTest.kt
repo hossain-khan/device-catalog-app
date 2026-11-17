@@ -5,6 +5,7 @@ import com.slack.circuit.test.test
 import dev.hossain.devicecatalog.feature.brandchallenge.BrandChallengeScreen
 import dev.hossain.devicecatalog.feature.devicecomparison.DeviceComparisonScreen
 import dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen
+import dev.hossain.devicecatalog.feature.specmaster.SpecMasterScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -29,9 +30,8 @@ class QuizHubPresenterTest {
                 state.eventSink(QuizHubScreen.Event.QuizSelected(QuizHubScreen.QuizType.DEVICE_COMPARE))
                 assertEquals(DeviceComparisonScreen(), navigator.awaitNextScreen())
 
-                // Coming soon quiz types should not trigger navigation
                 state.eventSink(QuizHubScreen.Event.QuizSelected(QuizHubScreen.QuizType.SPEC_MASTER))
-                navigator.expectNoGoToEvents()
+                assertEquals(SpecMasterScreen(), navigator.awaitNextScreen())
             }
         }
 }
