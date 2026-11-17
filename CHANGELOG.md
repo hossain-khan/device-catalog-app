@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enabled **Device Compare** (`:feature:devicecomparison`) in `QuizHub` with aligned 1:1 device header and spec columns, top-bar add action, improved device selector bottom sheet, fixed RAM range comparison (`11-12GB`), and `DeviceComparisonPresenterTest`
 
 ### Fixed
+- Avoided adding unchanged default RAM/DPI/SDK slider ranges as active filter chips in `FilterBottomSheet`
+- Deduplicated repeated manufacturer prefixes in `SpecMasterService` device names (e.g., `Blaupunkt` instead of `Blaupunkt Blaupunkt`)
+- Added vertical scrolling to `QuizUi` so options and the `Submit` button remain accessible on compact landscape screens
 - Fixed `BrandChallengeService` question generation so `"Which brand does NOT belong to [manufacturer]?"` includes exactly one non-belonging brand instead of two, and multi-manufacturer brands are excluded from wrong options in `MANUFACTURER_FOR_BRAND` and `TRUE_FALSE` questions
 - Fixed `QuizService` question generation to deduplicate device codenames and model names so answer choices never contain duplicate model names
 

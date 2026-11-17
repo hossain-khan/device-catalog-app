@@ -135,7 +135,14 @@ class SpecMasterService
 
             usedModels.add(modelKey)
 
-            val deviceName = "${chosenDevice.androidDevice.manufacturer} ${chosenDevice.androidDevice.modelName}"
+            val manufacturer = chosenDevice.androidDevice.manufacturer.trim()
+            val modelName = chosenDevice.androidDevice.modelName.trim()
+            val deviceName =
+                if (modelName.startsWith(manufacturer, ignoreCase = true)) {
+                    modelName
+                } else {
+                    "$manufacturer $modelName"
+                }
             val questionText =
                 when (category) {
                     SpecCategory.PROCESSOR -> "Which processor powers the $deviceName?"
