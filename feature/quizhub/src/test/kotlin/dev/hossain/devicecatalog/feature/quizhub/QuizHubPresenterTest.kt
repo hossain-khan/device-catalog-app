@@ -4,7 +4,6 @@ import com.slack.circuit.test.FakeNavigator
 import com.slack.circuit.test.test
 import dev.hossain.devicecatalog.feature.brandchallenge.BrandChallengeScreen
 import dev.hossain.devicecatalog.feature.devicecomparison.DeviceComparisonScreen
-import dev.hossain.devicecatalog.feature.dreamphone.DreamPhoneScreen
 import dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -26,9 +25,6 @@ class QuizHubPresenterTest {
 
                 state.eventSink(QuizHubScreen.Event.QuizSelected(QuizHubScreen.QuizType.BRAND_CHALLENGE))
                 assertEquals(BrandChallengeScreen(), navigator.awaitNextScreen())
-
-                state.eventSink(QuizHubScreen.Event.QuizSelected(QuizHubScreen.QuizType.DREAM_PHONE))
-                assertEquals(DreamPhoneScreen(), navigator.awaitNextScreen())
 
                 state.eventSink(QuizHubScreen.Event.QuizSelected(QuizHubScreen.QuizType.DEVICE_COMPARE))
                 assertEquals(DeviceComparisonScreen(), navigator.awaitNextScreen())

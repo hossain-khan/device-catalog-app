@@ -137,17 +137,6 @@ fun DevicesUi(
                             }
                         Text(text = title)
                     },
-                    actions = {
-                        // Dream phone icon button
-                        IconButton(
-                            onClick = { state.eventSink(DevicesScreen.Event.OpenDreamPhoneSurvey) },
-                        ) {
-                            Icon(
-                                imageVector = dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons.Psychology,
-                                contentDescription = "Find my dream phone",
-                            )
-                        }
-                    },
                     scrollBehavior = scrollBehavior,
                 )
             }

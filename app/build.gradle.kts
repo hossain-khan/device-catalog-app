@@ -119,7 +119,6 @@ dependencies {
     implementation(project(":feature:devices"))
     implementation(project(":feature:devicedetails"))
     implementation(project(":feature:devicecomparison"))
-    implementation(project(":feature:dreamphone"))
     implementation(project(":feature:onboarding"))
     implementation(project(":feature:statistics"))
     implementation(project(":feature:settings"))

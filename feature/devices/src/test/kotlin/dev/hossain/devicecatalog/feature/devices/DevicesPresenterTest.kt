@@ -9,7 +9,6 @@ import dev.hossain.devicecatalog.core.database.AndroidDeviceWithRelations
 import dev.hossain.devicecatalog.core.testing.FakeAndroidDeviceDao
 import dev.hossain.devicecatalog.core.testing.TestDeviceFactory
 import dev.hossain.devicecatalog.feature.devicedetails.DeviceDetailsScreen
-import dev.hossain.devicecatalog.feature.dreamphone.DreamPhoneScreen
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -85,7 +84,7 @@ class DevicesPresenterTest {
         }
 
     @Test
-    fun `navigates to device details and dream phone screens`() =
+    fun `navigates to device details screen`() =
         runTest {
             val fakeDao = FakeAndroidDeviceDao()
             val navigator = FakeNavigator(DevicesScreen)
@@ -101,9 +100,6 @@ class DevicesPresenterTest {
 
                 state.eventSink(DevicesScreen.Event.DeviceClicked(device))
                 assertEquals(DeviceDetailsScreen(deviceId = 12L), navigator.awaitNextScreen())
-
-                state.eventSink(DevicesScreen.Event.OpenDreamPhoneSurvey)
-                assertEquals(DreamPhoneScreen(step = 0), navigator.awaitNextScreen())
             }
         }
 
