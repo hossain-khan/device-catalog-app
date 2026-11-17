@@ -44,8 +44,12 @@ class QuizHubPresenter(
                                 navigator.goTo(DeviceComparisonScreen())
                             }
 
-                            else -> {
-                                Timber.i("Quiz ${event.quizType} is coming soon")
+                            QuizHubScreen.QuizType.SPEC_MASTER -> {
+                                Timber.i("Spec Master selected - navigating to spec master")
+                                navigator.goTo(
+                                    dev.hossain.devicecatalog.feature.specmaster
+                                        .SpecMasterScreen(),
+                                )
                             }
                         }
                     }
