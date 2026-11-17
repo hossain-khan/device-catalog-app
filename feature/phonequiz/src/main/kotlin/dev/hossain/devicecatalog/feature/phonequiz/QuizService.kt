@@ -2,6 +2,7 @@ package dev.hossain.devicecatalog.feature.phonequiz
 
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CancellationException
 import timber.log.Timber
 
 /**
@@ -33,18 +34,21 @@ class QuizService
                     )
                 }
 
-                // Select 5 random devices for questions
-                val selectedDevices = devices.shuffled().take(5)
+                // Select 5 distinct devices by codename (and prefer distinct model names to avoid repeat answers)
+                val distinctByCodename = devices.shuffled().distinctBy { it.androidDevice.device }
+                val distinctModels = distinctByCodename.distinctBy { it.androidDevice.modelName }
+                val selectedDevices = (if (distinctModels.size >= 5) distinctModels else distinctByCodename).take(5)
 
                 val questions =
                     selectedDevices.mapIndexed { index, correctDevice ->
-                        // Get 3 wrong options from same manufacturer
+                        // Get 3 distinct wrong model names that do not match the correct model name
                         val wrongOptions =
                             devices
-                                .filter { it.id != correctDevice.id }
+                                .map { it.androidDevice.modelName }
+                                .distinct()
+                                .filter { it != correctDevice.androidDevice.modelName }
                                 .shuffled()
                                 .take(3)
-                                .map { it.androidDevice.modelName }
 
                         QuizQuestion(
                             questionNumber = index + 1,
@@ -58,6 +62,8 @@ class QuizService
 
                 Timber.i("Successfully generated ${questions.size} questions for $manufacturer")
                 Result.success(questions)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Failed to generate quiz for manufacturer: $manufacturer")
                 Result.failure(e)

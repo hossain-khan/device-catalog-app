@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.feature.brandchallenge
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.data.BrandManufacturerPair
 import dev.zacsweers.metro.Inject
+import kotlinx.coroutines.CancellationException
 import timber.log.Timber
 
 /**
@@ -57,6 +58,8 @@ class BrandChallengeService
 
                 Timber.i("Successfully generated ${shuffledQuestions.size} brand challenge questions")
                 Result.success(shuffledQuestions)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Timber.e(e, "Failed to generate brand challenge quiz")
                 Result.failure(e)
@@ -66,12 +69,14 @@ class BrandChallengeService
         /**
          * Generate "Which manufacturer makes [brand]?" questions.
          */
-        private suspend fun generateManufacturerForBrandQuestions(
+        private fun generateManufacturerForBrandQuestions(
             pairs: List<BrandManufacturerPair>,
             count: Int,
         ): List<BrandQuestion> {
             val questions = mutableListOf<BrandQuestion>()
             val usedPairs = mutableSetOf<BrandManufacturerPair>()
+            val manufacturersByBrand =
+                pairs.groupBy({ it.brand }, { it.manufacturer }).mapValues { it.value.toSet() }
 
             repeat(count) {
                 val availablePairs = pairs.filterNot { usedPairs.contains(it) }
@@ -80,12 +85,13 @@ class BrandChallengeService
                 val correctPair = availablePairs.random()
                 usedPairs.add(correctPair)
 
-                // Get 3 wrong manufacturers (different from correct one)
+                // Exclude every manufacturer associated with this brand so wrong options are never valid
+                val validManufacturers = manufacturersByBrand[correctPair.brand].orEmpty()
                 val wrongManufacturers =
                     pairs
                         .map { it.manufacturer }
                         .distinct()
-                        .filterNot { it == correctPair.manufacturer }
+                        .filterNot { it in validManufacturers }
                         .shuffled()
                         .take(3)
 
@@ -116,6 +122,8 @@ class BrandChallengeService
         ): List<BrandQuestion> {
             val questions = mutableListOf<BrandQuestion>()
             val usedPairs = mutableSetOf<BrandManufacturerPair>()
+            val manufacturersByBrand =
+                pairs.groupBy({ it.brand }, { it.manufacturer }).mapValues { it.value.toSet() }
 
             repeat(count) {
                 val availablePairs = pairs.filterNot { usedPairs.contains(it) }
@@ -141,13 +149,14 @@ class BrandChallengeService
                         ),
                     )
                 } else {
-                    // Create a FALSE question with incorrect pairing
+                    // Create a FALSE question using a manufacturer that does NOT make pair1.brand
                     val pair1 = availablePairs.random()
+                    val validManufacturers = manufacturersByBrand[pair1.brand].orEmpty()
                     val wrongManufacturer =
                         pairs
                             .map { it.manufacturer }
                             .distinct()
-                            .filterNot { it == pair1.manufacturer }
+                            .filterNot { it in validManufacturers }
                             .randomOrNull() ?: return questions
 
                     usedPairs.add(pair1)
@@ -172,45 +181,40 @@ class BrandChallengeService
         /**
          * Generate "Which brand does NOT belong to [manufacturer]?" questions.
          */
-        private suspend fun generateBrandNotBelongingQuestions(
+        private fun generateBrandNotBelongingQuestions(
             pairs: List<BrandManufacturerPair>,
             count: Int,
         ): List<BrandQuestion> {
             val questions = mutableListOf<BrandQuestion>()
+            val brandsByManufacturer =
+                pairs.groupBy({ it.manufacturer }, { it.brand }).mapValues { it.value.distinct() }
 
             repeat(count) {
-                // Pick a manufacturer with multiple brands
+                // Prefer manufacturers with >= 3 distinct brands so 3 belonging + 1 non-belonging yields 4 unique options
                 val manufacturerWithBrands =
-                    pairs
-                        .groupBy { it.manufacturer }
-                        .filter { it.value.size >= 2 }
-                        .entries
-                        .randomOrNull() ?: return questions
+                    brandsByManufacturer.entries
+                        .filter { it.value.size >= 3 }
+                        .randomOrNull()
+                        ?: brandsByManufacturer.entries
+                            .filter { it.value.size >= 2 }
+                            .randomOrNull()
+                        ?: return questions
 
                 val manufacturer = manufacturerWithBrands.key
-                val correctBrands = manufacturerWithBrands.value.map { it.brand }
+                val correctBrands = manufacturerWithBrands.value
+                val correctBrandSet = correctBrands.toSet()
 
-                // Get a brand that does NOT belong to this manufacturer
+                // Pick exactly ONE brand that does NOT belong to this manufacturer
                 val wrongBrand =
                     pairs
                         .filterNot { it.manufacturer == manufacturer }
                         .map { it.brand }
                         .distinct()
+                        .filterNot { it in correctBrandSet }
                         .randomOrNull() ?: return questions
 
-                // Get 2 more correct brands for this manufacturer
-                val otherCorrectBrands = correctBrands.shuffled().take(2)
-
-                // Get 1 more wrong brand
-                val anotherWrongBrand =
-                    pairs
-                        .filterNot { it.manufacturer == manufacturer }
-                        .map { it.brand }
-                        .distinct()
-                        .filterNot { it == wrongBrand }
-                        .randomOrNull() ?: wrongBrand
-
-                val options = (otherCorrectBrands + listOf(wrongBrand, anotherWrongBrand)).shuffled()
+                val belongingBrands = correctBrands.shuffled().take(3)
+                val options = (belongingBrands + wrongBrand).shuffled()
 
                 questions.add(
                     BrandQuestion(
@@ -218,7 +222,7 @@ class BrandChallengeService
                         questionType = QuestionType.BRAND_NOT_BELONGING,
                         questionText = "Which brand does NOT belong to $manufacturer?",
                         correctAnswer = wrongBrand,
-                        options = options.distinct().take(4),
+                        options = options,
                         brand = wrongBrand,
                         manufacturer = manufacturer,
                     ),
