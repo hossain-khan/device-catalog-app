@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Enabled **Device Compare** (`:feature:devicecomparison`) in `QuizHub` with aligned 1:1 device header and spec columns, top-bar add action, improved device selector bottom sheet, fixed RAM range comparison (`11-12GB`), and `DeviceComparisonPresenterTest`
+
 ### Fixed
 - Fixed `BrandChallengeService` question generation so `"Which brand does NOT belong to [manufacturer]?"` includes exactly one non-belonging brand instead of two, and multi-manufacturer brands are excluded from wrong options in `MANUFACTURER_FOR_BRAND` and `TRUE_FALSE` questions
 - Fixed `QuizService` question generation to deduplicate device codenames and model names so answer choices never contain duplicate model names

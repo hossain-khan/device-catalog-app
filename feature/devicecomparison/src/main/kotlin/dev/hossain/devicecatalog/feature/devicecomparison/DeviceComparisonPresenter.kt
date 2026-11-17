@@ -11,6 +11,7 @@ import com.slack.circuit.retained.produceRetainedState
 import com.slack.circuit.retained.rememberRetained
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.feature.devicedetails.DeviceDetailsScreen
@@ -172,7 +173,7 @@ class DeviceComparisonPresenter(
         rows.add(
             ComparisonRow(
                 label = "Form Factor",
-                values = devices.map { it.androidDevice.formFactor.name },
+                values = devices.map { it.androidDevice.formFactor.value },
                 category = SpecCategory.BASIC_INFO,
             ),
         )
@@ -182,7 +183,7 @@ class DeviceComparisonPresenter(
         rows.add(
             ComparisonRow(
                 label = "RAM",
-                values = ramValues,
+                values = ramValues.map { RamFormatter.formatRamToGb(it) },
                 category = SpecCategory.HARDWARE,
                 highlightIndices = findBestRamIndices(ramValues),
             ),
@@ -221,7 +222,10 @@ class DeviceComparisonPresenter(
         rows.add(
             ComparisonRow(
                 label = "Screen Densities",
-                values = densityValues.map { it.joinToString(", ") },
+                values =
+                    densityValues.map { densities ->
+                        if (densities.isEmpty()) "—" else "${densities.sorted().joinToString(", ")} dpi"
+                    },
                 category = SpecCategory.DISPLAY,
                 highlightIndices = findBestDensityIndices(densityValues),
             ),
@@ -239,7 +243,7 @@ class DeviceComparisonPresenter(
         rows.add(
             ComparisonRow(
                 label = "SDK Versions",
-                values = sdkValues.map { it.joinToString(", ") },
+                values = sdkValues.map { formatSdkRange(it) },
                 category = SpecCategory.PLATFORM,
                 highlightIndices = findBestSdkIndices(sdkValues),
             ),
@@ -248,77 +252,61 @@ class DeviceComparisonPresenter(
         return rows
     }
 
-    /**
-     * Finds indices with the highest RAM values.
-     * Properly handles unit conversion (MB to GB) for accurate comparison.
-     */
-    private fun findBestRamIndices(ramValues: List<String>): List<Int> {
-        val ramInMb =
-            ramValues.map { ram ->
-                parseRamToMb(ram)
-            }
-        val maxRam = ramInMb.maxOrNull() ?: return emptyList()
-        if (maxRam == 0) return emptyList()
-        return ramInMb.indices.filter { ramInMb[it] == maxRam }
+    private fun formatSdkRange(sdks: List<Int>): String {
+        val sorted = sdks.distinct().sorted()
+        return when {
+            sorted.isEmpty() -> "—"
+            sorted.size == 1 -> "API ${sorted.first()}"
+            else -> "API ${sorted.first()}–${sorted.last()}"
+        }
     }
 
     /**
+     * Highlights the winning indices only when comparing 2+ devices with an actual difference.
+     */
+    private fun findBestIndices(scores: List<Int>): List<Int> {
+        if (scores.size < 2) return emptyList()
+        val best = scores.maxOrNull() ?: return emptyList()
+        if (best <= 0) return emptyList()
+        val winners = scores.indices.filter { scores[it] == best }
+        return if (winners.size < scores.size) winners else emptyList()
+    }
+
+    /**
+     * Finds indices with the highest RAM values.
+     * Properly handles unit conversion (MB to GB) and ranges like "11-12GB".
+     */
+    private fun findBestRamIndices(ramValues: List<String>): List<Int> = findBestIndices(ramValues.map { parseRamToMb(it) })
+
+    /**
      * Parses a RAM string to megabytes for comparison.
-     * Handles formats like "12 GB", "1024 MB", "8GB", etc.
+     * Handles formats like "12 GB", "11-12GB", "1024 MB", "8GB", etc.
      */
     private fun parseRamToMb(ram: String): Int {
         val cleanedRam = ram.uppercase().trim()
-        // Match first number (integer or decimal) and optional unit (GB/MB)
-        val regex = Regex("""(\d+(?:\.\d+)?)\s*(GB|MB)?""")
-        val match = regex.find(cleanedRam)
-        if (match == null) {
-            Timber.w("Failed to parse RAM string: '$ram'")
-            return 0
-        }
-        val value = match.groupValues[1].toDoubleOrNull()
-        val unit = match.groupValues[2]
-        if (value == null) {
-            Timber.w("Failed to parse RAM value from string: '$ram'")
-            return 0
-        }
+        val numbers =
+            Regex("""\d+(?:\.\d+)?""")
+                .findAll(cleanedRam)
+                .mapNotNull { it.value.toDoubleOrNull() }
+                .toList()
+        val maxValue = numbers.maxOrNull() ?: return 0
         return when {
-            unit == "GB" -> {
-                (value * 1024).toInt()
-            }
-
-            unit == "MB" -> {
-                value.toInt()
-            }
-
-            unit.isEmpty() -> {
-                value.toInt()
-            }
-
-            // Assume MB if no unit specified
-            else -> {
-                Timber.w("Unknown RAM unit in string: '$ram'")
-                value.toInt()
-            }
+            cleanedRam.contains("GB") -> (maxValue * 1024).toInt()
+            cleanedRam.contains("MB") -> maxValue.toInt()
+            else -> maxValue.toInt()
         }
     }
 
     /**
      * Finds indices with the highest screen density.
      */
-    private fun findBestDensityIndices(densityValues: List<List<Int>>): List<Int> {
-        val maxDensities = densityValues.map { it.maxOrNull() ?: 0 }
-        val bestDensity = maxDensities.maxOrNull() ?: return emptyList()
-        return maxDensities.indices.filter { maxDensities[it] == bestDensity }
-    }
+    private fun findBestDensityIndices(densityValues: List<List<Int>>): List<Int> =
+        findBestIndices(densityValues.map { it.maxOrNull() ?: 0 })
 
     /**
      * Finds indices with the highest SDK version.
      */
-    private fun findBestSdkIndices(sdkValues: List<List<Int>>): List<Int> {
-        val maxSdks = sdkValues.map { it.maxOrNull() ?: 0 }
-        val bestSdk = maxSdks.maxOrNull() ?: return emptyList()
-        return maxSdks.indices.filter { maxSdks[it] == bestSdk }
-    }
+    private fun findBestSdkIndices(sdkValues: List<List<Int>>): List<Int> = findBestIndices(sdkValues.map { it.maxOrNull() ?: 0 })
 
     @CircuitInject(DeviceComparisonScreen::class, AppScope::class)
     @AssistedFactory

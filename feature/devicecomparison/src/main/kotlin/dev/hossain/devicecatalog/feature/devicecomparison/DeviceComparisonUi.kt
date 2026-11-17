@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -14,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -85,6 +88,18 @@ fun DeviceComparisonUi(
                             imageVector = DeviceCatalogIcons.ArrowBack,
                             contentDescription = "Navigate back",
                         )
+                    }
+                },
+                actions = {
+                    if (state.selectedDevices.size in 1 until state.maxDevices) {
+                        TextButton(onClick = { state.eventSink(DeviceComparisonScreen.Event.ShowDeviceSelector) }) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Text(" Add (${state.selectedDevices.size}/${state.maxDevices})")
+                        }
                     }
                 },
             )
