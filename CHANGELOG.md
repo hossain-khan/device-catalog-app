@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `QuizService` question generation to deduplicate device codenames and model names so answer choices never contain duplicate model names
 
 ### Removed
+- Removed `Timeline Challenge` (`TIMELINE_CHALLENGE`) placeholder from `QuizHub` because the Play Console dataset has no release dates/years
 - Removed Dream Phone Finder (`:feature:dreamphone`) and its entry points in `QuizHub` and `DevicesScreen` because the Play Console dataset lacks pricing, camera, battery, and display panel/refresh-rate specs needed for reliable recommendations
 
 ## [2.2.1] - 2026-11-16
