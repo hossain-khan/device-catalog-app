@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-11-16
+
 ### Added
 - Implemented and enabled **Spec Master** (`:feature:specmaster`) quiz in `QuizHub` ("Guess the specs" for Processor/SoC, RAM, and GPU backed by real device catalog fields)
 - Enabled **Device Compare** (`:feature:devicecomparison`) in `QuizHub` with aligned 1:1 device header and spec columns, top-bar add action, improved device selector bottom sheet, fixed RAM range comparison (`11-12GB`), and `DeviceComparisonPresenterTest`
@@ -460,7 +462,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.1...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.3.0...HEAD
+[2.3.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.1.0...2.2.0
 [2.1.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.0.0...2.1.0
