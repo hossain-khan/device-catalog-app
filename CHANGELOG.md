@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Fixed `BrandChallengeService` question generation so `"Which brand does NOT belong to [manufacturer]?"` includes exactly one non-belonging brand instead of two, and multi-manufacturer brands are excluded from wrong options in `MANUFACTURER_FOR_BRAND` and `TRUE_FALSE` questions
+- Fixed `QuizService` question generation to deduplicate device codenames and model names so answer choices never contain duplicate model names
+
 ### Removed
 - Removed Dream Phone Finder (`:feature:dreamphone`) and its entry points in `QuizHub` and `DevicesScreen` because the Play Console dataset lacks pricing, camera, battery, and display panel/refresh-rate specs needed for reliable recommendations
 
