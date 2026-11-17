@@ -1,18 +1,23 @@
 package dev.hossain.devicecatalog.feature.devicecomparison.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
@@ -32,9 +37,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.common.RamFormatter
+import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.core.ui.image.DeviceImage
 
@@ -51,36 +58,37 @@ private const val MAX_DEVICES_TO_DISPLAY = 50
 fun AddDeviceCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    subtitle: String = "Add Device",
 ) {
     Card(
         onClick = onClick,
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .height(104.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        modifier = modifier.fillMaxWidth(),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
+                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
             ),
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Add device",
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(20.dp),
                 tint = MaterialTheme.colorScheme.primary,
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "Add Device",
+                text = subtitle,
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.primary,
             )
         }
     }
@@ -101,31 +109,44 @@ fun SelectedDeviceCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(104.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)),
+                .height(128.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface,
             ),
     ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            DeviceImage(
-                device = device.androidDevice,
-                modifier = Modifier.size(44.dp),
-                fallbackIconModifier = Modifier.size(24.dp),
-                fallbackTint = MaterialTheme.colorScheme.primary,
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(
-                modifier = Modifier.weight(1f),
+        Box(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+            IconButton(
+                onClick = onRemove,
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .size(24.dp),
             ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Remove device",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(16.dp),
+                )
+            }
+
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 6.dp, start = 4.dp, end = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                DeviceImage(
+                    device = device.androidDevice,
+                    modifier = Modifier.size(36.dp),
+                    fallbackIconModifier = Modifier.size(22.dp),
+                    fallbackTint = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = device.androidDevice.manufacturer.uppercase(),
                     style = MaterialTheme.typography.labelSmall,
@@ -137,28 +158,20 @@ fun SelectedDeviceCard(
                     text = device.androidDevice.modelName,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = RamFormatter.formatRamToGb(device.androidDevice.ram),
                     style =
                         MaterialTheme.typography.labelSmall.copy(
-                            fontFamily = dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily,
+                            fontFamily = monoFontFamily,
                         ),
                     color = MaterialTheme.colorScheme.primary,
-                )
-            }
-            IconButton(
-                onClick = onRemove,
-                modifier = Modifier.size(24.dp),
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Remove device",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -178,7 +191,7 @@ fun DeviceSelectorBottomSheet(
     onDeviceSelected: (DeviceInfo) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -186,12 +199,17 @@ fun DeviceSelectorBottomSheet(
         modifier = modifier,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.85f)
+                    .imePadding()
+                    .padding(horizontal = 16.dp),
         ) {
             Text(
                 text = "Select a Device",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 16.dp),
+                modifier = Modifier.padding(bottom = 12.dp),
             )
 
             // Search field
@@ -199,7 +217,8 @@ fun DeviceSelectorBottomSheet(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search devices...") },
+                shape = RoundedCornerShape(12.dp),
+                placeholder = { Text("Search model, brand, codename...") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
@@ -219,7 +238,16 @@ fun DeviceSelectorBottomSheet(
                 singleLine = true,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            if (availableDevices.size > MAX_DEVICES_TO_DISPLAY) {
+                Text(
+                    text = "Showing first $MAX_DEVICES_TO_DISPLAY of ${availableDevices.size} devices — search to narrow results",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Device list
             LazyColumn(

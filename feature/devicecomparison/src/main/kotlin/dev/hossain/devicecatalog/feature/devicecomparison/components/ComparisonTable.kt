@@ -4,10 +4,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,15 +31,21 @@ fun ComparisonTable(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        // Device cards row
+        // Device cards row aligned 1:1 with spec columns below
         DeviceCardsRow(
             selectedDevices = selectedDevices,
-            maxDevices = maxDevices,
-            onAddDevice = onAddDevice,
             onRemoveDevice = onRemoveDevice,
             onDeviceClick = onDeviceClick,
-            modifier = Modifier.padding(bottom = 16.dp),
+            modifier = Modifier.padding(bottom = 12.dp),
         )
+
+        if (selectedDevices.size == 1 && selectedDevices.size < maxDevices) {
+            AddDeviceCard(
+                onClick = onAddDevice,
+                subtitle = "Add at least 1 more device to compare (${selectedDevices.size}/$maxDevices)",
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+        }
 
         // Comparison specs
         if (selectedDevices.isNotEmpty()) {
@@ -58,7 +65,7 @@ fun ComparisonTable(
                     items(rows) { row ->
                         SpecRow(
                             row = row,
-                            deviceCount = maxDevices,
+                            deviceCount = selectedDevices.size,
                         )
                     }
                 }
@@ -68,43 +75,26 @@ fun ComparisonTable(
 }
 
 /**
- * Horizontal row of device cards for selection.
+ * Horizontal row of selected device cards aligned 1:1 with the spec columns.
  */
 @Composable
 private fun DeviceCardsRow(
     selectedDevices: List<DeviceInfo>,
-    maxDevices: Int,
-    onAddDevice: () -> Unit,
     onRemoveDevice: (Long) -> Unit,
     onDeviceClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Calculate card width based on number of devices and max slots
-    val cardWidthFraction = 1f / maxDevices.coerceAtMost(selectedDevices.size + 1).toFloat()
-
-    LazyRow(
+    Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // Show selected devices
-        items(selectedDevices) { device ->
+        selectedDevices.forEach { device ->
             SelectedDeviceCard(
                 device = device,
                 onRemove = { onRemoveDevice(device.id) },
                 onClick = { onDeviceClick(device.id) },
-                modifier = Modifier.fillParentMaxWidth(cardWidthFraction),
+                modifier = Modifier.weight(1f),
             )
-        }
-
-        // Show add button if we haven't reached max
-        if (selectedDevices.size < maxDevices) {
-            item {
-                AddDeviceCard(
-                    onClick = onAddDevice,
-                    modifier = Modifier.fillParentMaxWidth(cardWidthFraction),
-                )
-            }
         }
     }
 }
