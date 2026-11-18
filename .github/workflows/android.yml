@@ -7,7 +7,34 @@ on:
     branches: [ "main" ]
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      build: ${{ steps.filter.outputs.build }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            build:
+              - '**'
+              - '!**.md'
+              - '!docs/**'
+              - '!project-resources/**'
+              - '!.devcontainer/**'
+              - '!renovate.json'
+              - '!.editorconfig'
+              - '!.gitignore'
+              - '!LICENSE'
+              - '!CHANGELOG.md'
+              - '!RELEASE.md'
+
   android-build:
+    needs: changes
+    if: needs.changes.outputs.build == 'true'
     runs-on: ubuntu-latest
 
     strategy:

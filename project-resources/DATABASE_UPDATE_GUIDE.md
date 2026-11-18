@@ -24,9 +24,18 @@ Room.databaseBuilder(context, AppDatabase::class.java, "device_catalog.db")
 
 ### Step 1: Update the Database File
 
-1. Generate or obtain the new `devices.db` file from [android-device-catalog-parser](https://github.com/hossain-khan/android-device-catalog-parser) (`sample/resources/device-catalog.db`)
-2. Replace the existing database file at: `app/src/main/assets/devices.db`
-3. Verify the database file is valid and contains the expected data (`sqlite3 app/src/main/assets/devices.db "PRAGMA integrity_check; SELECT COUNT(*) FROM device;"`)
+1. Download the pre-built database asset from the [android-device-catalog-parser Releases](https://github.com/hossain-khan/android-device-catalog-parser/releases):
+   - **Tagged release** (recommended): `device-catalog-v<TAG>.db` (e.g., `device-catalog-v1.12.db` from release `1.12`)
+   - **Latest `main` snapshot**: `device-catalog-SNAPSHOT.db` from the `snapshot` pre-release
+   ```bash
+   gh release download 1.12 \
+     --repo hossain-khan/android-device-catalog-parser \
+     --pattern "device-catalog-v1.12.db" \
+     --output app/src/main/assets/devices.db \
+     --clobber
+   ```
+   *(Alternatively, generate it locally in `android-device-catalog-parser` via `./gradlew :sample:run` and copy `sample/resources/device-catalog.db` to `app/src/main/assets/devices.db`.)*
+2. Verify the database file is valid and contains the expected data (`sqlite3 app/src/main/assets/devices.db "PRAGMA integrity_check; SELECT COUNT(*) FROM device;"`)
 
 ### Step 2: Increment Database Version
 
