@@ -40,19 +40,35 @@ interface AndroidDeviceDao {
     fun getAllDevicesWithRelations(): Flow<List<AndroidDeviceWithRelations>>
 
     /**
-     * Get all devices sorted by latest SDK version first (descending order).
-     * This shows devices with the newest Android versions at the top.
+     * Get all devices sorted by latest SDK version and flagship phones first.
+     * Prioritizes phones with the newest max/min SDK versions, flagship RAM tiers, and major OEMs.
      */
     @Transaction
     @Query(
         """
         SELECT device.* FROM device 
         LEFT JOIN (
-            SELECT device_id, MAX(sdk_version) as max_sdk 
+            SELECT device_id, MIN(sdk_version) as min_sdk, MAX(sdk_version) as max_sdk 
             FROM device_sdk 
             GROUP BY device_id
         ) sdk ON device._id = sdk.device_id
-        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        ORDER BY
+            COALESCE(sdk.max_sdk, 0) DESC,
+            CASE WHEN device.form_factor = 'Phone' THEN 0 ELSE 1 END ASC,
+            COALESCE(sdk.min_sdk, 0) DESC,
+            CASE
+                WHEN CAST(device.ram AS INTEGER) >= 11000 THEN 0
+                WHEN CAST(device.ram AS INTEGER) >= 7500 THEN 1
+                WHEN CAST(device.ram AS INTEGER) >= 5500 THEN 2
+                ELSE 3
+            END ASC,
+            CASE
+                WHEN device.manufacturer IN ('Google', 'Samsung', 'OnePlus', 'Xiaomi', 'Sony', 'Motorola', 'Nothing', 'Asus', 'Oppo', 'vivo', 'Honor', 'realme') THEN 0
+                ELSE 1
+            END ASC,
+            CAST(device.ram AS INTEGER) DESC,
+            manufacturer ASC,
+            model_name ASC
         """,
     )
     fun getAllDevicesWithRelationsLatestFirst(): Flow<List<AndroidDeviceWithRelations>>
@@ -93,21 +109,37 @@ interface AndroidDeviceDao {
     fun searchDevicesWithRelations(search: String): Flow<List<AndroidDeviceWithRelations>>
 
     /**
-     * Search devices sorted by latest SDK version first (descending order).
+     * Search devices sorted by latest SDK version and flagship phones first.
      */
     @Transaction
     @Query(
         """
         SELECT device.* FROM device 
         LEFT JOIN (
-            SELECT device_id, MAX(sdk_version) as max_sdk 
+            SELECT device_id, MIN(sdk_version) as min_sdk, MAX(sdk_version) as max_sdk 
             FROM device_sdk 
             GROUP BY device_id
         ) sdk ON device._id = sdk.device_id
         WHERE manufacturer LIKE :search 
            OR model_name LIKE :search
            OR brand LIKE :search
-        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        ORDER BY
+            COALESCE(sdk.max_sdk, 0) DESC,
+            CASE WHEN device.form_factor = 'Phone' THEN 0 ELSE 1 END ASC,
+            COALESCE(sdk.min_sdk, 0) DESC,
+            CASE
+                WHEN CAST(device.ram AS INTEGER) >= 11000 THEN 0
+                WHEN CAST(device.ram AS INTEGER) >= 7500 THEN 1
+                WHEN CAST(device.ram AS INTEGER) >= 5500 THEN 2
+                ELSE 3
+            END ASC,
+            CASE
+                WHEN device.manufacturer IN ('Google', 'Samsung', 'OnePlus', 'Xiaomi', 'Sony', 'Motorola', 'Nothing', 'Asus', 'Oppo', 'vivo', 'Honor', 'realme') THEN 0
+                ELSE 1
+            END ASC,
+            CAST(device.ram AS INTEGER) DESC,
+            manufacturer ASC,
+            model_name ASC
         """,
     )
     fun searchDevicesWithRelationsLatestFirst(search: String): Flow<List<AndroidDeviceWithRelations>>
@@ -125,20 +157,36 @@ interface AndroidDeviceDao {
     fun getPagedDevicesWithRelations(): PagingSource<Int, AndroidDeviceWithRelations>
 
     /**
-     * Get paged devices sorted by latest SDK version first (descending order).
-     * Orders by maximum SDK version (descending) to show latest devices first,
-     * then by manufacturer and model name for consistent sorting.
+     * Get paged devices sorted by latest SDK version and flagship phones first.
+     * Orders by max/min SDK version, Phone form factor, RAM tier, major OEMs,
+     * and then manufacturer and model name for consistent sorting.
      */
     @Transaction
     @Query(
         """
         SELECT device.* FROM device 
         LEFT JOIN (
-            SELECT device_id, MAX(sdk_version) as max_sdk 
+            SELECT device_id, MIN(sdk_version) as min_sdk, MAX(sdk_version) as max_sdk 
             FROM device_sdk 
             GROUP BY device_id
         ) sdk ON device._id = sdk.device_id
-        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        ORDER BY
+            COALESCE(sdk.max_sdk, 0) DESC,
+            CASE WHEN device.form_factor = 'Phone' THEN 0 ELSE 1 END ASC,
+            COALESCE(sdk.min_sdk, 0) DESC,
+            CASE
+                WHEN CAST(device.ram AS INTEGER) >= 11000 THEN 0
+                WHEN CAST(device.ram AS INTEGER) >= 7500 THEN 1
+                WHEN CAST(device.ram AS INTEGER) >= 5500 THEN 2
+                ELSE 3
+            END ASC,
+            CASE
+                WHEN device.manufacturer IN ('Google', 'Samsung', 'OnePlus', 'Xiaomi', 'Sony', 'Motorola', 'Nothing', 'Asus', 'Oppo', 'vivo', 'Honor', 'realme') THEN 0
+                ELSE 1
+            END ASC,
+            CAST(device.ram AS INTEGER) DESC,
+            manufacturer ASC,
+            model_name ASC
         """,
     )
     fun getPagedDevicesWithRelationsLatestFirst(): PagingSource<Int, AndroidDeviceWithRelations>
@@ -160,22 +208,37 @@ interface AndroidDeviceDao {
     fun getPagedDevicesWithRelationsBySearch(search: String): PagingSource<Int, AndroidDeviceWithRelations>
 
     /**
-     * Get paged devices by search query sorted by latest SDK version first.
-     * Orders by maximum SDK version (descending) to show latest devices first.
+     * Get paged devices by search query sorted by latest SDK version and flagship phones first.
      */
     @Transaction
     @Query(
         """
         SELECT device.* FROM device 
         LEFT JOIN (
-            SELECT device_id, MAX(sdk_version) as max_sdk 
+            SELECT device_id, MIN(sdk_version) as min_sdk, MAX(sdk_version) as max_sdk 
             FROM device_sdk 
             GROUP BY device_id
         ) sdk ON device._id = sdk.device_id
         WHERE manufacturer LIKE :search 
            OR model_name LIKE :search
            OR brand LIKE :search
-        ORDER BY COALESCE(sdk.max_sdk, 0) DESC, manufacturer ASC, model_name ASC
+        ORDER BY
+            COALESCE(sdk.max_sdk, 0) DESC,
+            CASE WHEN device.form_factor = 'Phone' THEN 0 ELSE 1 END ASC,
+            COALESCE(sdk.min_sdk, 0) DESC,
+            CASE
+                WHEN CAST(device.ram AS INTEGER) >= 11000 THEN 0
+                WHEN CAST(device.ram AS INTEGER) >= 7500 THEN 1
+                WHEN CAST(device.ram AS INTEGER) >= 5500 THEN 2
+                ELSE 3
+            END ASC,
+            CASE
+                WHEN device.manufacturer IN ('Google', 'Samsung', 'OnePlus', 'Xiaomi', 'Sony', 'Motorola', 'Nothing', 'Asus', 'Oppo', 'vivo', 'Honor', 'realme') THEN 0
+                ELSE 1
+            END ASC,
+            CAST(device.ram AS INTEGER) DESC,
+            manufacturer ASC,
+            model_name ASC
         """,
     )
     fun getPagedDevicesWithRelationsBySearchLatestFirst(search: String): PagingSource<Int, AndroidDeviceWithRelations>
