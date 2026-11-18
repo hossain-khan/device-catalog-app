@@ -326,10 +326,21 @@ fun AboutUi(
                             )
                         }
                     },
+                    trailingContent = {
+                        Icon(
+                            imageVector = DeviceCatalogIcons.OpenInNew,
+                            contentDescription = "Open in browser",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
                     colors =
                         ListItemDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.surface,
                         ),
+                    modifier =
+                        Modifier.clickable {
+                            state.eventSink(AboutScreen.Event.OpenDatabaseSource)
+                        },
                 ) {
                     Text(
                         text = "Device Catalog Database",
