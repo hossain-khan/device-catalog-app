@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -46,10 +48,12 @@ import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
 import dev.hossain.devicecatalog.core.designsystem.theme.tabularNums
 import dev.zacsweers.metro.AppScope
+import java.text.NumberFormat
+import java.util.Locale
 import dev.hossain.devicecatalog.core.designsystem.R as DesignSystemR
 
 @CircuitInject(screen = AboutScreen::class, scope = AppScope::class)
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun AboutUi(
     state: AboutScreen.State,
@@ -292,21 +296,31 @@ fun AboutUi(
                             modifier = Modifier.padding(top = 6.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Surface(
-                                shape = RoundedCornerShape(6.dp),
-                                color = MaterialTheme.colorScheme.secondaryContainer,
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)),
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(6.dp),
                             ) {
-                                Text(
-                                    text = "23,000+ devices",
-                                    style =
-                                        MaterialTheme.typography.labelSmall
-                                            .copy(
-                                                fontFamily = monoFontFamily,
-                                                fontWeight = FontWeight.SemiBold,
-                                            ).tabularNums,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                val deviceCountLabel =
+                                    state.deviceCount?.let { count ->
+                                        "${NumberFormat.getIntegerInstance(Locale.US).format(count)} devices"
+                                    } ?: "23,000+ devices"
+                                DatabaseMetaPill(
+                                    text = deviceCountLabel,
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    borderColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f),
+                                )
+                                DatabaseMetaPill(
+                                    text = "Snapshot: ${state.snapshotDate}",
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    borderColor = MaterialTheme.colorScheme.outlineVariant,
+                                )
+                                DatabaseMetaPill(
+                                    text = "Parser v${state.parserVersion}",
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    borderColor = MaterialTheme.colorScheme.outlineVariant,
                                 )
                             }
                             Text("Official Google Play supported devices dataset")
@@ -351,6 +365,32 @@ fun AboutUi(
 
             Spacer(modifier = Modifier.height(16.dp))
         }
+    }
+}
+
+@Composable
+private fun DatabaseMetaPill(
+    text: String,
+    containerColor: androidx.compose.ui.graphics.Color,
+    contentColor: androidx.compose.ui.graphics.Color,
+    borderColor: androidx.compose.ui.graphics.Color,
+) {
+    Surface(
+        shape = RoundedCornerShape(6.dp),
+        color = containerColor,
+        border = BorderStroke(1.dp, borderColor),
+    ) {
+        Text(
+            text = text,
+            style =
+                MaterialTheme.typography.labelSmall
+                    .copy(
+                        fontFamily = monoFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                    ).tabularNums,
+            color = contentColor,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        )
     }
 }
 
