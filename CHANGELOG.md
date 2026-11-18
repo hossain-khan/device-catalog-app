@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-11-18
+
+### Changed
+- Replaced oversized `MediumTopAppBar` / `LargeTopAppBar` across all four bottom-navigation tabs (`Devices`, `Quiz Hub`, `Stats`, `About`) with a compact two-line `DeviceCatalogTabTopBar` featuring a tinted icon badge, live subtitle, and contextual actions (#272)
+- Added live device count (`23,997 devices`), snapshot date (`Nov 11, 2026`), parser version (`Parser v1.13`) pills, and an external link to `android-device-catalog-parser` on the About screen's **Device Catalog Database** card (#269, #271)
+
+### Fixed
+- Fixed `QuizHub` tile subtitles clipping on narrower screens/larger font scales by replacing `aspectRatio(0.88f)` with `defaultMinSize` and equal-height `IntrinsicSize.Max` rows (#270)
+- Fixed double loading indicator on initial load of the Statistics screen by showing the `PullToRefreshBox` spinner only when refreshing already-loaded stats (#273)
+
 ## [2.5.0] - 2026-11-18
 
 ### Changed
