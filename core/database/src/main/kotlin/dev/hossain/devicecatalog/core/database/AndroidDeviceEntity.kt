@@ -45,14 +45,14 @@ data class AndroidDeviceEntity(
     @ColumnInfo(name = "processor_name")
     val processorName: String,
     val gpu: String,
-    @ColumnInfo(name = "min_sdk", defaultValue = "0")
+    @ColumnInfo(name = "min_sdk")
     val minSdk: Int = 0,
-    @ColumnInfo(name = "max_sdk", defaultValue = "0")
+    @ColumnInfo(name = "max_sdk")
     val maxSdk: Int = 0,
-    @ColumnInfo(name = "ram_min_mb", defaultValue = "0")
+    @ColumnInfo(name = "ram_min_mb")
     val ramMinMb: Int = 0,
-    @ColumnInfo(name = "ram_max_mb", defaultValue = "0")
+    @ColumnInfo(name = "ram_max_mb")
     val ramMaxMb: Int = 0,
-    @ColumnInfo(name = "sort_score", defaultValue = "0")
+    @ColumnInfo(name = "sort_score")
     val sortScore: Int = 0,
 )

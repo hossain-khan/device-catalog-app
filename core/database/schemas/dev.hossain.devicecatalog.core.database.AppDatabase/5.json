@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "31d2a4e71617351dc20056b8dde885ff",
+    "identityHash": "642c2f65b11e8bca7acd63cea52623b4",
     "entities": [
       {
         "tableName": "device",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brand` TEXT NOT NULL, `device` TEXT NOT NULL, `manufacturer` TEXT NOT NULL, `model_name` TEXT NOT NULL, `ram` TEXT NOT NULL, `form_factor` TEXT NOT NULL, `processor_name` TEXT NOT NULL, `gpu` TEXT NOT NULL, `min_sdk` INTEGER NOT NULL DEFAULT 0, `max_sdk` INTEGER NOT NULL DEFAULT 0, `ram_min_mb` INTEGER NOT NULL DEFAULT 0, `ram_max_mb` INTEGER NOT NULL DEFAULT 0, `sort_score` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `brand` TEXT NOT NULL, `device` TEXT NOT NULL, `manufacturer` TEXT NOT NULL, `model_name` TEXT NOT NULL, `ram` TEXT NOT NULL, `form_factor` TEXT NOT NULL, `processor_name` TEXT NOT NULL, `gpu` TEXT NOT NULL, `min_sdk` INTEGER NOT NULL, `max_sdk` INTEGER NOT NULL, `ram_min_mb` INTEGER NOT NULL, `ram_max_mb` INTEGER NOT NULL, `sort_score` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -66,36 +66,31 @@
             "fieldPath": "minSdk",
             "columnName": "min_sdk",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "maxSdk",
             "columnName": "max_sdk",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "ramMinMb",
             "columnName": "ram_min_mb",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "ramMaxMb",
             "columnName": "ram_max_mb",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "sortScore",
             "columnName": "sort_score",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -493,7 +488,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '31d2a4e71617351dc20056b8dde885ff')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '642c2f65b11e8bca7acd63cea52623b4')"
     ]
   }
 }
