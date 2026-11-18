@@ -26,12 +26,11 @@ class AboutPresenter(
             eventSink = { event ->
                 when (event) {
                     AboutScreen.Event.OpenSourceInfo -> {
-                        val intent =
-                            Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse("https://github.com/hossain-khan/device-catalog-app"),
-                            )
-                        navigator.goTo(IntentScreen(intent))
+                        openExternalUrl("https://github.com/hossain-khan/device-catalog-app")
+                    }
+
+                    AboutScreen.Event.OpenDatabaseSource -> {
+                        openExternalUrl("https://github.com/hossain-khan/android-device-catalog-parser")
                     }
 
                     AboutScreen.Event.OpenDeveloperSettings -> {
@@ -40,6 +39,11 @@ class AboutPresenter(
                 }
             },
         )
+
+    private fun openExternalUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        navigator.goTo(IntentScreen(intent))
+    }
 
     @CircuitInject(AboutScreen::class, AppScope::class)
     @AssistedFactory

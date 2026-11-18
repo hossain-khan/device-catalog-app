@@ -16,6 +16,8 @@ data object AboutScreen : Screen {
     sealed class Event : CircuitUiEvent {
         data object OpenSourceInfo : Event()
 
+        data object OpenDatabaseSource : Event()
+
         data object OpenDeveloperSettings : Event()
     }
 }
