@@ -25,4 +25,9 @@ dependencies {
     implementation(libs.circuit.serialization)
 
     implementation(libs.timber)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.circuit.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(project(":core:testing"))
 }
