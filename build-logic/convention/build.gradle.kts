@@ -54,5 +54,9 @@ gradlePlugin {
             id = "devicecatalog.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("androidLint") {
+            id = "devicecatalog.android.lint"
+            implementationClass = "AndroidLintConventionPlugin"
+        }
     }
 }

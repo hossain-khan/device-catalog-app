@@ -12,6 +12,7 @@ androidxPaging = "3.5.3"
 # https://developer.android.com/build/releases/gradle-plugin
 # https://developer.android.com/studio/releases#android_gradle_plugin_and_android_studio_compatibility
 agp = "9.5.1"
+androidTools = "32.5.1"
 circuit = "0.39.0"
 
 # Coil - Image loading library for Android backed by Kotlin Coroutines
@@ -147,6 +148,12 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 
+# Android Lint API & testing
+lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "androidTools" }
+lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.ref = "androidTools" }
+lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "androidTools" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+
 # Gradle plugins (for build-logic)
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -180,3 +187,6 @@ metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 # https://github.com/jeremymailen/kotlinter-gradle
 # https://github.com/pinterest/ktlint
 kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
+
+# Convention plugins defined by this project
+devicecatalog-android-lint = { id = "devicecatalog.android.lint" }

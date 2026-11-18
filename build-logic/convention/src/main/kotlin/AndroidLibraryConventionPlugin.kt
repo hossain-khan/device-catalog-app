@@ -13,6 +13,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.library")
+                apply("devicecatalog.android.lint")
             }
 
             extensions.configure<LibraryExtension> {

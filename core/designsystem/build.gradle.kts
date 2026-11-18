@@ -21,4 +21,6 @@ dependencies {
 
     // Testing dependencies
     testImplementation(libs.junit)
+
+    lintPublish(project(":lint"))
 }
