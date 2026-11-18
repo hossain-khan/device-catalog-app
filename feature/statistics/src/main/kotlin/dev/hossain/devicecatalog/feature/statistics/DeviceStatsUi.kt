@@ -16,20 +16,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -51,6 +52,8 @@ import dev.hossain.devicecatalog.core.data.ManufacturerCount
 import dev.hossain.devicecatalog.core.data.RamCount
 import dev.hossain.devicecatalog.core.data.ScreenDensityCount
 import dev.hossain.devicecatalog.core.data.SdkVersionCount
+import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogTabTopBar
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.chartColors
 import dev.hossain.devicecatalog.feature.statistics.components.BarChartData
 import dev.hossain.devicecatalog.feature.statistics.components.ChartLegend
@@ -63,6 +66,7 @@ import dev.hossain.devicecatalog.feature.statistics.components.PieChart
 import dev.hossain.devicecatalog.feature.statistics.components.PieChartData
 import dev.hossain.devicecatalog.feature.statistics.components.StatsKpiGrid
 import dev.zacsweers.metro.AppScope
+import java.text.NumberFormat
 import java.util.Locale
 
 @CircuitInject(screen = DeviceStatsScreen::class, scope = AppScope::class)
@@ -72,30 +76,40 @@ fun DeviceStatsUi(
     state: DeviceStatsScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val numberFormat = NumberFormat.getIntegerInstance(Locale.US)
+    val subtitle =
+        state.stats?.let { stats ->
+            "${numberFormat.format(stats.totalDevices)} devices · ${numberFormat.format(stats.totalManufacturers)} OEMs"
+        } ?: "Analyzing device catalog..."
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(
-                        text = "Catalog Telemetry",
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
+            DeviceCatalogTabTopBar(
+                title = "Catalog Telemetry",
+                subtitle = subtitle,
+                icon = DeviceCatalogIcons.Statistics,
+                scrollBehavior = scrollBehavior,
                 actions = {
-                    IconButton(
+                    FilledTonalButton(
                         onClick = { state.eventSink(DeviceStatsScreen.Event.OpenStatsExplorer) },
+                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                        modifier =
+                            Modifier
+                                .padding(end = 12.dp)
+                                .height(34.dp),
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Explore,
-                            contentDescription = "Open Stats Explorer",
+                            imageVector = DeviceCatalogIcons.Explore,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
                         )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text("Explorer")
                     }
                 },
-                scrollBehavior = scrollBehavior,
             )
         },
     ) { innerPadding ->

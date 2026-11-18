@@ -6,22 +6,26 @@ import androidx.compose.material.icons.automirrored.filled.CompareArrows
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
+import androidx.compose.material.icons.filled.Android
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.QueryStats
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Settings
@@ -67,9 +71,13 @@ object DeviceCatalogIcons {
     val KeyboardArrowUp: ImageVector = Icons.Default.KeyboardArrowUp
 
     // Feature icons
+    val Android: ImageVector = Icons.Default.Android
     val Compare: ImageVector = Icons.AutoMirrored.Filled.CompareArrows
+    val Explore: ImageVector = Icons.Default.Explore
     val Person: ImageVector = Icons.Default.Person
+    val PlayArrow: ImageVector = Icons.Default.PlayArrow
     val Psychology: ImageVector = Icons.Default.Psychology
     val Settings: ImageVector = Icons.Outlined.Settings
+    val Shuffle: ImageVector = Icons.Default.Shuffle
     val Quiz: ImageVector = Icons.Default.Psychology
 }
