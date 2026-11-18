@@ -158,8 +158,17 @@ interface AndroidDeviceDao {
 
     /**
      * Get paged devices sorted by latest SDK version and flagship phones first.
-     * Orders by max/min SDK version, Phone form factor, RAM tier, major OEMs,
-     * and then manufacturer and model name for consistent sorting.
+     *
+     * Ordering rationale (because the Play catalog has no release-date or flagship flag):
+     * 1. `max_sdk DESC`: surfaces devices running the newest Android version.
+     * 2. `form_factor = 'Phone'`: keeps phones ahead of tablets/TVs in the default feed.
+     * 3. `min_sdk DESC`: separates newly launched hardware (e.g., launched on API 37)
+     *    from older devices that received OS updates (e.g., launched on API 31, updated to 37).
+     * 4. RAM tier buckets: `CAST(ram AS INTEGER)` reads the leading number of strings like
+     *    `"12212-16415MB"` as `12212`, so bucketing `>= 11000MB` keeps 12–16GB flagships
+     *    (e.g., Pixel 11 Pro) in the same top tier as single-SKU 16GB devices.
+     * 5. Major OEM tie-breaker: surfaces widely recognized flagship brands before regional OEMs.
+     * 6. `CAST(ram AS INTEGER) DESC, manufacturer ASC, model_name ASC`: deterministic fallback.
      */
     @Transaction
     @Query(
