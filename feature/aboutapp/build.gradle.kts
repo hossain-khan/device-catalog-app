@@ -34,4 +34,9 @@ dependencies {
     implementation(libs.circuitx.android)
 
     implementation(libs.timber)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.circuit.test)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(project(":core:testing"))
 }
