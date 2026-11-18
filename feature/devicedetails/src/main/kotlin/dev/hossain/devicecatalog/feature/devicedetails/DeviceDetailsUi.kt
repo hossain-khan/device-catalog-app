@@ -1043,7 +1043,7 @@ private fun DeviceDetailsPreviewChromebook() {
                             manufacturer = "Acer",
                             modelName = "Chromebook Spin 713",
                             ram = "8GB",
-                            formFactor = FormFactor.CHROMEBOOK,
+                            formFactor = FormFactor.DESKTOP,
                             processorName = "Intel Core i5-10210U",
                             gpu = "Intel UHD Graphics",
                             screenSizes = listOf("2256x1504"),

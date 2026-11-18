@@ -15,8 +15,9 @@ fun DeviceTypeColors.colorFor(formFactor: FormFactor): Color =
         FormFactor.TV -> tv
         FormFactor.WEARABLE -> wearable
         FormFactor.ANDROID_AUTOMOTIVE -> automotive
-        FormFactor.CHROMEBOOK -> chromebook
+        FormFactor.CHROMEBOOK, FormFactor.DESKTOP -> chromebook
         FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> gaming
+        FormFactor.UNKNOWN -> phone
     }
 
 /**
@@ -30,8 +31,9 @@ fun DeviceTypeColors.onColorFor(formFactor: FormFactor): Color =
         FormFactor.TV -> onTv
         FormFactor.WEARABLE -> onWearable
         FormFactor.ANDROID_AUTOMOTIVE -> onAutomotive
-        FormFactor.CHROMEBOOK -> onChromebook
+        FormFactor.CHROMEBOOK, FormFactor.DESKTOP -> onChromebook
         FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> onGaming
+        FormFactor.UNKNOWN -> onPhone
     }
 
 /**
@@ -44,6 +46,7 @@ fun DeviceTypeColors.accentColorFor(formFactor: FormFactor): Color =
         FormFactor.TV -> accentTv
         FormFactor.WEARABLE -> accentWearable
         FormFactor.ANDROID_AUTOMOTIVE -> accentAutomotive
-        FormFactor.CHROMEBOOK -> accentChromebook
+        FormFactor.CHROMEBOOK, FormFactor.DESKTOP -> accentChromebook
         FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> accentGaming
+        FormFactor.UNKNOWN -> accentPhone
     }

@@ -129,6 +129,7 @@ fun FormFactor.iconResId(): Int = when (this) {
     FormFactor.TV -> R.drawable.tv_24dp
     FormFactor.WEARABLE -> R.drawable.smart_watch_24dp
     FormFactor.ANDROID_AUTOMOTIVE -> R.drawable.car_automotive_24dp
-    FormFactor.CHROMEBOOK -> R.drawable.laptop_chromebook_24dp
+    FormFactor.CHROMEBOOK, FormFactor.DESKTOP -> R.drawable.laptop_chromebook_24dp
     FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> R.drawable.game_controller_24dp
+    FormFactor.UNKNOWN -> R.drawable.mobile_24dp
 }

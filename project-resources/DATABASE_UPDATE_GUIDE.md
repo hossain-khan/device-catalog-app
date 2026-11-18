@@ -24,9 +24,9 @@ Room.databaseBuilder(context, AppDatabase::class.java, "device_catalog.db")
 
 ### Step 1: Update the Database File
 
-1. Generate or obtain the new `devices.db` file with updated device data
+1. Generate or obtain the new `devices.db` file from [android-device-catalog-parser](https://github.com/hossain-khan/android-device-catalog-parser) (`sample/resources/device-catalog.db`)
 2. Replace the existing database file at: `app/src/main/assets/devices.db`
-3. Verify the database file is valid and contains the expected data
+3. Verify the database file is valid and contains the expected data (`sqlite3 app/src/main/assets/devices.db "PRAGMA integrity_check; SELECT COUNT(*) FROM device;"`)
 
 ### Step 2: Increment Database Version
 
@@ -40,7 +40,7 @@ Location: `core/database/src/main/kotlin/dev/hossain/devicecatalog/core/database
         DeviceOpenGl::class,
         DeviceScreenDensity::class,
         DeviceScreenSize::class,
-        DeviceSdk::class,
+        DeviceSdkVersion::class,
     ],
     version = 3, // ← INCREMENT THIS NUMBER
     exportSchema = true,
@@ -181,7 +181,7 @@ If you need to preserve user data in the future:
 - **Database Asset**: `app/src/main/assets/devices.db`
 - **Database Config**: `app/src/main/java/dev/hossain/devicecatalog/di/DatabaseBindings.kt`
 - **Schema Definition**: `core/database/src/main/kotlin/dev/hossain/devicecatalog/core/database/AppDatabase.kt`
-- **Schema Exports**: `core/database/schemas/dev.hossain.devicecatalog.db.AppDatabase/`
+- **Schema Exports**: `core/database/schemas/dev.hossain.devicecatalog.core.database.AppDatabase/`
 
 ### Build Process
 
@@ -288,4 +288,4 @@ This requires:
 
 ---
 
-**Last Updated**: December 9, 2025
+**Last Updated**: November 17, 2026

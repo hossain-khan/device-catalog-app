@@ -315,7 +315,9 @@ private fun formatFormFactorLabel(formFactor: FormFactor): String =
         FormFactor.WEARABLE -> "Wearable"
         FormFactor.ANDROID_AUTOMOTIVE -> "Auto"
         FormFactor.CHROMEBOOK -> "Chromebook"
+        FormFactor.DESKTOP -> "Desktop"
         FormFactor.GOOGLE_PLAY_GAMES_ON_PC -> "PC Games"
+        FormFactor.UNKNOWN -> "Unknown"
     }
 
 @Preview(showBackground = true)
