@@ -147,6 +147,21 @@ class FakeAndroidDeviceDao : AndroidDeviceDao {
         return searchDevicesWithRelations(search)
     }
 
+    override fun searchDevicesWithRelationsByFtsLatestFirst(ftsQuery: String): Flow<List<AndroidDeviceWithRelations>> {
+        val tokens = ftsQuery.split(Regex("\\s+")).map { it.trim('*') }.filter { it.isNotEmpty() }
+        return devicesFlow.map { list ->
+            list
+                .filter { item ->
+                    tokens.all { token ->
+                        item.device.manufacturer.contains(token, ignoreCase = true) ||
+                            item.device.modelName.contains(token, ignoreCase = true) ||
+                            item.device.brand.contains(token, ignoreCase = true) ||
+                            item.device.device.contains(token, ignoreCase = true)
+                    }
+                }.sortedWith(compareBy({ it.device.manufacturer }, { it.device.modelName }))
+        }
+    }
+
     override fun getPagedDevicesWithRelationsLatestFirst(): PagingSource<Int, AndroidDeviceWithRelations> {
         // For testing, just return paginated devices sorted alphabetically
         return getPagedDevicesWithRelations()
@@ -155,6 +170,21 @@ class FakeAndroidDeviceDao : AndroidDeviceDao {
     override fun getPagedDevicesWithRelationsBySearchLatestFirst(search: String): PagingSource<Int, AndroidDeviceWithRelations> {
         // For testing, just return filtered paginated devices sorted alphabetically
         return getPagedDevicesWithRelationsBySearch(search)
+    }
+
+    override fun getPagedDevicesWithRelationsByFtsLatestFirst(ftsQuery: String): PagingSource<Int, AndroidDeviceWithRelations> {
+        val tokens = ftsQuery.split(Regex("\\s+")).map { it.trim('*') }.filter { it.isNotEmpty() }
+        val filtered =
+            devicesFlow.value
+                .filter { item ->
+                    tokens.all { token ->
+                        item.device.manufacturer.contains(token, ignoreCase = true) ||
+                            item.device.modelName.contains(token, ignoreCase = true) ||
+                            item.device.brand.contains(token, ignoreCase = true) ||
+                            item.device.device.contains(token, ignoreCase = true)
+                    }
+                }.sortedWith(compareBy({ it.device.manufacturer }, { it.device.modelName }))
+        return FakePagingSource(filtered)
     }
 
     // ----------------------------------------------------------------

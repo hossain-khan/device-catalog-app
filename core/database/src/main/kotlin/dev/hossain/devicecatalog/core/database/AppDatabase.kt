@@ -21,18 +21,24 @@ import androidx.room.RoomDatabase
  * Version 4 changes:
  * - Updated bundled device catalog database with latest device data (23,997 devices)
  *
+ * Version 5 changes:
+ * - Updated bundled database from android-device-catalog-parser 1.13
+ * - Added precomputed min_sdk, max_sdk, ram_min_mb, ram_max_mb, sort_score columns and indexes
+ * - Added device_fts external-content FTS4 virtual table for fast multi-token search
+ *
  * - https://developer.android.com/training/data-storage/room
  */
 @Database(
     entities = [
         AndroidDeviceEntity::class,
+        DeviceFtsEntity::class,
         DeviceAbi::class,
         DeviceOpenGl::class,
         DeviceScreenDensity::class,
         DeviceScreenSize::class,
         DeviceSdkVersion::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true,
     // https://developer.android.com/training/data-storage/room/migrating-db-versions
     // https://github.com/hossain-khan/android-weather-alert/issues/272#issuecomment-2629512823
