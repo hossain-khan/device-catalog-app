@@ -2,10 +2,15 @@ plugins {
     id("devicecatalog.android.feature")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     namespace = "dev.hossain.devicecatalog.feature.onboarding"
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -17,4 +22,9 @@ dependencies {
     implementation(libs.circuit.serialization)
 
     implementation(libs.timber)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(project(":core:screenshot-testing"))
 }

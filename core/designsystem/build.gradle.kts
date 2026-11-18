@@ -1,10 +1,12 @@
 plugins {
     id("devicecatalog.android.library")
     id("devicecatalog.android.compose")
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     namespace = "dev.hossain.devicecatalog.core.designsystem"
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
@@ -21,6 +23,9 @@ dependencies {
 
     // Testing dependencies
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(project(":core:screenshot-testing"))
 
     lintPublish(project(":lint"))
 }

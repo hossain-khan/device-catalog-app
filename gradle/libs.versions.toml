@@ -21,6 +21,8 @@ coil = "3.6.3"
 
 composeBom = "2026.09.00"
 material3 = "1.5.0-rc01"
+robolectric = "4.18.1"
+roborazzi = "1.79.0"
 coreKtx = "1.19.1"
 espressoCore = "3.7.0"
 googleFonts = "1.12.1"
@@ -154,6 +156,11 @@ lint-checks = { group = "com.android.tools.lint", name = "lint-checks", version.
 lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "androidTools" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 
+# Screenshot testing (Roborazzi + Robolectric)
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
+roborazzi-accessibility-check = { group = "io.github.takahirom.roborazzi", name = "roborazzi-accessibility-check", version.ref = "roborazzi" }
+
 # Gradle plugins (for build-logic)
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -190,3 +197,6 @@ kotlinter = { id = "org.jmailen.kotlinter", version.ref = "kotlinter" }
 
 # Convention plugins defined by this project
 devicecatalog-android-lint = { id = "devicecatalog.android.lint" }
+
+# Screenshot testing
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }

@@ -2,10 +2,12 @@ plugins {
     id("devicecatalog.android.feature")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlinter)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
     namespace = "dev.hossain.devicecatalog.feature.quizhub"
+    testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
@@ -26,4 +28,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.circuit.test)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(project(":core:screenshot-testing"))
 }

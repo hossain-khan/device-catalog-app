@@ -34,6 +34,7 @@ include(":core:database")
 include(":core:designsystem")
 include(":core:di")
 include(":core:model")
+include(":core:screenshot-testing")
 include(":core:testing")
 include(":core:ui")
 
