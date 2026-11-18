@@ -20,6 +20,14 @@ import androidx.room.PrimaryKey
         Index(value = ["model_name"]),
         Index(value = ["brand"]),
         Index(value = ["form_factor"]),
+        Index(value = ["min_sdk"]),
+        Index(value = ["max_sdk"]),
+        Index(value = ["ram_min_mb"]),
+        Index(value = ["ram_max_mb"]),
+        Index(
+            value = ["sort_score", "manufacturer", "model_name"],
+            orders = [Index.Order.DESC, Index.Order.ASC, Index.Order.ASC],
+        ),
     ],
 )
 data class AndroidDeviceEntity(
@@ -37,4 +45,14 @@ data class AndroidDeviceEntity(
     @ColumnInfo(name = "processor_name")
     val processorName: String,
     val gpu: String,
+    @ColumnInfo(name = "min_sdk", defaultValue = "0")
+    val minSdk: Int = 0,
+    @ColumnInfo(name = "max_sdk", defaultValue = "0")
+    val maxSdk: Int = 0,
+    @ColumnInfo(name = "ram_min_mb", defaultValue = "0")
+    val ramMinMb: Int = 0,
+    @ColumnInfo(name = "ram_max_mb", defaultValue = "0")
+    val ramMaxMb: Int = 0,
+    @ColumnInfo(name = "sort_score", defaultValue = "0")
+    val sortScore: Int = 0,
 )

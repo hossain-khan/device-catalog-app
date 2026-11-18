@@ -92,11 +92,14 @@ class AndroidDeviceRepository
         }
 
         /**
-         * Get paged list of devices filtered by search query sorted by latest SDK version first.
+         * Get paged list of devices filtered by search query sorted by precomputed `sort_score` descending.
+         * Uses FTS4 multi-token prefix search when the query contains alphanumeric tokens,
+         * falling back to `LIKE` for punctuation-only queries.
          */
         fun getPagedDevicesBySearchLatestFirst(query: String): Flow<PagingData<AndroidDeviceWithRelations>> {
+            val ftsQuery = toFtsPrefixQuery(query)
             val searchQuery = "%$query%"
-            Timber.d("Creating paged devices flow with search: $query (sorted by SDK)")
+            Timber.d("Creating paged devices flow with search: $query (ftsQuery=$ftsQuery)")
             return Pager(
                 config =
                     PagingConfig(
@@ -107,7 +110,11 @@ class AndroidDeviceRepository
                         maxSize = 120,
                     ),
             ) {
-                deviceDao.getPagedDevicesWithRelationsBySearchLatestFirst(searchQuery)
+                if (ftsQuery != null) {
+                    deviceDao.getPagedDevicesWithRelationsByFtsLatestFirst(ftsQuery)
+                } else {
+                    deviceDao.getPagedDevicesWithRelationsBySearchLatestFirst(searchQuery)
+                }
             }.flow
         }
 
@@ -158,14 +165,35 @@ class AndroidDeviceRepository
         }
 
         /**
-         * Search devices sorted by latest SDK version first (newest Android versions at the top).
+         * Search devices sorted by precomputed `sort_score` descending.
+         * Uses FTS4 multi-token prefix search when the query contains alphanumeric tokens.
          */
         fun searchDevicesLatestFirst(query: String): Flow<List<DeviceInfo>> {
-            val searchQuery = "%$query%"
-            Timber.d("Searching devices with query: $query (sorted by SDK)")
-            return deviceDao.searchDevicesWithRelationsLatestFirst(searchQuery).map { devicesWithRelations ->
-                Timber.d("Search returned ${devicesWithRelations.size} devices (sorted by SDK)")
+            val ftsQuery = toFtsPrefixQuery(query)
+            Timber.d("Searching devices with query: $query (ftsQuery=$ftsQuery)")
+            val sourceFlow =
+                if (ftsQuery != null) {
+                    deviceDao.searchDevicesWithRelationsByFtsLatestFirst(ftsQuery)
+                } else {
+                    deviceDao.searchDevicesWithRelationsLatestFirst("%$query%")
+                }
+            return sourceFlow.map { devicesWithRelations ->
+                Timber.d("Search returned ${devicesWithRelations.size} devices (sorted by sort_score)")
                 devicesWithRelations.map { it.toModel() }
+            }
+        }
+
+        private fun toFtsPrefixQuery(query: String): String? {
+            val tokens =
+                query
+                    .trim()
+                    .split(Regex("\\s+"))
+                    .map { it.replace(Regex("[^\\p{L}\\p{Nd}_]"), "") }
+                    .filter { it.isNotEmpty() }
+            return if (tokens.isEmpty()) {
+                null
+            } else {
+                tokens.joinToString(" ") { "$it*" }
             }
         }
 
