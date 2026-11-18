@@ -36,10 +36,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -114,6 +110,10 @@ fun DeviceStatsUi(
                 state.stats?.let { stats ->
                     DeviceStatsContent(
                         stats = stats,
+                        expandedSections = state.expandedSections,
+                        onToggleSection = { section ->
+                            state.eventSink(DeviceStatsScreen.Event.ToggleSection(section))
+                        },
                     )
                 }
             }
@@ -134,6 +134,8 @@ private fun LoadingIndicator(modifier: Modifier = Modifier) {
 @Composable
 private fun DeviceStatsContent(
     stats: DeviceStats,
+    expandedSections: Set<DeviceStatsScreen.StatsSection>,
+    onToggleSection: (DeviceStatsScreen.StatsSection) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val chartColors = MaterialTheme.chartColors
@@ -179,7 +181,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "FORM FACTOR DISTRIBUTION",
-                defaultExpanded = true,
+                expanded = DeviceStatsScreen.StatsSection.FORM_FACTORS in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.FORM_FACTORS) },
             ) {
                 FormFactorDistributionContent(
                     formFactors = stats.formFactorBreakdown,
@@ -192,7 +195,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "TOP 10 MANUFACTURERS",
-                defaultExpanded = true,
+                expanded = DeviceStatsScreen.StatsSection.TOP_MANUFACTURERS in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.TOP_MANUFACTURERS) },
             ) {
                 ManufacturerDistributionContent(
                     manufacturers = stats.topManufacturers,
@@ -205,7 +209,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "ABI ARCHITECTURE SUPPORT",
-                defaultExpanded = true,
+                expanded = DeviceStatsScreen.StatsSection.ABI_SUPPORT in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.ABI_SUPPORT) },
             ) {
                 AbiSupportContent(
                     abis = stats.abiDistribution,
@@ -218,7 +223,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "SDK / API VERSION ADOPTION",
-                defaultExpanded = true,
+                expanded = DeviceStatsScreen.StatsSection.SDK_ADOPTION in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.SDK_ADOPTION) },
             ) {
                 SdkVersionAdoptionContent(
                     sdkVersions = stats.sdkVersionDistribution.take(12),
@@ -231,7 +237,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "MEMORY (RAM) DISTRIBUTION",
-                defaultExpanded = true,
+                expanded = DeviceStatsScreen.StatsSection.RAM_DISTRIBUTION in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.RAM_DISTRIBUTION) },
             ) {
                 RamDistributionContent(
                     ramDistribution = stats.ramDistribution.take(10),
@@ -244,7 +251,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "DISPLAY DENSITY (DPI) DISTRIBUTION",
-                defaultExpanded = true,
+                expanded = DeviceStatsScreen.StatsSection.DISPLAY_DENSITY in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.DISPLAY_DENSITY) },
             ) {
                 ScreenDensityContent(
                     densities = stats.screenDensityDistribution.take(10),
@@ -257,7 +265,8 @@ private fun DeviceStatsContent(
         item {
             CollapsibleCard(
                 title = "TOP 10 GPU ARCHITECTURES",
-                defaultExpanded = false,
+                expanded = DeviceStatsScreen.StatsSection.TOP_GPUS in expandedSections,
+                onToggle = { onToggleSection(DeviceStatsScreen.StatsSection.TOP_GPUS) },
             ) {
                 GpuDistributionContent(
                     gpus = stats.gpuDistribution,
@@ -278,12 +287,11 @@ private fun DeviceStatsContent(
 @Composable
 private fun CollapsibleCard(
     title: String,
+    expanded: Boolean,
+    onToggle: () -> Unit,
     modifier: Modifier = Modifier,
-    defaultExpanded: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(defaultExpanded) }
-
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -299,7 +307,7 @@ private fun CollapsibleCard(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .clickable { expanded = !expanded }
+                        .clickable { onToggle() }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
@@ -315,7 +323,7 @@ private fun CollapsibleCard(
                 )
 
                 IconButton(
-                    onClick = { expanded = !expanded },
+                    onClick = onToggle,
                     modifier = Modifier.height(28.dp),
                 ) {
                     Icon(

@@ -3,6 +3,7 @@ package dev.hossain.devicecatalog.feature.statistics
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.retained.produceRetainedState
@@ -29,6 +30,7 @@ class DeviceStatsPresenter
         @Composable
         override fun present(): DeviceStatsScreen.State {
             var refreshTrigger by rememberRetained { mutableIntStateOf(0) }
+            var expandedSections by rememberRetained { mutableStateOf(emptySet<DeviceStatsScreen.StatsSection>()) }
             val stats by produceRetainedState<DeviceStats?>(
                 initialValue = null,
                 refreshTrigger,
@@ -44,6 +46,7 @@ class DeviceStatsPresenter
             return DeviceStatsScreen.State(
                 stats = stats,
                 isLoading = stats == null,
+                expandedSections = expandedSections,
             ) { event ->
                 when (event) {
                     is DeviceStatsScreen.Event.RefreshStats -> {
@@ -54,6 +57,15 @@ class DeviceStatsPresenter
                     is DeviceStatsScreen.Event.OpenStatsExplorer -> {
                         Timber.d("Opening Stats Explorer")
                         navigator.goTo(StatsExplorerScreen())
+                    }
+
+                    is DeviceStatsScreen.Event.ToggleSection -> {
+                        expandedSections =
+                            if (event.section in expandedSections) {
+                                expandedSections - event.section
+                            } else {
+                                expandedSections + event.section
+                            }
                     }
                 }
             }
