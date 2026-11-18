@@ -1,13 +1,18 @@
 package dev.hossain.devicecatalog.feature.quizhub
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.Scaffold
@@ -43,23 +48,38 @@ fun QuizHubUi(
             )
         },
     ) { innerPadding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+        LazyColumn(
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
             contentPadding = PaddingValues(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(state.quizTypes) { quizInfo ->
-                QuizTile(
-                    quizInfo = quizInfo,
-                    onQuizSelected = { quizType ->
-                        state.eventSink(QuizHubScreen.Event.QuizSelected(quizType))
-                    },
-                )
+            items(state.quizTypes.chunked(2)) { rowItems ->
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(IntrinsicSize.Max),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    rowItems.forEach { quizInfo ->
+                        QuizTile(
+                            quizInfo = quizInfo,
+                            onQuizSelected = { quizType ->
+                                state.eventSink(QuizHubScreen.Event.QuizSelected(quizType))
+                            },
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
+                        )
+                    }
+                    if (rowItems.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
             }
         }
     }
