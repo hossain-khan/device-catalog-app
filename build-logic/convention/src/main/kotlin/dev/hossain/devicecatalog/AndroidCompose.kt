@@ -29,5 +29,9 @@ internal fun Project.configureAndroidCompose(
         if (findProperty("enableComposeCompilerReports") == "true") {
             reportsDestination.set(layout.buildDirectory.dir("compose-reports"))
         }
+
+        @Suppress("UnstableApiUsage")
+        stabilityConfigurationFiles
+            .add(isolated.rootProject.projectDirectory.file("compose_compiler_config.conf"))
     }
 }
