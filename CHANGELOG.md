@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-11-17
+
+### Changed
+- Updated bundled device catalog database to v4 with the latest Google Play device catalog snapshot (23,997 devices) (#260)
+- Upgraded `android-device-catalog-parser` from `1.8` to `1.12` and added UI support for `FormFactor.DESKTOP` and `FormFactor.UNKNOWN` (#260)
+- Updated `DATABASE_UPDATE_GUIDE.md` to use `android-device-catalog-parser` GitHub Release assets and short-circuited CI builds for docs-only changes (#261, #262)
+
 ## [2.3.0] - 2026-11-16
 
 ### Added
