@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,7 +46,7 @@ fun QuizTile(
         modifier =
             modifier
                 .fillMaxWidth()
-                .aspectRatio(0.88f),
+                .defaultMinSize(minHeight = 180.dp),
         shape = RoundedCornerShape(12.dp),
         border =
             BorderStroke(
@@ -64,7 +64,10 @@ fun QuizTile(
             ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
             // Top 2.5dp accent strip when available
             if (quizInfo.isAvailable) {
                 Box(
@@ -80,7 +83,7 @@ fun QuizTile(
             Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
                         .padding(horizontal = 14.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
