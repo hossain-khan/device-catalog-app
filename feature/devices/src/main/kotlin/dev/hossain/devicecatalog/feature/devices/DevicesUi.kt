@@ -19,7 +19,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -48,6 +47,8 @@ import androidx.paging.compose.itemKey
 import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
+import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogTabTopBar
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.feature.devices.components.ActiveFilterChips
 import dev.hossain.devicecatalog.feature.devices.components.DeviceCard
@@ -59,6 +60,8 @@ import dev.hossain.devicecatalog.feature.devices.components.FilterType
 import dev.hossain.devicecatalog.feature.devices.components.rememberDeviceListLayoutConfig
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
+import java.text.NumberFormat
+import java.util.Locale
 
 /**
  * Creates a unique key for a device by combining multiple fields to avoid duplicate keys.
@@ -119,24 +122,29 @@ fun DevicesUi(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
             if (!isSearchExpanded) {
-                MediumTopAppBar(
-                    title = {
-                        val title =
-                            when {
-                                state.searchQuery.isNotBlank() -> {
-                                    "Search Results (${state.searchResultCount})"
-                                }
+                val formattedCount = NumberFormat.getIntegerInstance(Locale.US).format(state.searchResultCount)
+                val (title, subtitle) =
+                    when {
+                        state.searchQuery.isNotBlank() -> {
+                            "Search Results" to "$formattedCount matching devices"
+                        }
 
-                                state.activeFilters.hasActiveFilters() -> {
-                                    "Filtered (${state.searchResultCount})"
-                                }
+                        state.activeFilters.hasActiveFilters() -> {
+                            "Filtered Catalog" to "$formattedCount matching devices"
+                        }
 
-                                else -> {
-                                    "Android Universe"
-                                }
-                            }
-                        Text(text = title)
-                    },
+                        state.searchResultCount > 0 -> {
+                            "Android Universe" to "$formattedCount devices · Flagship first"
+                        }
+
+                        else -> {
+                            "Android Universe" to "Google Play Device Catalog"
+                        }
+                    }
+                DeviceCatalogTabTopBar(
+                    title = title,
+                    subtitle = subtitle,
+                    icon = DeviceCatalogIcons.Android,
                     scrollBehavior = scrollBehavior,
                 )
             }

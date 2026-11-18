@@ -25,7 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogTabTopBar
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
@@ -60,20 +61,27 @@ fun AboutUi(
     state: AboutScreen.State,
     modifier: Modifier = Modifier,
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            LargeTopAppBar(
-                title = {
-                    Text(
-                        text = "About Console",
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
+            DeviceCatalogTabTopBar(
+                title = "About Console",
+                subtitle = "v${state.appVersion} · Open-source catalog",
+                icon = DeviceCatalogIcons.Info,
                 scrollBehavior = scrollBehavior,
+                actions = {
+                    IconButton(
+                        onClick = { state.eventSink(AboutScreen.Event.OpenSourceInfo) },
+                    ) {
+                        Icon(
+                            imageVector = DeviceCatalogIcons.Code,
+                            contentDescription = "View source code on GitHub",
+                        )
+                    }
+                },
             )
         },
     ) { innerPadding ->

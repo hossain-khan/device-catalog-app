@@ -11,10 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -23,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogTabTopBar
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.feature.quizhub.components.QuizTile
 import dev.zacsweers.metro.AppScope
 import timber.log.Timber
@@ -36,15 +41,41 @@ fun QuizHubUi(
 ) {
     Timber.d("QuizHubUi: Rendering with ${state.quizTypes.size} quiz types")
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            LargeTopAppBar(
-                title = { Text("Quiz Hub") },
+            val availableQuizzes = state.quizTypes.filter { it.isAvailable }
+            DeviceCatalogTabTopBar(
+                title = "Quiz Hub",
+                subtitle = "${state.quizTypes.size} modes · Test your Android IQ",
+                icon = DeviceCatalogIcons.Quiz,
                 scrollBehavior = scrollBehavior,
+                actions = {
+                    if (availableQuizzes.isNotEmpty()) {
+                        FilledTonalButton(
+                            onClick = {
+                                val randomQuiz = availableQuizzes.random()
+                                state.eventSink(QuizHubScreen.Event.QuizSelected(randomQuiz.type))
+                            },
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                            modifier =
+                                Modifier
+                                    .padding(end = 12.dp)
+                                    .height(34.dp),
+                        ) {
+                            Icon(
+                                imageVector = DeviceCatalogIcons.PlayArrow,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Quick Play")
+                        }
+                    }
+                },
             )
         },
     ) { innerPadding ->
