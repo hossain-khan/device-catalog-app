@@ -18,6 +18,9 @@ import androidx.room.RoomDatabase
  * Version 3 changes:
  * - Updated bundled device catalog database with latest device data
  *
+ * Version 4 changes:
+ * - Updated bundled device catalog database with latest device data (23,997 devices)
+ *
  * - https://developer.android.com/training/data-storage/room
  */
 @Database(
@@ -29,7 +32,7 @@ import androidx.room.RoomDatabase
         DeviceScreenSize::class,
         DeviceSdkVersion::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
     // https://developer.android.com/training/data-storage/room/migrating-db-versions
     // https://github.com/hossain-khan/android-weather-alert/issues/272#issuecomment-2629512823
@@ -37,6 +40,7 @@ import androidx.room.RoomDatabase
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
     ],
 )
 abstract class AppDatabase : RoomDatabase() {
