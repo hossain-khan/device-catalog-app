@@ -73,32 +73,19 @@ fun StatsExplorerUi(
         },
     ) { innerPadding ->
         PullToRefreshBox(
-            isRefreshing = state.isLoading,
+            isRefreshing = state.isLoading && state.statData != null,
             onRefresh = { state.eventSink(StatsExplorerScreen.Event.Refresh) },
             modifier = Modifier.padding(innerPadding),
         ) {
-            if (state.isLoading && state.statData == null) {
-                LoadingIndicator()
-            } else {
-                StatsExplorerContent(
-                    selectedCategory = state.selectedCategory,
-                    statData = state.statData,
-                    onCategorySelected = { category ->
-                        state.eventSink(StatsExplorerScreen.Event.SelectCategory(category))
-                    },
-                )
-            }
+            StatsExplorerContent(
+                selectedCategory = state.selectedCategory,
+                statData = state.statData,
+                isLoading = state.isLoading,
+                onCategorySelected = { category ->
+                    state.eventSink(StatsExplorerScreen.Event.SelectCategory(category))
+                },
+            )
         }
-    }
-}
-
-@Composable
-private fun LoadingIndicator(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator()
     }
 }
 
@@ -106,6 +93,7 @@ private fun LoadingIndicator(modifier: Modifier = Modifier) {
 private fun StatsExplorerContent(
     selectedCategory: StatCategory,
     statData: StatData?,
+    isLoading: Boolean,
     onCategorySelected: (StatCategory) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -195,7 +183,17 @@ private fun StatsExplorerContent(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    if (statData != null && statData.distribution.isNotEmpty()) {
+                    if (isLoading && statData == null) {
+                        Box(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    } else if (statData != null && statData.distribution.isNotEmpty()) {
                         ChartView(
                             category = selectedCategory,
                             distribution = statData.distribution,

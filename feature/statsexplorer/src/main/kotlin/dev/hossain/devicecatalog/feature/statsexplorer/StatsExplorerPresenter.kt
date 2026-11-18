@@ -31,12 +31,14 @@ class StatsExplorerPresenter
                 mutableStateOf(screen.initialCategory ?: StatCategory.RAM)
             }
             var refreshTrigger by rememberRetained { mutableIntStateOf(0) }
+            var cachedStats by rememberRetained { mutableStateOf(emptyMap<StatCategory, StatData>()) }
 
             val statData by produceRetainedState<StatData?>(
                 initialValue = null,
                 selectedCategory,
                 refreshTrigger,
             ) {
+                value = cachedStats[selectedCategory]
                 Timber.d("Loading stats for category: $selectedCategory")
                 try {
                     when (selectedCategory) {
@@ -46,24 +48,28 @@ class StatsExplorerPresenter
                                     stats.ramDistribution
                                         .take(15)
                                         .associate { it.ram to it.count }
-                                value =
+                                val data =
                                     StatData(
                                         category = selectedCategory,
                                         distribution = distribution,
                                         insights = generateRamInsights(stats.ramDistribution.map { it.ram to it.count }),
                                     )
+                                cachedStats = cachedStats + (selectedCategory to data)
+                                value = data
                             }
                         }
 
                         StatCategory.PROCESSORS -> {
                             deviceRepository.getProcessorDistribution().collect { processors ->
                                 val distribution = processors.associate { it.processor to it.count }
-                                value =
+                                val data =
                                     StatData(
                                         category = selectedCategory,
                                         distribution = distribution,
                                         insights = generateProcessorInsights(processors.map { it.processor to it.count }),
                                     )
+                                cachedStats = cachedStats + (selectedCategory to data)
+                                value = data
                             }
                         }
 
@@ -72,7 +78,7 @@ class StatsExplorerPresenter
                                 val distribution =
                                     stats.formFactorBreakdown
                                         .associate { it.formFactor.value to it.count }
-                                value =
+                                val data =
                                     StatData(
                                         category = selectedCategory,
                                         distribution = distribution,
@@ -81,6 +87,8 @@ class StatsExplorerPresenter
                                                 stats.formFactorBreakdown.map { it.formFactor.value to it.count },
                                             ),
                                     )
+                                cachedStats = cachedStats + (selectedCategory to data)
+                                value = data
                             }
                         }
 
@@ -89,7 +97,7 @@ class StatsExplorerPresenter
                                 val distribution =
                                     stats.topManufacturers
                                         .associate { it.manufacturer to it.count }
-                                value =
+                                val data =
                                     StatData(
                                         category = selectedCategory,
                                         distribution = distribution,
@@ -98,6 +106,8 @@ class StatsExplorerPresenter
                                                 stats.topManufacturers.map { it.manufacturer to it.count },
                                             ),
                                     )
+                                cachedStats = cachedStats + (selectedCategory to data)
+                                value = data
                             }
                         }
 
@@ -107,7 +117,7 @@ class StatsExplorerPresenter
                                     stats.sdkVersionDistribution
                                         .take(15)
                                         .associate { "API ${it.sdkVersion}" to it.count }
-                                value =
+                                val data =
                                     StatData(
                                         category = selectedCategory,
                                         distribution = distribution,
@@ -116,18 +126,22 @@ class StatsExplorerPresenter
                                                 stats.sdkVersionDistribution.map { it.sdkVersion to it.count },
                                             ),
                                     )
+                                cachedStats = cachedStats + (selectedCategory to data)
+                                value = data
                             }
                         }
 
                         StatCategory.OPENGL -> {
                             deviceRepository.getOpenGlDistribution().collect { openGl ->
                                 val distribution = openGl.associate { it.version to it.count }
-                                value =
+                                val data =
                                     StatData(
                                         category = selectedCategory,
                                         distribution = distribution,
                                         insights = generateOpenGlInsights(openGl.map { it.version to it.count }),
                                     )
+                                cachedStats = cachedStats + (selectedCategory to data)
+                                value = data
                             }
                         }
                     }
@@ -138,10 +152,12 @@ class StatsExplorerPresenter
                 }
             }
 
+            val currentStatData = statData?.takeIf { it.category == selectedCategory } ?: cachedStats[selectedCategory]
+
             return StatsExplorerScreen.State(
                 selectedCategory = selectedCategory,
-                statData = statData,
-                isLoading = statData == null,
+                statData = currentStatData,
+                isLoading = currentStatData == null,
             ) { event ->
                 when (event) {
                     is StatsExplorerScreen.Event.SelectCategory -> {
@@ -151,6 +167,7 @@ class StatsExplorerPresenter
 
                     is StatsExplorerScreen.Event.Refresh -> {
                         Timber.d("Refresh requested")
+                        cachedStats = emptyMap()
                         refreshTrigger++
                     }
 
