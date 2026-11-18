@@ -10,6 +10,9 @@ import dev.zacsweers.metro.AppScope
 data object AboutScreen : Screen {
     data class State(
         val appVersion: String,
+        val deviceCount: Int? = null,
+        val snapshotDate: String = "Nov 11, 2026",
+        val parserVersion: String = "1.13",
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 

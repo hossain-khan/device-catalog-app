@@ -7,6 +7,14 @@ plugins {
 android {
     namespace = "dev.hossain.devicecatalog.feature.aboutapp"
 
+    defaultConfig {
+        buildConfigField(
+            "String",
+            "CATALOG_PARSER_VERSION",
+            "\"${libs.versions.androidDeviceCatalogParser.get()}\"",
+        )
+    }
+
     buildFeatures {
         buildConfig = true
     }
@@ -14,6 +22,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
 
     // Cross-feature navigation (aboutapp navigates to developer settings in debug builds)
