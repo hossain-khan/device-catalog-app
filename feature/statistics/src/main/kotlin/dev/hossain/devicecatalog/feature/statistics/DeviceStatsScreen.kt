@@ -9,9 +9,20 @@ import dev.zacsweers.metro.AppScope
 
 @CircuitSerializable(AppScope::class)
 data object DeviceStatsScreen : Screen {
+    enum class StatsSection {
+        FORM_FACTORS,
+        TOP_MANUFACTURERS,
+        ABI_SUPPORT,
+        SDK_ADOPTION,
+        RAM_DISTRIBUTION,
+        DISPLAY_DENSITY,
+        TOP_GPUS,
+    }
+
     data class State(
         val stats: DeviceStats?,
         val isLoading: Boolean = false,
+        val expandedSections: Set<StatsSection> = emptySet(),
         val eventSink: (Event) -> Unit,
     ) : CircuitUiState
 
@@ -19,5 +30,9 @@ data object DeviceStatsScreen : Screen {
         data object RefreshStats : Event()
 
         data object OpenStatsExplorer : Event()
+
+        data class ToggleSection(
+            val section: StatsSection,
+        ) : Event()
     }
 }
