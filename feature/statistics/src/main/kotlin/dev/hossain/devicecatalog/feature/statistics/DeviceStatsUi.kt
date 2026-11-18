@@ -114,7 +114,7 @@ fun DeviceStatsUi(
         },
     ) { innerPadding ->
         PullToRefreshBox(
-            isRefreshing = state.isLoading,
+            isRefreshing = state.isLoading && state.stats != null,
             onRefresh = { state.eventSink(DeviceStatsScreen.Event.RefreshStats) },
             modifier = Modifier.padding(innerPadding),
         ) {
