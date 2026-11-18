@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-11-18
+
+### Changed
+- Migrated to `android-device-catalog-parser` `1.13` and Room database v5 with precomputed `sort_score`, `min_sdk`, `max_sdk`, `ram_min_mb`, and `ram_max_mb` columns and covering index for instant flagship-first device listing (#264, #267)
+- Added `device_fts` FTS4 virtual table and multi-token prefix search in `AndroidDeviceDao` / `AndroidDeviceRepository` (#267)
+- Defaulted all sections on the Statistics screen to collapsed and retained expand/collapse state across scrolling via `rememberRetained` (#265)
+
+### Fixed
+- Fixed Stats Explorer briefly showing the previous tab's data when switching categories by resetting `produceRetainedState` and caching loaded stats per category (#266)
+
 ## [2.4.0] - 2026-11-17
 
 ### Changed
