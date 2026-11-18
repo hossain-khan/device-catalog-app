@@ -25,6 +25,7 @@ rootProject.name = "Android Universe"
 
 // Main application module
 include(":app")
+include(":lint")
 
 // Core modules
 include(":core:common")
