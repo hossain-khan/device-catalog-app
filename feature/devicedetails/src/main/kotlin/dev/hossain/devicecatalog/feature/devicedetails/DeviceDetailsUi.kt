@@ -63,7 +63,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -312,6 +314,15 @@ private fun DeviceHeroCard(
     val onBadgeColor = deviceTypeColors.onColorFor(device.formFactor)
     val clipboard = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
+    var isDeviceImageLoaded by remember(device) { mutableStateOf(false) }
+    var showImageLightbox by remember { mutableStateOf(false) }
+
+    if (showImageLightbox) {
+        DeviceImageLightboxDialog(
+            device = device,
+            onDismiss = { showImageLightbox = false },
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -342,21 +353,33 @@ private fun DeviceHeroCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Clean 88dp device showcase thumbnail on surfaceVariant
+                // Clean 88dp device showcase thumbnail on surfaceVariant (tappable when product image loads)
                 Surface(
                     modifier =
                         Modifier
                             .size(88.dp)
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(10.dp))
+                            .then(
+                                if (isDeviceImageLoaded) {
+                                    Modifier
+                                        .semantics { role = Role.Button }
+                                        .clickable(onClickLabel = "View larger device image") {
+                                            showImageLightbox = true
+                                        }
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     shape = RoundedCornerShape(10.dp),
                 ) {
                     DeviceImage(
                         device = device,
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.fillMaxSize().padding(8.dp),
                         fallbackIconModifier = Modifier.size(44.dp),
                         fallbackTint = accentColor,
+                        onImageLoaded = { isDeviceImageLoaded = it },
                     )
                 }
 

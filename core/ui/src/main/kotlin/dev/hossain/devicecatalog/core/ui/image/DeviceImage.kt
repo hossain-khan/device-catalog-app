@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,7 @@ import dev.hossain.devicecatalog.core.designsystem.R
  * @param fallbackTint Color tint applied to the fallback form factor icon.
  * @param fallbackIconModifier Modifier applied directly to the fallback form factor icon.
  * @param fallback Optional custom slot to render when the image is loading or has failed.
+ * @param onImageLoaded Callback invoked whenever the remote image load state changes.
  */
 @Composable
 fun DeviceImage(
@@ -49,11 +51,16 @@ fun DeviceImage(
     fallbackTint: Color = LocalContentColor.current,
     fallbackIconModifier: Modifier = Modifier,
     fallback: (@Composable () -> Unit)? = null,
+    onImageLoaded: (Boolean) -> Unit = {},
 ) {
     val candidateUrls = remember(device) { DeviceImageUtils.getDeviceImageCandidates(device) }
     var candidateIndex by remember(device) { mutableIntStateOf(0) }
     var isLoaded by remember(device) { mutableStateOf(false) }
     var hasError by remember(device) { mutableStateOf(false) }
+
+    LaunchedEffect(isLoaded) {
+        onImageLoaded(isLoaded)
+    }
 
     val currentUrl = candidateUrls.getOrNull(candidateIndex)
 

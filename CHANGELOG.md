@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added tappable full-screen lightbox dialog (`DeviceImageLightboxDialog`) with pinch-to-zoom, pan, and double-tap zoom on loaded device images in `DeviceDetailsUi`
+
+### Added
 - Added `:benchmarks` module with `devicecatalog.android.test` convention plugin, `androidx.baselineprofile` Gradle plugin, `androidx.profileinstaller` in `:app`, Baseline Profile generators (`StartupBaselineProfile`, `DeviceCatalogBaselineProfile`), and Macrobenchmarks (`StartupBenchmark`, `ScrollDevicesListBenchmark`) for cold startup and device catalog scrolling (#275)
 
 ## [2.6.0] - 2026-11-18
