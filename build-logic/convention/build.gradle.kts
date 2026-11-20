@@ -58,5 +58,9 @@ gradlePlugin {
             id = "devicecatalog.android.lint"
             implementationClass = "AndroidLintConventionPlugin"
         }
+        register("androidTest") {
+            id = "devicecatalog.android.test"
+            implementationClass = "AndroidTestConventionPlugin"
+        }
     }
 }

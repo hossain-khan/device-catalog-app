@@ -2,6 +2,7 @@ package dev.hossain.devicecatalog
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.dsl.TestExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -32,6 +33,12 @@ internal fun Project.configureKotlinAndroid(
             extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
             extension.testOptions.unitTests.isReturnDefaultValues = true
+        }
+        is TestExtension -> {
+            extension.compileSdk = 37
+            extension.defaultConfig.minSdk = 28
+            extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
+            extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
         }
     }
 
