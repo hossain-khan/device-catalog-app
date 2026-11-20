@@ -63,7 +63,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,6 +78,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
 import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
@@ -312,6 +315,15 @@ private fun DeviceHeroCard(
     val onBadgeColor = deviceTypeColors.onColorFor(device.formFactor)
     val clipboard = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
+    var isDeviceImageLoaded by remember(device) { mutableStateOf(false) }
+    var showImageLightbox by remember { mutableStateOf(false) }
+
+    if (showImageLightbox) {
+        DeviceImageLightboxDialog(
+            device = device,
+            onDismiss = { showImageLightbox = false },
+        )
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -342,22 +354,58 @@ private fun DeviceHeroCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // Clean 88dp device showcase thumbnail on surfaceVariant
+                // Clean 88dp device showcase thumbnail on surfaceVariant (tappable when product image loads)
                 Surface(
                     modifier =
                         Modifier
                             .size(88.dp)
-                            .clip(RoundedCornerShape(10.dp)),
+                            .clip(RoundedCornerShape(10.dp))
+                            .then(
+                                if (isDeviceImageLoaded) {
+                                    Modifier
+                                        .semantics { role = Role.Button }
+                                        .clickable(onClickLabel = "View larger device image") {
+                                            showImageLightbox = true
+                                        }
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     color = MaterialTheme.colorScheme.surfaceVariant,
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     shape = RoundedCornerShape(10.dp),
                 ) {
-                    DeviceImage(
-                        device = device,
-                        modifier = Modifier.padding(8.dp),
-                        fallbackIconModifier = Modifier.size(44.dp),
-                        fallbackTint = accentColor,
-                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        DeviceImage(
+                            device = device,
+                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            fallbackIconModifier = Modifier.size(44.dp),
+                            fallbackTint = accentColor,
+                            onImageLoaded = { isDeviceImageLoaded = it },
+                        )
+
+                        if (isDeviceImageLoaded) {
+                            Surface(
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(4.dp)
+                                        .size(20.dp),
+                                shape = RoundedCornerShape(6.dp),
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
+                                border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outlineVariant),
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = DeviceCatalogIcons.ZoomIn,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(12.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // Identity & Badges
