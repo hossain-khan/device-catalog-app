@@ -4,6 +4,13 @@ plugins {
     // Project: https://developer.android.com/build
     alias(libs.plugins.android.application) apply false
 
+    // Applies the Android test plugin (used by :benchmarks).
+    alias(libs.plugins.android.test) apply false
+
+    // Applies the Baseline Profile Gradle plugin.
+    // Project: https://developer.android.com/topic/performance/baselineprofiles/overview
+    alias(libs.plugins.androidx.baselineprofile) apply false
+
     // Applies the Kotlin Android plugin.
     // Project: https://kotlinlang.org/docs/android-overview.html
     alias(libs.plugins.kotlin.android) apply false

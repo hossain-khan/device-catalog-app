@@ -37,6 +37,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
@@ -88,7 +89,10 @@ fun OnboardingUi(
                 horizontalArrangement = Arrangement.End,
             ) {
                 if (state.currentPage < state.totalPages - 1) {
-                    TextButton(onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) }) {
+                    TextButton(
+                        onClick = { state.eventSink(OnboardingScreen.Event.SkipClicked) },
+                        modifier = Modifier.testTag("onboarding:skip"),
+                    ) {
                         Text("Skip")
                     }
                 }

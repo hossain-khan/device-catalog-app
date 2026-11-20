@@ -29,6 +29,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.navstack.rememberSaveableNavStack
@@ -91,11 +93,13 @@ fun AppNavigation(
     val navigationType = windowSizeClass.toNavigationType()
     Timber.d("Navigation type: $navigationType for window size: ${windowSizeClass.widthSizeClass}")
 
+    val rootModifier = modifier.semantics { testTagsAsResourceId = true }
+
     when (navigationType) {
         DeviceCatalogNavigationType.PERMANENT_NAVIGATION_DRAWER -> {
             // Expanded screens (large tablets, desktops): Use permanent navigation drawer
             PermanentNavigationDrawer(
-                modifier = modifier,
+                modifier = rootModifier,
                 drawerContent = {
                     AppNavigationDrawerContent(
                         selectedDestination = selectedDestination,
@@ -114,7 +118,7 @@ fun AppNavigation(
 
         DeviceCatalogNavigationType.NAVIGATION_RAIL -> {
             // Medium screens (small tablets, foldables): Use navigation rail
-            Row(modifier = modifier.fillMaxSize()) {
+            Row(modifier = rootModifier.fillMaxSize()) {
                 AppNavigationRail(
                     selectedDestination = selectedDestination,
                     onNavigationDestinationClicked = onDestinationSelected,
@@ -131,7 +135,7 @@ fun AppNavigation(
         DeviceCatalogNavigationType.BOTTOM_NAVIGATION -> {
             // Compact screens (phones): Use bottom navigation
             // Note: Screens provide their own Scaffold, so we don't wrap in another Scaffold here
-            Column(modifier = modifier.fillMaxSize()) {
+            Column(modifier = rootModifier.fillMaxSize()) {
                 NavigableCircuitContent(
                     navigator = navigator,
                     navStack = navStack,

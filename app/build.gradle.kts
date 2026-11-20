@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     id("devicecatalog.android.application")
     id("devicecatalog.android.compose")
+    alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.androidx.room)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -184,6 +185,10 @@ dependencies {
     // Timber for logging
     implementation(libs.timber)
 
+    // Baseline Profile installer
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":benchmarks"))
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Linting
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -212,4 +217,12 @@ metro {
     hiddenDependencies {
         checkOnCompile.set(true)
     }
+}
+
+baselineProfile {
+    // Don't generate on every full assemble; run `:app:generateReleaseBaselineProfile` explicitly.
+    automaticGenerationDuringBuild = false
+
+    // Make use of Dex Layout Optimizations via Startup Profiles
+    dexLayoutOptimization = true
 }
