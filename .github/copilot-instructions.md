@@ -840,6 +840,18 @@ git push origin X.Y.Z
 - Enables easy rollback if issues are found during release testing
 - Follows gitflow-style branching model for releases
 
+### Baseline Profiles Maintenance
+
+The release Baseline Profile (`app/src/release/generated/baselineProfiles/baseline-prof.txt`) and Startup Profile (`startup-prof.txt`) are automatically reused, remapped by R8, and packaged into every release build (`automaticGenerationDuringBuild = false`).
+
+- **Do NOT regenerate on every release**: Patch releases, bug fixes, copy changes, and database snapshot updates do not require regenerating profiles. Unmatched rules for renamed or removed methods are safely ignored by R8/ART.
+- **When to regenerate**: Refresh profiles occasionally—after major dependency upgrades (Compose BOM, Material 3, Circuit, Room, Paging, AGP/Kotlin), after major changes to app startup, navigation, or `DevicesUi`, or before major milestone releases.
+- **How to regenerate**: With an API 33+ emulator/device connected (or add `-PuseManagedDevice=true` to use the `pixel6Api33` GMD):
+  ```bash
+  ./gradlew :app:generateReleaseBaselineProfile
+  ```
+  See `benchmarks/README.md` for Macrobenchmark commands and details.
+
 ### Git Tagging Convention
 
 When creating release tags, always use the version number **without** the `v` prefix:
@@ -890,6 +902,9 @@ This maintains consistency with the project's versioning scheme and ensures comp
 
 # See module dependencies
 ./gradlew :app:dependencies
+
+# Regenerate release Baseline & Startup Profiles (requires API 33+ device/emulator)
+./gradlew :app:generateReleaseBaselineProfile
 ```
 
 ## Future Considerations
@@ -897,11 +912,9 @@ This maintains consistency with the project's versioning scheme and ensures comp
 1. **Domain Layer**: Consider adding use cases in a `:core:domain` module for complex business logic
 2. **Offline-First**: Enhance repository with sync strategies and offline support
 3. **UI State Modeling**: Standardize UI state with sealed hierarchies across features
-4. **Screenshot Testing**: Add Roborazzi for visual regression testing
-5. **Baseline Profiles**: Add baseline profiles for improved app startup performance
-6. **Analytics Module**: Create `:core:analytics` for event tracking
-7. **Testing Infrastructure**: Expand test doubles (fakes) for better testability
-8. **Performance Monitoring**: Add database operation metrics and Compose performance tracking
+4. **Analytics Module**: Create `:core:analytics` for event tracking
+5. **Testing Infrastructure**: Expand test doubles (fakes) for better testability
+6. **Performance Monitoring**: Add database operation metrics and Compose performance tracking
 
 ## Resources
 
