@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
 import dev.hossain.devicecatalog.feature.devices.DevicesScreen
+import dev.hossain.android.catalogparser.models.FormFactor as CatalogFormFactor
 
 /**
  * Displays active filter chips styled as compact 8.dp technical pills.
@@ -232,7 +233,7 @@ fun ActiveFilterChips(
  */
 sealed class FilterType {
     data class FormFactor(
-        val formFactor: dev.hossain.android.catalogparser.models.FormFactor,
+        val formFactor: CatalogFormFactor,
     ) : FilterType()
 
     data class Manufacturer(

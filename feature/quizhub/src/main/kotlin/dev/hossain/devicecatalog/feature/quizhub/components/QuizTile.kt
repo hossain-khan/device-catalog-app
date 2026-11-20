@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.feature.quizhub.QuizHubScreen
 
 @Composable
@@ -168,13 +170,13 @@ fun QuizTile(
 
 // ==================== Previews ====================
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Available Quiz - Light",
     showBackground = true,
 )
 @Composable
 private fun QuizTilePreviewAvailableLight() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -193,13 +195,13 @@ private fun QuizTilePreviewAvailableLight() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Available Quiz - Dark",
     showBackground = true,
 )
 @Composable
 private fun QuizTilePreviewAvailableDark() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {
@@ -218,13 +220,13 @@ private fun QuizTilePreviewAvailableDark() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Coming Soon Quiz - Light",
     showBackground = true,
 )
 @Composable
 private fun QuizTilePreviewComingSoonLight() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -243,13 +245,13 @@ private fun QuizTilePreviewComingSoonLight() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Coming Soon Quiz - Dark",
     showBackground = true,
 )
 @Composable
 private fun QuizTilePreviewComingSoonDark() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {

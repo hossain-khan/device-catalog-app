@@ -9,6 +9,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import dev.hossain.devicecatalog.core.di.WorkerKey
+import dev.hossain.devicecatalog.di.AppWorkerFactory
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -151,8 +152,8 @@ class DeviceSyncWorker(
     @WorkerKey(DeviceSyncWorker::class)
     @ContributesIntoMap(
         AppScope::class,
-        binding = binding<dev.hossain.devicecatalog.di.AppWorkerFactory.WorkerInstanceFactory<*>>(),
+        binding = binding<AppWorkerFactory.WorkerInstanceFactory<*>>(),
     )
     @AssistedFactory
-    abstract class Factory : dev.hossain.devicecatalog.di.AppWorkerFactory.WorkerInstanceFactory<DeviceSyncWorker>
+    abstract class Factory : AppWorkerFactory.WorkerInstanceFactory<DeviceSyncWorker>
 }

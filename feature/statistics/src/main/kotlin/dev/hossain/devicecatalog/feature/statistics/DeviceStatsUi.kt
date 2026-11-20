@@ -41,9 +41,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.data.AbiCount
 import dev.hossain.devicecatalog.core.data.DeviceStats
 import dev.hossain.devicecatalog.core.data.FormFactorCount
@@ -54,6 +56,7 @@ import dev.hossain.devicecatalog.core.data.ScreenDensityCount
 import dev.hossain.devicecatalog.core.data.SdkVersionCount
 import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogTabTopBar
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.chartColors
 import dev.hossain.devicecatalog.feature.statistics.components.BarChartData
 import dev.hossain.devicecatalog.feature.statistics.components.ChartLegend
@@ -545,14 +548,14 @@ private fun GpuDistributionContent(
 // ==================== Previews ====================
 
 @OptIn(ExperimentalMaterial3Api::class)
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Light Theme",
     showBackground = true,
     showSystemUi = true,
 )
 @Composable
 private fun DeviceStatsUiPreviewLight() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -563,14 +566,14 @@ private fun DeviceStatsUiPreviewLight() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Dark Theme",
     showBackground = true,
     showSystemUi = true,
 )
 @Composable
 private fun DeviceStatsUiPreviewDark() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {
@@ -581,14 +584,14 @@ private fun DeviceStatsUiPreviewDark() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Loading State",
     showBackground = true,
     showSystemUi = true,
 )
 @Composable
 private fun DeviceStatsUiPreviewLoading() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -619,9 +622,9 @@ private fun createPreviewDeviceStats(): DeviceStats =
         totalManufacturers = 150,
         formFactorBreakdown =
             listOf(
-                FormFactorCount(dev.hossain.android.catalogparser.models.FormFactor.PHONE, 2000),
-                FormFactorCount(dev.hossain.android.catalogparser.models.FormFactor.TABLET, 400),
-                FormFactorCount(dev.hossain.android.catalogparser.models.FormFactor.TV, 100),
+                FormFactorCount(FormFactor.PHONE, 2000),
+                FormFactorCount(FormFactor.TABLET, 400),
+                FormFactorCount(FormFactor.TV, 100),
             ),
         topManufacturers =
             listOf(
