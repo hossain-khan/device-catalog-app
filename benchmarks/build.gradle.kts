@@ -25,12 +25,18 @@ android {
 }
 
 baselineProfile {
-    // Specify the Gradle Managed Device for reproducible Baseline Profile generation.
-    managedDevices.clear()
-    managedDevices += "pixel6Api33"
-
-    // Use a connected device/emulator when available, or fall back to the managed device.
-    useConnectedDevices = true
+    val useManagedDevice = providers.gradleProperty("useManagedDevice").map(String::toBoolean).getOrElse(false)
+    if (useManagedDevice) {
+        // Use the Gradle Managed Device for reproducible CI Baseline Profile generation:
+        // ./gradlew :app:generateReleaseBaselineProfile -PuseManagedDevice=true
+        managedDevices.clear()
+        managedDevices += "pixel6Api33"
+        useConnectedDevices = false
+    } else {
+        // Default: use a connected device or running emulator (API 33+ or rooted).
+        managedDevices.clear()
+        useConnectedDevices = true
+    }
 }
 
 dependencies {

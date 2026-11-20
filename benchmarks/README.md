@@ -13,10 +13,16 @@ This module contains **Macrobenchmarks** and **Baseline Profile generators** for
 
 ## Generating Baseline Profiles
 
-With a connected Android device/emulator (API 28+, or using the configured `pixel6Api33` Gradle Managed Device):
+With a connected Android device/emulator (API 33+ or rooted):
 
 ```bash
 ./gradlew :app:generateReleaseBaselineProfile
+```
+
+Or using the configured `pixel6Api33` Gradle Managed Device (for reproducible CI generation):
+
+```bash
+./gradlew :app:generateReleaseBaselineProfile -PuseManagedDevice=true
 ```
 
 The generated profiles are automatically copied into `app/src/release/generated/baselineProfiles/` and packaged into release APKs/AABs via `androidx.profileinstaller`.
