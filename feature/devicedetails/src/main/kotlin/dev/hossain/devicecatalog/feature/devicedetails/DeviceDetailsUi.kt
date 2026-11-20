@@ -78,7 +78,6 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
-import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
 import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
@@ -375,37 +374,13 @@ private fun DeviceHeroCard(
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                     shape = RoundedCornerShape(10.dp),
                 ) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        DeviceImage(
-                            device = device,
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
-                            fallbackIconModifier = Modifier.size(44.dp),
-                            fallbackTint = accentColor,
-                            onImageLoaded = { isDeviceImageLoaded = it },
-                        )
-
-                        if (isDeviceImageLoaded) {
-                            Surface(
-                                modifier =
-                                    Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .padding(4.dp)
-                                        .size(20.dp),
-                                shape = RoundedCornerShape(6.dp),
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
-                                border = BorderStroke(0.5.dp, MaterialTheme.colorScheme.outlineVariant),
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(
-                                        imageVector = DeviceCatalogIcons.ZoomIn,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(12.dp),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    DeviceImage(
+                        device = device,
+                        modifier = Modifier.fillMaxSize().padding(8.dp),
+                        fallbackIconModifier = Modifier.size(44.dp),
+                        fallbackTint = accentColor,
+                        onImageLoaded = { isDeviceImageLoaded = it },
+                    )
                 }
 
                 // Identity & Badges

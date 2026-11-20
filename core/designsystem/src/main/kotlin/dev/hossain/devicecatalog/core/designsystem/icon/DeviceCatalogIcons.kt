@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -70,7 +69,6 @@ object DeviceCatalogIcons {
     // UI icons
     val KeyboardArrowDown: ImageVector = Icons.Default.KeyboardArrowDown
     val KeyboardArrowUp: ImageVector = Icons.Default.KeyboardArrowUp
-    val ZoomIn: ImageVector = Icons.Default.ZoomIn
 
     // Feature icons
     val Android: ImageVector = Icons.Default.Android
