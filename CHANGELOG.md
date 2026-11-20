@@ -7,12 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Added a **Compare** action in `DeviceDetailsUi` top app bar that opens `DeviceComparisonScreen` with the current device pre-selected
-- Added tappable full-screen lightbox dialog (`DeviceImageLightboxDialog`) with pinch-to-zoom, pan, and double-tap zoom on loaded device images in `DeviceDetailsUi`
+## [2.7.0] - 2026-11-19
 
 ### Added
-- Added `:benchmarks` module with `devicecatalog.android.test` convention plugin, `androidx.baselineprofile` Gradle plugin, `androidx.profileinstaller` in `:app`, Baseline Profile generators (`StartupBaselineProfile`, `DeviceCatalogBaselineProfile`), and Macrobenchmarks (`StartupBenchmark`, `ScrollDevicesListBenchmark`) for cold startup and device catalog scrolling (#275)
+- Added a **Compare** action in `DeviceDetailsUi` top app bar that opens `DeviceComparisonScreen` with the current device pre-selected (#285)
+- Added tappable full-screen lightbox dialog (`DeviceImageLightboxDialog`) with pinch-to-zoom, pan, and double-tap zoom on loaded device images in `DeviceDetailsUi` (#284)
+- Added `:benchmarks` module with `devicecatalog.android.test` convention plugin, `androidx.baselineprofile` Gradle plugin, `androidx.profileinstaller` in `:app`, Baseline Profile generators (`StartupBaselineProfile`, `DeviceCatalogBaselineProfile`), Macrobenchmarks (`StartupBenchmark`, `ScrollDevicesListBenchmark`), and generated release/startup profiles (#275, #282, #283)
+- Added Roborazzi screenshot testing module (`:core:screenshot-testing`) and baseline screenshot tests across key screens (#281)
+- Added custom `:lint` module and `AndroidLintConventionPlugin` enforcing design-system usage and test naming conventions (#280)
+
+### Changed
+- Added `compose_compiler_config.conf` for Compose stability of core, parser, and immutable collection models (#276)
+- Enabled Gradle Isolated Projects, strict Configuration Cache, and re-enabled `:core:testing` unit tests with expanded presenter/repository test coverage (#277, #278, #279)
 
 ## [2.6.0] - 2026-11-18
 
@@ -496,7 +502,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.3.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.7.0...HEAD
+[2.7.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.6.0...2.7.0
+[2.6.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.5.0...2.6.0
+[2.5.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.4.0...2.5.0
+[2.4.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.3.0...2.4.0
 [2.3.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.1...2.3.0
 [2.2.1]: https://github.com/hossain-khan/device-catalog-app/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.1.0...2.2.0
