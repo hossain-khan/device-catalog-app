@@ -14,6 +14,7 @@ import com.slack.circuitx.android.IntentScreen
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.devicecatalog.core.common.RamFormatter
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
+import dev.hossain.devicecatalog.feature.devicecomparison.DeviceComparisonScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -69,6 +70,11 @@ class DeviceDetailsPresenter(
                                 }
                             navigator.goTo(IntentScreen(Intent.createChooser(shareIntent, "Share device details")))
                         }
+                    }
+
+                    DeviceDetailsScreen.Event.CompareClicked -> {
+                        Timber.d("Comparing device with ID: ${screen.deviceId}")
+                        navigator.goTo(DeviceComparisonScreen(deviceIds = listOf(screen.deviceId)))
                     }
                 }
             },

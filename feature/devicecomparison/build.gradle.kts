@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":core:database"))
     implementation(project(":core:designsystem"))
     implementation(project(":core:model"))
+    api(project(":core:navigation"))
     implementation(project(":core:ui"))
 
     // Cross-feature navigation (comparison navigates to devicedetails)
