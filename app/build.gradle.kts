@@ -113,6 +113,7 @@ dependencies {
     implementation(project(":core:designsystem"))
     implementation(project(":core:di"))
     implementation(project(":core:model"))
+    implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
 
     // Feature modules

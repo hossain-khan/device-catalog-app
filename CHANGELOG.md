@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added a **Compare** action in `DeviceDetailsUi` top app bar that opens `DeviceComparisonScreen` with the current device pre-selected
 - Added tappable full-screen lightbox dialog (`DeviceImageLightboxDialog`) with pinch-to-zoom, pan, and double-tap zoom on loaded device images in `DeviceDetailsUi`
 
 ### Added

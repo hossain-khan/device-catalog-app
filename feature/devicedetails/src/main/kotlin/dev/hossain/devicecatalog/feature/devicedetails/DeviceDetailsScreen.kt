@@ -24,5 +24,7 @@ data class DeviceDetailsScreen(
         data object RetryLoading : Event()
 
         data object ShareClicked : Event()
+
+        data object CompareClicked : Event()
     }
 }

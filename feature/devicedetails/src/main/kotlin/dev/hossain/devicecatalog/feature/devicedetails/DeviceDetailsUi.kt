@@ -78,6 +78,7 @@ import com.slack.circuit.codegen.annotations.CircuitInject
 import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.common.RamFormatter
+import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
 import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.designsystem.theme.deviceTypeColors
 import dev.hossain.devicecatalog.core.designsystem.theme.monoFontFamily
@@ -120,6 +121,12 @@ fun DeviceDetailsUi(
                 },
                 actions = {
                     if (state.device != null) {
+                        IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.CompareClicked) }) {
+                            Icon(
+                                imageVector = DeviceCatalogIcons.Compare,
+                                contentDescription = "Compare with another device",
+                            )
+                        }
                         IconButton(onClick = { state.eventSink(DeviceDetailsScreen.Event.ShareClicked) }) {
                             Icon(
                                 imageVector = Icons.Default.Share,

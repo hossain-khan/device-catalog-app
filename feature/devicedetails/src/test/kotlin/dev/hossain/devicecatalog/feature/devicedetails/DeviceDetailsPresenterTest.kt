@@ -6,6 +6,7 @@ import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.data.AndroidDeviceRepository
 import dev.hossain.devicecatalog.core.testing.FakeAndroidDeviceDao
 import dev.hossain.devicecatalog.core.testing.TestDeviceFactory
+import dev.hossain.devicecatalog.feature.devicecomparison.DeviceComparisonScreen
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -86,6 +87,38 @@ class DeviceDetailsPresenterTest {
                 assertFalse("Expected loaded after retry, error=${loadedState.errorMessage}", loadedState.isLoading)
                 assertNull("Unexpected error: ${loadedState.errorMessage}", loadedState.errorMessage)
                 assertEquals("Pixel Fold", loadedState.device?.modelName)
+            }
+        }
+
+    @Test
+    fun `navigates to device comparison with device preselected on compare click`() =
+        runTest {
+            val fakeDao = FakeAndroidDeviceDao()
+            val expectedDevice =
+                TestDeviceFactory.createDeviceWithRelations(
+                    id = 42L,
+                    modelName = "Pixel 9 Pro",
+                    formFactor = FormFactor.PHONE.value,
+                )
+            fakeDao.setDevices(listOf(expectedDevice))
+
+            val screen = DeviceDetailsScreen(deviceId = 42L)
+            val navigator = FakeNavigator(screen)
+            val presenter =
+                DeviceDetailsPresenter(
+                    navigator = navigator,
+                    screen = screen,
+                    deviceRepository = AndroidDeviceRepository(fakeDao),
+                )
+
+            presenter.test {
+                awaitItem() // initial loading state
+                val loadedState = awaitItem()
+
+                loadedState.eventSink(DeviceDetailsScreen.Event.CompareClicked)
+
+                val nextScreen = navigator.awaitNextScreen()
+                assertEquals(DeviceComparisonScreen(deviceIds = listOf(42L)), nextScreen)
             }
         }
 }
