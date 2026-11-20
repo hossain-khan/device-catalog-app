@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.foundation.NavigableCircuitContent
 import com.slack.circuit.foundation.navstack.rememberSaveableNavStack
@@ -39,6 +40,7 @@ import com.slack.circuit.runtime.Navigator
 import com.slack.circuitx.android.rememberAndroidScreenAwareNavigator
 import com.slack.circuitx.gesturenavigation.GestureNavigationDecorationFactory
 import dev.hossain.devicecatalog.core.common.OnboardingManager
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.feature.onboarding.OnboardingScreen
 import dev.hossain.devicecatalog.ui.adaptive.DeviceCatalogNavigationType
 import dev.hossain.devicecatalog.ui.adaptive.toNavigationType
@@ -296,7 +298,7 @@ private fun AppBottomNavigation(
 // ==================== Multi-Device Previews ====================
 // Following Reply app best practice: Preview composables for different screen sizes
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Compact - Phone",
     showBackground = true,
     widthDp = 400,
@@ -304,7 +306,7 @@ private fun AppBottomNavigation(
 )
 @Composable
 private fun AppNavigationDrawerContentPreviewCompact() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         AppNavigationDrawerContent(
             selectedDestination = NavigationDestination.Devices,
             onNavigationDestinationClicked = {},
@@ -312,7 +314,7 @@ private fun AppNavigationDrawerContentPreviewCompact() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Medium - Tablet",
     showBackground = true,
     widthDp = 700,
@@ -320,7 +322,7 @@ private fun AppNavigationDrawerContentPreviewCompact() {
 )
 @Composable
 private fun AppNavigationDrawerContentPreviewMedium() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         AppNavigationDrawerContent(
             selectedDestination = NavigationDestination.Stats,
             onNavigationDestinationClicked = {},
@@ -328,7 +330,7 @@ private fun AppNavigationDrawerContentPreviewMedium() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Navigation Rail Preview",
     showBackground = true,
     widthDp = 80,
@@ -336,7 +338,7 @@ private fun AppNavigationDrawerContentPreviewMedium() {
 )
 @Composable
 private fun AppNavigationRailPreview() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         AppNavigationRail(
             selectedDestination = NavigationDestination.Devices,
             onNavigationDestinationClicked = {},
@@ -344,7 +346,7 @@ private fun AppNavigationRailPreview() {
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Bottom Navigation Preview",
     showBackground = true,
     widthDp = 400,
@@ -352,7 +354,7 @@ private fun AppNavigationRailPreview() {
 )
 @Composable
 private fun AppBottomNavigationPreview() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         AppBottomNavigation(
             selectedDestination = NavigationDestination.Devices,
             onNavigationDestinationClicked = {},

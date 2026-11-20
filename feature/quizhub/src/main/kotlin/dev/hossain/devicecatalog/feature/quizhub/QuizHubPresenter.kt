@@ -4,7 +4,10 @@ import androidx.compose.runtime.Composable
 import com.slack.circuit.codegen.annotations.CircuitInject
 import com.slack.circuit.runtime.Navigator
 import com.slack.circuit.runtime.presenter.Presenter
+import dev.hossain.devicecatalog.feature.brandchallenge.BrandChallengeScreen
 import dev.hossain.devicecatalog.feature.devicecomparison.DeviceComparisonScreen
+import dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen
+import dev.hossain.devicecatalog.feature.specmaster.SpecMasterScreen
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
@@ -28,15 +31,12 @@ class QuizHubPresenter(
                         when (event.quizType) {
                             QuizHubScreen.QuizType.CODENAME_GUESS -> {
                                 Timber.i("Codename Guess quiz selected - navigating to manufacturer selection")
-                                navigator.goTo(dev.hossain.devicecatalog.feature.phonequiz.selection.ManufacturerSelectionScreen)
+                                navigator.goTo(ManufacturerSelectionScreen)
                             }
 
                             QuizHubScreen.QuizType.BRAND_CHALLENGE -> {
                                 Timber.i("Brand Challenge quiz selected - navigating to brand challenge")
-                                navigator.goTo(
-                                    dev.hossain.devicecatalog.feature.brandchallenge
-                                        .BrandChallengeScreen(),
-                                )
+                                navigator.goTo(BrandChallengeScreen())
                             }
 
                             QuizHubScreen.QuizType.DEVICE_COMPARE -> {
@@ -46,10 +46,7 @@ class QuizHubPresenter(
 
                             QuizHubScreen.QuizType.SPEC_MASTER -> {
                                 Timber.i("Spec Master selected - navigating to spec master")
-                                navigator.goTo(
-                                    dev.hossain.devicecatalog.feature.specmaster
-                                        .SpecMasterScreen(),
-                                )
+                                navigator.goTo(SpecMasterScreen())
                             }
                         }
                     }

@@ -50,10 +50,12 @@ import dev.hossain.android.catalogparser.models.AndroidDevice
 import dev.hossain.android.catalogparser.models.FormFactor
 import dev.hossain.devicecatalog.core.designsystem.component.DeviceCatalogTabTopBar
 import dev.hossain.devicecatalog.core.designsystem.icon.DeviceCatalogIcons
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.hossain.devicecatalog.core.model.DeviceInfo
 import dev.hossain.devicecatalog.feature.devices.components.ActiveFilterChips
 import dev.hossain.devicecatalog.feature.devices.components.DeviceCard
 import dev.hossain.devicecatalog.feature.devices.components.DeviceCardSkeleton
+import dev.hossain.devicecatalog.feature.devices.components.DeviceListLayoutConfig
 import dev.hossain.devicecatalog.feature.devices.components.DeviceSearchBar
 import dev.hossain.devicecatalog.feature.devices.components.EmptyDeviceState
 import dev.hossain.devicecatalog.feature.devices.components.FilterBottomSheet
@@ -297,7 +299,7 @@ fun DevicesUi(
 
 @Composable
 private fun LoadingContent(
-    layoutConfig: dev.hossain.devicecatalog.feature.devices.components.DeviceListLayoutConfig,
+    layoutConfig: DeviceListLayoutConfig,
     modifier: Modifier = Modifier,
 ) {
     if (layoutConfig.columns == 1) {
@@ -328,7 +330,7 @@ private fun LoadingContent(
 @Composable
 private fun PaginatedDeviceList(
     state: DevicesScreen.State,
-    layoutConfig: dev.hossain.devicecatalog.feature.devices.components.DeviceListLayoutConfig,
+    layoutConfig: DeviceListLayoutConfig,
     modifier: Modifier = Modifier,
 ) {
     val lazyPagingItems = state.pagedDevices.collectAsLazyPagingItems()
@@ -485,7 +487,7 @@ private fun PaginatedDeviceList(
 @Composable
 private fun RegularDeviceList(
     state: DevicesScreen.State,
-    layoutConfig: dev.hossain.devicecatalog.feature.devices.components.DeviceListLayoutConfig,
+    layoutConfig: DeviceListLayoutConfig,
     modifier: Modifier = Modifier,
 ) {
     when {
@@ -545,7 +547,7 @@ private fun RegularDeviceList(
 )
 @Composable
 private fun DevicesUiPreviewLight() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -563,7 +565,7 @@ private fun DevicesUiPreviewLight() {
 )
 @Composable
 private fun DevicesUiPreviewDark() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = true,
         dynamicColor = false,
     ) {
@@ -581,7 +583,7 @@ private fun DevicesUiPreviewDark() {
 )
 @Composable
 private fun DevicesUiPreviewWithSearch() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -599,7 +601,7 @@ private fun DevicesUiPreviewWithSearch() {
 )
 @Composable
 private fun DevicesUiPreviewWithFilters() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -624,7 +626,7 @@ private fun DevicesUiPreviewWithFilters() {
 )
 @Composable
 private fun DevicesUiPreviewLoading() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {
@@ -642,7 +644,7 @@ private fun DevicesUiPreviewLoading() {
 )
 @Composable
 private fun DevicesUiPreviewEmpty() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme(
+    DeviceCatalogAppTheme(
         darkTheme = false,
         dynamicColor = false,
     ) {

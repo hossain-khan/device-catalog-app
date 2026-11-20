@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.core.designsystem.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import kotlin.math.pow
@@ -135,7 +136,7 @@ private val deviceTypeBolderColorsDark =
  */
 @Composable
 fun deviceTypeColors(): DeviceTypeColors {
-    return androidx.compose.material3.MaterialTheme.colorScheme.let { colorScheme ->
+    return MaterialTheme.colorScheme.let { colorScheme ->
         if (colorScheme.surface.luminance() < 0.5f) {
             deviceTypeColorsDark
         } else {
@@ -149,7 +150,7 @@ fun deviceTypeColors(): DeviceTypeColors {
  */
 @Composable
 fun deviceTypeBolderColors(): DeviceTypeColors {
-    return androidx.compose.material3.MaterialTheme.colorScheme.let { colorScheme ->
+    return MaterialTheme.colorScheme.let { colorScheme ->
         if (colorScheme.surface.luminance() < 0.5f) {
             deviceTypeBolderColorsDark
         } else {

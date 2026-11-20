@@ -39,8 +39,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.slack.circuit.codegen.annotations.CircuitInject
+import dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme
 import dev.zacsweers.metro.AppScope
 
 /**
@@ -268,35 +270,35 @@ private fun OnboardingPage(
 
 // ==================== Previews ====================
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Onboarding Page 0",
     showBackground = true,
 )
 @Composable
 private fun OnboardingPagePreview0() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         OnboardingPage(page = 0)
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Onboarding Page 1",
     showBackground = true,
 )
 @Composable
 private fun OnboardingPagePreview1() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         OnboardingPage(page = 1)
     }
 }
 
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Onboarding Page 2",
     showBackground = true,
 )
 @Composable
 private fun OnboardingPagePreview2() {
-    dev.hossain.devicecatalog.core.designsystem.theme.DeviceCatalogAppTheme {
+    DeviceCatalogAppTheme {
         OnboardingPage(page = 2)
     }
 }

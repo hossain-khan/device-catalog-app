@@ -1,10 +1,12 @@
 package dev.hossain.devicecatalog.feature.devices.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /**
@@ -13,8 +15,8 @@ import androidx.compose.ui.unit.dp
  */
 data class DeviceListLayoutConfig(
     val columns: Int,
-    val contentPadding: androidx.compose.foundation.layout.PaddingValues,
-    val itemSpacing: androidx.compose.ui.unit.Dp,
+    val contentPadding: PaddingValues,
+    val itemSpacing: Dp,
     val useStaggeredGrid: Boolean = false,
 )
 
@@ -39,7 +41,7 @@ fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
                 DeviceListLayoutConfig(
                     columns = 1,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 16.dp,
                             vertical = 8.dp,
                         ),
@@ -52,7 +54,7 @@ fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
                 DeviceListLayoutConfig(
                     columns = 2,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 16.dp,
                             vertical = 8.dp,
                         ),
@@ -65,7 +67,7 @@ fun rememberDeviceListLayoutConfig(): DeviceListLayoutConfig {
                 DeviceListLayoutConfig(
                     columns = 3,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 24.dp,
                             vertical = 12.dp,
                         ),
@@ -89,7 +91,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                 DeviceListLayoutConfig(
                     columns = 1,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 16.dp,
                             vertical = 8.dp,
                         ),
@@ -102,7 +104,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                 DeviceListLayoutConfig(
                     columns = 2,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 16.dp,
                             vertical = 8.dp,
                         ),
@@ -115,7 +117,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                 DeviceListLayoutConfig(
                     columns = 3,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 24.dp,
                             vertical = 12.dp,
                         ),
@@ -128,7 +130,7 @@ fun rememberDeviceListLayoutConfig(windowSizeClass: WindowSizeClass): DeviceList
                 DeviceListLayoutConfig(
                     columns = 1,
                     contentPadding =
-                        androidx.compose.foundation.layout.PaddingValues(
+                        PaddingValues(
                             horizontal = 16.dp,
                             vertical = 8.dp,
                         ),
