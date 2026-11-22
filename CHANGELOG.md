@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-11-22
+
 ### Changed
-- Upgraded Jetpack Compose BOM to `2026.11.01` (Compose `1.13.0`), Material 3 to `1.5.0` stable, Google Fonts to `1.13.0`, and `compileSdk` to `37.1`
-- Enabled `LazyLayoutCacheWindow` preloading on `PaginatedDeviceList` in `DevicesUi` and `blurBehindRadius = 12.dp` on `DeviceImageLightboxDialog`
+- Upgraded Jetpack Compose BOM to `2026.11.01` (Compose `1.13.0`), Material 3 to `1.5.0` stable, Google Fonts to `1.13.0`, and `compileSdk` to `37.1` (#288)
+- Enabled `LazyLayoutCacheWindow` preloading on `PaginatedDeviceList` in `DevicesUi` and `blurBehindRadius = 12.dp` on `DeviceImageLightboxDialog` (#288)
+- Replaced inline fully-qualified class names with standard imports across 12 files and formatted Kotlin sources (#287)
 
 ## [2.7.0] - 2026-11-19
 
@@ -506,7 +509,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed unremembered state objects by wrapping `derivedStateOf` with `remember`
 - Fixed restricted API usage by avoiding direct `WindowLayoutInfo` constructor call
 
-[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.7.0...HEAD
+[Unreleased]: https://github.com/hossain-khan/device-catalog-app/compare/2.8.0...HEAD
+[2.8.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.7.0...2.8.0
 [2.7.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.6.0...2.7.0
 [2.6.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.5.0...2.6.0
 [2.5.0]: https://github.com/hossain-khan/device-catalog-app/compare/2.4.0...2.5.0

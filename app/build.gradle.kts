@@ -16,8 +16,8 @@ android {
 
     defaultConfig {
         applicationId = "dev.hossain.devicecatalog"
-        versionCode = 23
-        versionName = "2.7.0"
+        versionCode = 24
+        versionName = "2.8.0"
 
         // Read key or other properties from local.properties
         val localProperties =
