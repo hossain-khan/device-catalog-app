@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Upgraded Jetpack Compose BOM to `2026.11.01` (Compose `1.13.0`), Material 3 to `1.5.0` stable, Google Fonts to `1.13.0`, and `compileSdk` to `37.1`
+- Enabled `LazyLayoutCacheWindow` preloading on `PaginatedDeviceList` in `DevicesUi` and `blurBehindRadius = 12.dp` on `DeviceImageLightboxDialog`
+
 ## [2.7.0] - 2026-11-19
 
 ### Added
