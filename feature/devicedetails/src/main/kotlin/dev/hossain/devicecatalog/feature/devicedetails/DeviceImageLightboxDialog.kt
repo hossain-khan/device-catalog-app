@@ -77,6 +77,7 @@ internal fun DeviceImageLightboxDialog(
             DialogProperties(
                 usePlatformDefaultWidth = false,
                 decorFitsSystemWindows = false,
+                blurBehindRadius = 12.dp,
             ),
     ) {
         Box(

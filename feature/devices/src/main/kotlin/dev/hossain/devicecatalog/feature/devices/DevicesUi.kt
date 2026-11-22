@@ -1,5 +1,6 @@
 package dev.hossain.devicecatalog.feature.devices
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.layout.LazyLayoutCacheWindow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -327,6 +329,7 @@ private fun LoadingContent(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PaginatedDeviceList(
     state: DevicesScreen.State,
@@ -334,7 +337,8 @@ private fun PaginatedDeviceList(
     modifier: Modifier = Modifier,
 ) {
     val lazyPagingItems = state.pagedDevices.collectAsLazyPagingItems()
-    val listState = rememberLazyListState()
+    val cacheWindow = remember { LazyLayoutCacheWindow(aheadFraction = 1f, behindFraction = 0.5f) }
+    val listState = rememberLazyListState(cacheWindow = cacheWindow)
     val gridState = rememberLazyStaggeredGridState()
 
     Timber.tag("DevicesUi:Paging").d(

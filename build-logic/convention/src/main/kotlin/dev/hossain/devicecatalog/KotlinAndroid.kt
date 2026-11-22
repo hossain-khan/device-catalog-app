@@ -21,21 +21,27 @@ internal fun Project.configureKotlinAndroid(
 ) {
     when (extension) {
         is ApplicationExtension -> {
-            extension.compileSdk = 37
+            extension.compileSdk {
+                version = release(37) { minorApiLevel = 1 }
+            }
             extension.defaultConfig.minSdk = 28
             extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
             extension.testOptions.unitTests.isReturnDefaultValues = true
         }
         is LibraryExtension -> {
-            extension.compileSdk = 37
+            extension.compileSdk {
+                version = release(37) { minorApiLevel = 1 }
+            }
             extension.defaultConfig.minSdk = 28
             extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
             extension.testOptions.unitTests.isReturnDefaultValues = true
         }
         is TestExtension -> {
-            extension.compileSdk = 37
+            extension.compileSdk {
+                version = release(37) { minorApiLevel = 1 }
+            }
             extension.defaultConfig.minSdk = 28
             extension.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             extension.compileOptions.targetCompatibility = JavaVersion.VERSION_17
